@@ -1,0 +1,25 @@
+{
+  "name": "wordpress-version-checker",
+  "version": "0.1.0",
+  "description": "A GitHub app to automatically create issues when a plugin \"tested up to\" version doesn't match the latest WordPress version.",
+  "keywords": [
+    "wordpress",
+    "plugin",
+    "github app",
+    "automation",
+    "version check"
+  ],
+  "homepage": "https://github.com/skaut/wordpress-version-checker#readme",
+  "bugs": {
+    "url": "https://github.com/skaut/wordpress-version-checker/issues"
+  },
+  "license": "MIT",
+  "author": "Marek Dědič",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skaut/wordpress-version-checker.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
