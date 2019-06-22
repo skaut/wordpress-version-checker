@@ -1,5 +1,6 @@
 import { Application } from 'probot';
 import createScheduler from 'probot-scheduler';
+import * as http from 'http';
 
 export default function (app) {
 	createScheduler(app);
@@ -16,8 +17,8 @@ export default function (app) {
 		});
 		context.log(readme);
 		http.get(options, function(response) {
-			const list = JSON.parse(response);
-			const latest = Object.keys(list).find(key => list[key] === "latest");
+			//const list = JSON.parse(response);
+			//const latest = Object.keys(list).find(key => list[key] === "latest");
 		});
 	});
 };
