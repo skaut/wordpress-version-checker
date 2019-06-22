@@ -5,12 +5,13 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "strict": true
+    "strict": false
   },
   "include": [
     "src/**/*"
