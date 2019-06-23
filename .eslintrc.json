@@ -1,0 +1,15 @@
+{
+  "env": {
+    "browser": false,
+    "node": true
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/indent": ["error", "tab"]
+  }
+}
