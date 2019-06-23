@@ -36,7 +36,18 @@ function checkRepo(context, repo, latest)
 		{
 			if(line.startsWith('Tested up to:'))
 			{
-				const version = line.match(/\S+/g).pop()
+				const matches = line.match(/[^:\s]+/g);
+				if(!matches)
+				{
+					context.log('Repository ' + repo.owner + '/' + repo.repo + ' doesn\'t have a valid readme at path ' + repo.path + '.')
+					return;
+				}
+				const version = matches.pop();
+				if(!version)
+				{
+					context.log('Repository ' + repo.owner + '/' + repo.repo + ' doesn\'t have a valid readme at path ' + repo.path + '.')
+					return;
+				}
 				if(!latest.startsWith(version))
 				{
 					outdated(context, repo, version, latest);
@@ -78,6 +89,11 @@ function schedule(context)
 			try {
 				const list = JSON.parse(rawData);
 				const latest = Object.keys(list).find(key => list[key] === 'latest');
+				if(!latest)
+				{
+					context.log('Failed to fetch latest WordPress version. Couldn\'t find latest version');
+					return;
+				}
 				checkRepos(context, latest);
 			} catch(e) {
 				context.log('Failed to fetch latest WordPress version. Exception: ' + e.message);
