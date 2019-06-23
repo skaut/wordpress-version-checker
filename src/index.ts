@@ -1,25 +1,37 @@
 import { Application } from 'probot';
 import * as createScheduler from 'probot-scheduler';
-import * as http from 'http';
+import * as https from 'https';
 
-module.exports = app => {
-	createScheduler(app);
-	app.on("schedule.repository", function(context) {
-		const options = {
-			host: "api.wordpress.org",
-			port: 443,
-			path: "/core/stable-check/1.0/"
-		};
-		const readme = context.repos.getContents({
-			owner: "skaut",
-			repo: "skaut-google-drive-gallery",
-			path: "plugin/readme.txt"
-		});
-		context.log(readme);
-		http.get(options, function(response) {
-			//const list = JSON.parse(response);
-			//const latest = Object.keys(list).find(key => list[key] === "latest");
+function schedule(context)
+{
+	const readme = context.github.repos.getContents({
+		owner: "marekdedic",
+		repo: "test-wpvc",
+		path: "plugin/readme.txt"
+	}).then(function(result) {
+		const readme = Buffer.from(result.data.content, 'base64').toString()
+		//context.log(readme);
+	}); // TODO: Error handling
+	const options = {
+		host: "api.wordpress.org",
+		path: "/core/stable-check/1.0/"
+	};
+	https.get(options, function(response) {
+		response.setEncoding('utf8'); // TODO: Error handling
+		let rawData = '';
+		response.on('data', (chunk) => { rawData += chunk; });
+		response.on('end', () => {
+			const list = JSON.parse(rawData);
+			const latest = Object.keys(list).find(key => list[key] === "latest");
+			context.log(latest);
 		});
 	});
+}
+
+module.exports = app => {
+	createScheduler(app, {
+		delay: false
+	});
+	app.on("schedule.repository", schedule);
 };
 
