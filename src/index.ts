@@ -55,6 +55,7 @@ function checkRepo(context, repo: Repo, latest: string): void
 					outdated(context, repo, version, latest);
 					return;
 				}
+				return;
 			}
 		}
 		context.log('Repository ' + repo.owner + '/' + repo.repo + ' doesn\'t have a valid readme at path ' + repo.path + '.')
