@@ -2,7 +2,7 @@ import { Application, Context } from 'probot';
 import * as createScheduler from 'probot-scheduler';
 import * as https from 'https';
 
-function createIssue(context: Context, repo: Repo, testedVersion: string, latestVersion: string)
+function createIssue(context: Context, repo: Repo, testedVersion: string, latestVersion: string): void
 {
 	context.github.issues.create({
 		owner: repo.owner,
@@ -12,25 +12,25 @@ function createIssue(context: Context, repo: Repo, testedVersion: string, latest
 	});
 }
 
-function outdated(context: Context, repo: Repo, testedVersion: string, latestVersion: string)
+function outdated(context: Context, repo: Repo, testedVersion: string, latestVersion: string): void
 {
 	context.github.issues.listForRepo({
 		owner: repo.owner,
 		repo: repo.repo,
 		creator: 'wordpress-version-checker[bot]'
-	}).then(function(result) {
+	}).then(function(result): void {
 		if(result.data.length === 0)
 		{
 			createIssue(context, repo, testedVersion, latestVersion);
 		}
-	}).catch(function(e) {
+	}).catch(function(e): void {
 		context.log('Couldn\'t list repository issues for repository ' + repo.owner + '/' + repo.repo + '. Error message: ' + e);
 	});
 }
 
-function checkRepo(context: Context, repo: Repo, latest: string)
+function checkRepo(context: Context, repo: Repo, latest: string): void
 {
-	context.github.repos.getContents(repo).then(function(result) {
+	context.github.repos.getContents(repo).then(function(result): void {
 		const readme = Buffer.from(result.data.content, 'base64').toString();
 		for(let line of readme.split('\n'))
 		{
@@ -56,12 +56,12 @@ function checkRepo(context: Context, repo: Repo, latest: string)
 			}
 		}
 		context.log('Repository ' + repo.owner + '/' + repo.repo + ' doesn\'t have a valid readme at path ' + repo.path + '.')
-	}).catch(function(e) {
+	}).catch(function(e): void {
 		context.log('Couldn\'t get the readme of repository ' + repo.owner + '/' + repo.repo + ' at path ' + repo.path +  '. Error message: ' + e);
 	});
 }
 
-function checkRepos(context: Context, latest: string)
+function checkRepos(context: Context, latest: string): void
 {
 	const repos = require('../data/repos.json');
 	for(var repo of repos)
@@ -76,7 +76,7 @@ function schedule(context: Context): Promise<void>
 		host: 'api.wordpress.org',
 		path: '/core/stable-check/1.0/'
 	};
-	https.get(options, function(response) {
+	https.get(options, function(response): void {
 		if(response.statusCode !== 200)
 		{
 			context.log('Failed to fetch latest WordPress version. Request status code: ' + response.statusCode);
@@ -84,11 +84,11 @@ function schedule(context: Context): Promise<void>
 		}
 		response.setEncoding('utf8');
 		let rawData = '';
-		response.on('data', (chunk) => { rawData += chunk; });
-		response.on('end', () => {
+		response.on('data', (chunk): void => { rawData += chunk; });
+		response.on('end', (): void => {
 			try {
 				const list = JSON.parse(rawData);
-				const latest = Object.keys(list).find(key => list[key] === 'latest');
+				const latest = Object.keys(list).find((key): boolean => list[key] === 'latest');
 				if(!latest)
 				{
 					context.log('Failed to fetch latest WordPress version. Couldn\'t find latest version');
@@ -99,13 +99,13 @@ function schedule(context: Context): Promise<void>
 				context.log('Failed to fetch latest WordPress version. Exception: ' + e.message);
 			}
 		});
-	}).on('error', function(e) {
+	}).on('error', function(e): void {
 		context.log('Failed to fetch latest WordPress version. Exception: ' + e.message);
 	});
 	return Promise.resolve();
 }
 
-module.exports = (app: Application) => {
+module.exports = (app: Application): void => {
 	createScheduler(app, {
 		delay: false,
 		interval: 1000 * 60 * 60 * 24 // 1 day
