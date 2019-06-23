@@ -2,12 +2,6 @@ import { Application } from 'probot';
 import * as createScheduler from 'probot-scheduler';
 import * as https from 'https';
 
-const repos = [{
-	owner: 'marekdedic',
-	repo: 'test-wpvc',
-	path: 'plugin/readme.txt'
-}];
-
 function createIssue(context, repo, testedVersion, latestVersion)
 {
 	context.github.issues.create({
@@ -52,7 +46,11 @@ function checkRepo(context, repo, latest)
 
 function checkRepos(context, latest)
 {
-	checkRepo(context, repos[0], latest);
+	const repos = require('../data/repos.json');
+	for(var repo of repos)
+	{
+		checkRepo(context, repo, latest);
+	}
 }
 
 function schedule(context)
