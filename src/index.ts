@@ -1,10 +1,10 @@
-import { Application, Context } from 'probot';
+import { Application } from 'probot';
 import * as createScheduler from 'probot-scheduler';
 import * as https from 'https';
 
-import * as repos from '../data/repos.json';
+const repos = require('../data/repos.json');
 
-function createIssue(context: Context, repo: Repo, testedVersion: string, latestVersion: string): void
+function createIssue(context, repo: Repo, testedVersion: string, latestVersion: string): void
 {
 	context.github.issues.create({
 		owner: repo.owner,
@@ -14,7 +14,7 @@ function createIssue(context: Context, repo: Repo, testedVersion: string, latest
 	});
 }
 
-function outdated(context: Context, repo: Repo, testedVersion: string, latestVersion: string): void
+function outdated(context, repo: Repo, testedVersion: string, latestVersion: string): void
 {
 	context.github.issues.listForRepo({
 		owner: repo.owner,
@@ -30,7 +30,7 @@ function outdated(context: Context, repo: Repo, testedVersion: string, latestVer
 	});
 }
 
-function checkRepo(context: Context, repo: Repo, latest: string): void
+function checkRepo(context, repo: Repo, latest: string): void
 {
 	context.github.repos.getContents(repo).then(function(result): void {
 		const readme = Buffer.from(result.data.content, 'base64').toString();
@@ -63,7 +63,7 @@ function checkRepo(context: Context, repo: Repo, latest: string): void
 	});
 }
 
-function checkRepos(context: Context, latest: string): void
+function checkRepos(context, latest: string): void
 {
 	for(var repo of repos)
 	{
@@ -71,7 +71,7 @@ function checkRepos(context: Context, latest: string): void
 	}
 }
 
-function schedule(context: Context): Promise<void>
+function schedule(context): Promise<void>
 {
 	const options = {
 		host: 'api.wordpress.org',
