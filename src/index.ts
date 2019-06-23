@@ -37,7 +37,7 @@ function checkRepo(context, repo, latest)
 			if(line.startsWith('Tested up to:'))
 			{
 				const version = line.match(/\S+/g).pop()
-				if(latest.startsWith(version)) // TODO: invert
+				if(!latest.startsWith(version))
 				{
 					outdated(context, repo, version, latest);
 					return;
