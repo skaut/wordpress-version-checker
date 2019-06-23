@@ -23,7 +23,9 @@ function outdated(context, repo, testedVersion, latestVersion)
 		{
 			createIssue(context, repo, testedVersion, latestVersion);
 		}
-	}); // TODO: Error handling
+	}).catch(function(e) {
+		context.log('Couldn\'t list repository issues for repository ' + repo.owner + '/' + repo.repo + '. Error message: ' + e);
+	});
 }
 
 function checkRepo(context, repo, latest)
@@ -38,10 +40,14 @@ function checkRepo(context, repo, latest)
 				if(latest.startsWith(version)) // TODO: invert
 				{
 					outdated(context, repo, version, latest);
+					return;
 				}
 			}
 		}
-	}); // TODO: Error handling
+		context.log('Repository ' + repo.owner + '/' + repo.repo + ' doesn\'t have a valid readme at path ' + repo.path + '.')
+	}).catch(function(e) {
+		context.log('Couldn\'t get the readme of repository ' + repo.owner + '/' + repo.repo + ' at path ' + repo.path +  '. Error message: ' + e);
+	});
 }
 
 function checkRepos(context, latest)
