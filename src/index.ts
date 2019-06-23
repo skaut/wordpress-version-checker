@@ -60,14 +60,25 @@ function schedule(context)
 		path: '/core/stable-check/1.0/'
 	};
 	https.get(options, function(response) {
-		response.setEncoding('utf8'); // TODO: Error handling
+		if(response.statusCode !== 200)
+		{
+			context.log('Failed to fetch latest WordPress version. Request status code: ' + response.statusCode);
+			return;
+		}
+		response.setEncoding('utf8');
 		let rawData = '';
 		response.on('data', (chunk) => { rawData += chunk; });
 		response.on('end', () => {
-			const list = JSON.parse(rawData);
-			const latest = Object.keys(list).find(key => list[key] === 'latest');
-			checkRepos(context, latest);
+			try {
+				const list = JSON.parse(rawData);
+				const latest = Object.keys(list).find(key => list[key] === 'latest');
+				checkRepos(context, latest);
+			} catch(e) {
+				context.log('Failed to fetch latest WordPress version. Exception: ' + e.message);
+			}
 		});
+	}).on('error', function(e) {
+		context.log('Failed to fetch latest WordPress version. Exception: ' + e.message);
 	});
 }
 
