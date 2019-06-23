@@ -73,7 +73,8 @@ function schedule(context)
 
 module.exports = app => {
 	createScheduler(app, {
-		delay: false // TODO: interval
+		delay: false,
+		interval: 1000 * 60 * 60 * 24 // 1 day
 	});
 	app.on('schedule.repository', schedule);
 };
