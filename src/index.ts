@@ -1,8 +1,7 @@
 import { Application } from 'probot';
 import * as createScheduler from 'probot-scheduler';
 import * as https from 'https';
-
-const repos = require('../data/repos.json');
+import * as fs from 'fs';
 
 function createIssue(context, repo: Repo, testedVersion: string, latestVersion: string): void
 {
@@ -66,9 +65,15 @@ function checkRepo(context, repo: Repo, latest: string): void
 
 function checkRepos(context, latest: string): void
 {
-	for(var repo of repos)
-	{
-		checkRepo(context, repo, latest);
+	try {
+		const rawData = fs.readFileSync('data/repos.json');
+		const repos = JSON.parse(Buffer.from(rawData).toString());
+		for(var repo of repos)
+		{
+			checkRepo(context, repo, latest);
+		}
+	} catch(e) {
+		context.log('Failed to read repos.json. Exception: ' + e.message);
 	}
 }
 
