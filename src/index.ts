@@ -2,6 +2,8 @@ import { Application, Context } from 'probot';
 import * as createScheduler from 'probot-scheduler';
 import * as https from 'https';
 
+import * as repos from '../data/repos.json';
+
 function createIssue(context: Context, repo: Repo, testedVersion: string, latestVersion: string): void
 {
 	context.github.issues.create({
@@ -63,7 +65,6 @@ function checkRepo(context: Context, repo: Repo, latest: string): void
 
 function checkRepos(context: Context, latest: string): void
 {
-	const repos = require('../data/repos.json');
 	for(var repo of repos)
 	{
 		checkRepo(context, repo, latest);
