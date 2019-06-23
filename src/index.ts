@@ -1,8 +1,8 @@
 import { Application } from 'probot';
-import createScheduler from 'probot-scheduler';
+import * as createScheduler from 'probot-scheduler';
 import * as http from 'http';
 
-export default function (app) {
+module.exports = app => {
 	createScheduler(app);
 	app.on("schedule.repository", function(context) {
 		const options = {
