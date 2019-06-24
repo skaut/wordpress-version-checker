@@ -46,6 +46,10 @@ jobs:
       - run:
           name: "Check output exists"
           command: "[ -s lib/index.js ]"
+      - persist_to_workspace:
+          root: lib
+          paths:
+            - *
 
   lint:
     <<: *node_env
@@ -65,6 +69,8 @@ jobs:
       - restore_cache: *restore_npm
       - run: *install_npm
       - save_cache: *save_npm
+      - attach_workspace:
+          at: lib
       - run:
           name: "Deploy"
           command: "npx sync-glitch-cli"
