@@ -49,7 +49,7 @@ jobs:
       - persist_to_workspace:
           root: lib
           paths:
-            - *
+            - "*"
 
   lint:
     <<: *node_env
