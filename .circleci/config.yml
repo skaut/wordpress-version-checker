@@ -4,6 +4,14 @@ workflows:
     jobs:
       - build
       - lint
+      - deploy:
+          filters:
+            branches:
+              only:
+                - CD
+          requires:
+            - build
+            - lint
 
 job-references:
   node_env: &node_env
@@ -49,3 +57,14 @@ jobs:
       - run:
           name: "Lint"
           command: npm run lint
+
+  deploy:
+    <<: *node_env
+    steps:
+      - checkout
+      - restore_cache: *restore_npm
+      - run: *install_npm
+      - save_cache: *save_npm
+      - run:
+          name: "Deploy"
+          command: "npx sync-glitch-cli"
