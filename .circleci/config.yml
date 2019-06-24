@@ -73,4 +73,6 @@ jobs:
           at: lib
       - run:
           name: "Deploy"
-          command: "npx sync-glitch-cli"
+          command: |
+            echo $GH_REPO
+            npx sync-glitch-cli
