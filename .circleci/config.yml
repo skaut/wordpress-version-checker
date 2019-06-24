@@ -8,7 +8,7 @@ workflows:
           filters:
             branches:
               only:
-                - CD
+                - master
           requires:
             - build
             - lint
