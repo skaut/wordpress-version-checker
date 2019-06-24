@@ -34,7 +34,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "npm start",
-    "start": "probot run ./lib/index.js",
+    "start": "npm run build && probot run ./lib/index.js",
     "lint": "eslint \"src/**/*\""
   }
 }
