@@ -12,7 +12,7 @@ This app is deployed for this organization only at [Glitch](https://glitch.com/e
 
 ## Configuration
 
-By default, the app checks for readme in `readme.txt` and `plugin/readme.txt`. If the reademe of your plugin is not in one of these locations, you can configure the app to look somewhere by creating a file called `.wordpress-version-checker.json` in the root of your repo with the contents
+By default, the app checks for readme in `readme.txt` and `plugin/readme.txt`. If the readme of your plugin is not in one of these locations, you can configure the app to look somewhere else by creating a file called `.wordpress-version-checker.json` in the root of your repo with the contents:
 
 ```json
 {
