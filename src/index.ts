@@ -24,11 +24,60 @@ function outdated(context, testedVersion: string, latestVersion: string): void
 	});
 }
 
+function getReadme(context): Promise<string>
+{
+	function tryLocations(context, resolve, reject, locations): void
+	{
+		const repo = context.repo({path: 'readme.txt'});
+		context.github.repos.getContents(repo).then(function(result): void {
+			resolve(Buffer.from(result.data.content, 'base64').toString());
+		}).catch(function(e): void {
+			if(e.status === 404) {
+				tryLocations(context, resolve, reject, locations.slice(1));
+			} else {
+				context.log('Couldn\'t get the readme of repository ' + repo.owner + '/' + repo.repo + ' at path ' + repo.path +  '. Error message: ' + e);
+				reject();
+			}
+		});
+	}
+
+	return new Promise(function(resolve, reject): void {
+		const repo = context.repo({path: '.wordpress-version-checker.json'});
+		context.github.repos.getContents(repo).then(function(result): void {
+			try {
+				const config = JSON.parse(Buffer.from(result.data.content, 'base64').toString());
+				if(!config.readme)
+				{
+					context.log('Invalid config file - doesn\'t contain the readme field.');
+					reject();
+				}
+				const repo = context.repo({path: config.readme});
+				context.github.repos.getContents(repo).then(function(result): void {
+					resolve(Buffer.from(result.data.content, 'base64').toString());
+				}).catch(function(e): void {
+					context.log('Couldn\'t get the readme of repository ' + repo.owner + '/' + repo.repo + ' at path ' + repo.path +  '. Error message: ' + e);
+					reject();
+				});
+			} catch(e) {
+				context.log('Failed to parse config file. Exception: ' + e.message);
+				reject();
+			}
+		}).catch(function(e): void {
+			if(e.status === 404) {
+				// No config file, try usual locations
+				tryLocations(context, resolve, reject, ['readme.txt', 'plugin/readme.txt']);
+			} else {
+				context.log('Couldn\'t get the config file of repository ' + repo.owner + '/' + repo.repo + '. Error message: ' + e);
+				reject();
+			}
+		});
+	});
+}
+
 function checkRepo(context, latest: string): void
 {
-	const repo = context.repo({path: 'plugin/readme.txt'});
-	context.github.repos.getContents(repo).then(function(result): void {
-		const readme = Buffer.from(result.data.content, 'base64').toString();
+	getReadme(context).then(function(readme): void {
+		const repo = context.repo();
 		for(let line of readme.split('\n'))
 		{
 			if(line.startsWith('Tested up to:'))
@@ -53,9 +102,7 @@ function checkRepo(context, latest: string): void
 				return;
 			}
 		}
-		context.log('Repository ' + repo.owner + '/' + repo.repo + ' doesn\'t have a valid readme at path ' + repo.path + '.')
-	}).catch(function(e): void {
-		context.log('Couldn\'t get the readme of repository ' + repo.owner + '/' + repo.repo + ' at path ' + repo.path +  '. Error message: ' + e);
+		context.log('Repository ' + repo.owner + '/' + repo.repo + ' doesn\'t have a valid readme at path ' + repo.path + '.');
 	});
 }
 
