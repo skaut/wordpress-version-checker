@@ -20,7 +20,7 @@
     "url": "git+https://github.com/skaut/wordpress-version-checker.git"
   },
   "dependencies": {
-    "@types/node": "^12.6.3",
+    "@types/node": "^12.6.6",
     "probot": "^9.2.19",
     "probot-scheduler": "^2.0.0-beta.1",
     "typescript": "^3.5.3"
