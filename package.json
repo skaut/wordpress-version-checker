@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@types/node": "^12.7.5",
-    "probot": "^9.3.4",
+    "probot": "^9.4.0",
     "probot-scheduler": "^2.0.0-beta.1",
     "typescript": "^3.6.3"
   },
