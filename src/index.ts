@@ -35,7 +35,7 @@ function getReadme(context: Context): Promise<string>
 			if(e.status === 404) {
 				tryLocations(context, resolve, reject, locations.slice(1));
 			} else {
-				context.log('Couldn\'t get the readme of repository ' + repo.owner + '/' + repo.repo + ' at path ' + repo.path +  '. Error message: ' + e);
+				context.log('Couldn\'t get the readme of repository ' + repo.owner + '/' + repo.repo + ' at path ' + repo.path +  '. Reason: No config file was found in repo and all usual locations were exhausted. Error message: ' + e);
 				reject();
 			}
 		});
@@ -55,7 +55,7 @@ function getReadme(context: Context): Promise<string>
 				context.github.repos.getContents(repo).then(function(result): void {
 					resolve(Buffer.from(result.data.content, 'base64').toString());
 				}).catch(function(e): void {
-					context.log('Couldn\'t get the readme of repository ' + repo.owner + '/' + repo.repo + ' at path ' + repo.path +  '. Error message: ' + e);
+					context.log('Couldn\'t get the readme of repository ' + repo.owner + '/' + repo.repo + ' at path ' + repo.path +  '. Reason: The readme file location provided in the config file doesn\'t exist. Error message: ' + e);
 					reject();
 				});
 			} catch(e) {
@@ -67,7 +67,7 @@ function getReadme(context: Context): Promise<string>
 				// No config file, try usual locations
 				tryLocations(context, resolve, reject, ['readme.txt', 'plugin/readme.txt']);
 			} else {
-				context.log('Couldn\'t get the config file of repository ' + repo.owner + '/' + repo.repo + '. Error message: ' + e);
+				context.log('Couldn\'t get the config file of repository ' + repo.owner + '/' + repo.repo + '. Reason: Unknown error when fetching config file. Error message: ' + e);
 				reject();
 			}
 		});
@@ -76,8 +76,8 @@ function getReadme(context: Context): Promise<string>
 
 function checkRepo(context: Context, latest: string): void
 {
+	const repo = context.repo() as {owner: string; repo: string; path: string}; // TODO: Interface
 	getReadme(context).then(function(readme): void {
-		const repo = context.repo() as {owner: string; repo: string; path: string}; // TODO: Interface
 		for(let line of readme.split('\n'))
 		{
 			if(line.startsWith('Tested up to:'))
@@ -103,6 +103,8 @@ function checkRepo(context: Context, latest: string): void
 			}
 		}
 		context.log('Repository ' + repo.owner + '/' + repo.repo + ' doesn\'t have a valid readme at path ' + repo.path + '.');
+	}).catch(function(): void {
+		context.log('Couldn\'t check repository ' + repo.owner + '/' + repo.repo + '.');
 	});
 }
 
