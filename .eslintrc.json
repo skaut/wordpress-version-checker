@@ -1,4 +1,7 @@
 {
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
   "env": {
     "browser": false,
     "node": true
@@ -7,12 +10,17 @@
     "@typescript-eslint"
   ],
   "extends": [
-    "plugin:@typescript-eslint/recommended"
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
   "rules": {
-    "@typescript-eslint/array-type": ["error", "generic"],
+    "@typescript-eslint/array-type": ["error", {"default": "generic"}],
     "@typescript-eslint/indent": ["error", "tab"],
     "@typescript-eslint/member-ordering": "error",
+    "@typescript-eslint/no-extraneous-class": "error",
+    "@typescript-eslint/no-namespace": "error",
     "@typescript-eslint/no-non-null-assertion": "error"
   }
 }
