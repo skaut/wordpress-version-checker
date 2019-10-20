@@ -78,7 +78,7 @@ function checkRepo(context: Context, latest: string): void
 {
 	const repo = context.repo() as {owner: string; repo: string; path: string}; // TODO: Interface
 	getReadme(context).then(function(readme): void {
-		for(let line of readme.split('\n'))
+		for(const line of readme.split('\n'))
 		{
 			if(line.startsWith('Tested up to:'))
 			{
