@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.5.0",
-    "@typescript-eslint/parser": "^2.0.0",
+    "@typescript-eslint/parser": "^2.5.0",
     "eslint": "^6.0.0",
     "smee-client": "^1.1.0",
     "sync-glitch-cli": "^2.0.1"
