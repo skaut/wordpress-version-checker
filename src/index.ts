@@ -1,5 +1,5 @@
 import { Application, Context } from 'probot';
-import * as createScheduler from 'probot-scheduler';
+import createScheduler = require('probot-scheduler');
 import * as https from 'https';
 
 function createIssue(context: Context, testedVersion: string, latestVersion: string): void
