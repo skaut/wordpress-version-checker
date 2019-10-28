@@ -1,8 +1,8 @@
-import { Application } from 'probot';
-import * as createScheduler from 'probot-scheduler';
+import { Application, Context } from 'probot';
+import createScheduler = require('probot-scheduler');
 import * as https from 'https';
 
-function createIssue(context, testedVersion: string, latestVersion: string): void
+function createIssue(context: Context, testedVersion: string, latestVersion: string): void
 {
 	const repo = context.repo({
 		title: "The plugin hasn't been tested with the latest version of WordPress",
@@ -11,7 +11,7 @@ function createIssue(context, testedVersion: string, latestVersion: string): voi
 	context.github.issues.create(repo);
 }
 
-function outdated(context, testedVersion: string, latestVersion: string): void
+function outdated(context: Context, testedVersion: string, latestVersion: string): void
 {
 	const repo = context.repo({creator: 'wordpress-version-checker[bot]'});
 	context.github.issues.listForRepo(repo).then(function(result): void {
@@ -24,13 +24,19 @@ function outdated(context, testedVersion: string, latestVersion: string): void
 	});
 }
 
-function getReadme(context): Promise<string>
+function getReadme(context: Context): Promise<string>
 {
-	function tryLocations(context, resolve, reject, locations): void
+	function tryLocations(context: Context, resolve: (value?: string | PromiseLike<string>) => void, reject: () => void, locations: Array<string>): void
 	{
 		const repo = context.repo({path: 'readme.txt'});
 		context.github.repos.getContents(repo).then(function(result): void {
-			resolve(Buffer.from(result.data.content, 'base64').toString());
+			const encodedContent = (result.data as {content?: string}).content;
+			if(!encodedContent) {
+				context.log('Couldn\'t get the readme of repository ' + repo.owner + '/' + repo.repo + ' at path ' + repo.path +  '. Reason: GitHub failed to fetch the config file.');
+				reject();
+				return;
+			}
+			resolve(Buffer.from(encodedContent, 'base64').toString());
 		}).catch(function(e): void {
 			if(e.status === 404) {
 				tryLocations(context, resolve, reject, locations.slice(1));
@@ -45,7 +51,13 @@ function getReadme(context): Promise<string>
 		const repo = context.repo({path: '.wordpress-version-checker.json'});
 		context.github.repos.getContents(repo).then(function(result): void {
 			try {
-				const config = JSON.parse(Buffer.from(result.data.content, 'base64').toString());
+				const encodedContent = (result.data as {content?: string}).content;
+				if(!encodedContent) {
+					context.log('Couldn\'t get the config file. Reason: GitHub failed to fetch the config file.');
+					reject();
+					return;
+				}
+				const config = JSON.parse(Buffer.from(encodedContent, 'base64').toString());
 				if(!config.readme)
 				{
 					context.log('Invalid config file - doesn\'t contain the readme field.');
@@ -53,7 +65,13 @@ function getReadme(context): Promise<string>
 				}
 				const repo = context.repo({path: config.readme});
 				context.github.repos.getContents(repo).then(function(result): void {
-					resolve(Buffer.from(result.data.content, 'base64').toString());
+					const encodedContent = (result.data as {content?: string}).content;
+					if(!encodedContent) {
+						context.log('Couldn\'t get the config file. Reason: GitHub failed to fetch the config file.');
+						reject();
+						return;
+					}
+					resolve(Buffer.from(encodedContent, 'base64').toString());
 				}).catch(function(e): void {
 					context.log('Couldn\'t get the readme of repository ' + repo.owner + '/' + repo.repo + ' at path ' + repo.path +  '. Reason: The readme file location provided in the config file doesn\'t exist. Error message: ' + e);
 					reject();
@@ -74,9 +92,9 @@ function getReadme(context): Promise<string>
 	});
 }
 
-function checkRepo(context, latest: string): void
+function checkRepo(context: Context, latest: string): void
 {
-	const repo = context.repo();
+	const repo = context.repo() as {owner: string; repo: string; path: string}; // TODO: Interface
 	getReadme(context).then(function(readme): void {
 		for(const line of readme.split('\n'))
 		{
@@ -108,7 +126,7 @@ function checkRepo(context, latest: string): void
 	});
 }
 
-function schedule(context): Promise<void>
+function schedule(context: Context): Promise<void>
 {
 	const options = {
 		host: 'api.wordpress.org',
