@@ -30,7 +30,13 @@ function getReadme(context: Context): Promise<string>
 	{
 		const repo = context.repo({path: 'readme.txt'});
 		context.github.repos.getContents(repo).then(function(result): void {
-			resolve(Buffer.from((result.data as {content?: string}).content!, 'base64').toString());
+			const encodedContent = (result.data as {content?: string}).content;
+			if(!encodedContent) {
+				context.log('Couldn\'t get the readme of repository ' + repo.owner + '/' + repo.repo + ' at path ' + repo.path +  '. Reason: GitHub failed to fetch the config file.');
+				reject();
+				return;
+			}
+			resolve(Buffer.from(encodedContent, 'base64').toString());
 		}).catch(function(e): void {
 			if(e.status === 404) {
 				tryLocations(context, resolve, reject, locations.slice(1));
@@ -45,7 +51,13 @@ function getReadme(context: Context): Promise<string>
 		const repo = context.repo({path: '.wordpress-version-checker.json'});
 		context.github.repos.getContents(repo).then(function(result): void {
 			try {
-				const config = JSON.parse(Buffer.from((result.data as {content?: string} ).content!, 'base64').toString());
+				const encodedContent = (result.data as {content?: string}).content;
+				if(!encodedContent) {
+					context.log('Couldn\'t get the config file. Reason: GitHub failed to fetch the config file.');
+					reject();
+					return;
+				}
+				const config = JSON.parse(Buffer.from(encodedContent, 'base64').toString());
 				if(!config.readme)
 				{
 					context.log('Invalid config file - doesn\'t contain the readme field.');
@@ -53,7 +65,13 @@ function getReadme(context: Context): Promise<string>
 				}
 				const repo = context.repo({path: config.readme});
 				context.github.repos.getContents(repo).then(function(result): void {
-					resolve(Buffer.from((result.data as {content?: string}).content!, 'base64').toString());
+					const encodedContent = (result.data as {content?: string}).content;
+					if(!encodedContent) {
+						context.log('Couldn\'t get the config file. Reason: GitHub failed to fetch the config file.');
+						reject();
+						return;
+					}
+					resolve(Buffer.from(encodedContent, 'base64').toString());
 				}).catch(function(e): void {
 					context.log('Couldn\'t get the readme of repository ' + repo.owner + '/' + repo.repo + ' at path ' + repo.path +  '. Reason: The readme file location provided in the config file doesn\'t exist. Error message: ' + e);
 					reject();
