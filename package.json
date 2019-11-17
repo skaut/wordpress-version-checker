@@ -30,8 +30,6 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "npm start",
-    "start": "npm run build && probot run ./lib/index.js",
     "lint": "eslint \"src/**/*\""
   }
 }
