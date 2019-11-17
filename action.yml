@@ -4,3 +4,5 @@ author: "Junák – český skaut"
 runs:
   using: "node12"
   main: "lib/index.js"
+  with:
+    repo-token: ${{ secrets.GITHUB_TOKEN }}
