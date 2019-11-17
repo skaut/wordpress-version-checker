@@ -1,6 +1,10 @@
 name: "WordPress version checker"
 description: "A GitHub app to automatically create issues when a plugin \"tested up to\" version doesn't match the latest WordPress version."
 author: "Junák – český skaut"
+inputs:
+  repo-token:
+    description: 'GitHub token'
+    required: true
 runs:
   using: "node12"
   main: "lib/index.js"
