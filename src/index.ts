@@ -126,7 +126,7 @@ function checkRepo(latest: string): void
 	});
 }
 
-async function run()
+function run(): void
 {
 	const options = {
 		host: 'api.wordpress.org',
