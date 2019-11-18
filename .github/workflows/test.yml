@@ -31,6 +31,7 @@ jobs:
 
   check-build-sync:
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - uses: actions/checkout@v1
       - run: npm ci
