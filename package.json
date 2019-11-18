@@ -20,22 +20,19 @@
     "url": "git+https://github.com/skaut/wordpress-version-checker.git"
   },
   "dependencies": {
-    "@types/node": "^12.12.8",
-    "probot": "^9.6.5",
-    "probot-scheduler": "^2.0.0-beta.1",
-    "typescript": "^3.7.2"
+    "@actions/core": "^1.2.0",
+    "@actions/github": "^1.1.0"
   },
   "devDependencies": {
+    "@types/node": "^12.12.8",
     "@typescript-eslint/eslint-plugin": "^2.7.0",
     "@typescript-eslint/parser": "^2.7.0",
     "eslint": "^6.6.0",
-    "smee-client": "^1.1.0",
-    "sync-glitch-cli": "^2.0.1"
+    "typescript": "^3.7.2"
   },
+  "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "npm start",
-    "start": "npm run build && probot run ./lib/index.js",
     "lint": "eslint \"src/**/*\""
   }
 }

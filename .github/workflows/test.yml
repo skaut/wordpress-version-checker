@@ -1,0 +1,21 @@
+name: "Test wordpress-version-checker"
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v1
+        with:
+          name: lib
+          path: lib
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: npm ci
+      - run: npm run lint

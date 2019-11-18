@@ -41,7 +41,7 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
+# node_modules/
 jspm_packages/
 
 # TypeScript v1 declaration files
@@ -107,5 +107,3 @@ tags
 [._]*.un~
 
 # End of https://www.gitignore.io/api/vim,node
-
-lib/
