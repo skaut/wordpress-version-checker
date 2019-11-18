@@ -8,6 +8,10 @@ jobs:
       - uses: actions/checkout@v1
       - run: npm ci
       - run: npm run build
+      - uses: actions/upload-artifact@v1
+        with:
+          name: lib
+          path: lib
 
   lint:
     runs-on: ubuntu-latest
@@ -15,3 +19,21 @@ jobs:
       - uses: actions/checkout@v1
       - run: npm ci
       - run: npm run lint
+
+  check-dependency-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: rm -r node_modules
+      - run: npm ci --only=prod
+      - run: [ -z "$(git status --porcelain)" ] || (c=$?; git status; (exit $c))
+
+  check-build-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: npm ci
+      - uses: actions/download-artifact@v1
+        with:
+          name: lib
+      - run: [ -z "$(git status --porcelain)" ] || (c=$?; git status; (exit $c))
