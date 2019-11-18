@@ -38,4 +38,4 @@ jobs:
         with:
           name: lib
       - run: |
-          [ -z "$(git status --porcelain)" ] || (c=$?; git status; (exit $c))
+          [ -z "$(git status -uno --porcelain)" ] || (c=$?; git status -uno; (exit $c))
