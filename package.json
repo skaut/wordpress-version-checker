@@ -30,6 +30,7 @@
     "eslint": "^6.6.0",
     "typescript": "^3.7.2"
   },
+  "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
     "lint": "eslint \"src/**/*\""
