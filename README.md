@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: WordPress version checker
-        uses: marekdedic/wordpress-version-checker@0.8.0
+        uses: skaut/wordpress-version-checker@v1.0.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
