@@ -24,7 +24,7 @@
     "@actions/github": "^2.0.0"
   },
   "devDependencies": {
-    "@types/node": "^12.12.16",
+    "@types/node": "^12.12.17",
     "@typescript-eslint/eslint-plugin": "^2.11.0",
     "@typescript-eslint/parser": "^2.11.0",
     "eslint": "^6.7.2",
