@@ -20,7 +20,7 @@
     "url": "git+https://github.com/skaut/wordpress-version-checker.git"
   },
   "dependencies": {
-    "@actions/core": "^1.2.1",
+    "@actions/core": "^1.2.2",
     "@actions/github": "^2.0.1"
   },
   "devDependencies": {
