@@ -2,7 +2,7 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as https from 'https';
 
-const octokit = new github.GitHub(core.getInput('repo-token'));
+const octokit = github.getOctokit(core.getInput('repo-token'));
 const repo = github.context.repo;
 const repoName = repo.owner + '/' + repo.repo;
 
