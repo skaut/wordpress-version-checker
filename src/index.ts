@@ -35,7 +35,7 @@ function getReadme(): Promise<string>
 {
 	function tryLocations(resolve: (value?: string | PromiseLike<string>) => void, reject: () => void, locations: Array<string>): void
 	{
-		octokit.repos.getContents({...repo, path: locations[0]}).then(function(result): void {
+		octokit.repos.getContent({...repo, path: locations[0]}).then(function(result): void {
 			const encodedContent = (result.data as {content?: string}).content;
 			if(!encodedContent) {
 				console.log('Couldn\'t get the readme of repository ' + repoName + ' at path ' + locations[0] +  '. Reason: GitHub failed to fetch the config file.');
@@ -54,7 +54,7 @@ function getReadme(): Promise<string>
 	}
 
 	return new Promise(function(resolve, reject): void {
-		octokit.repos.getContents({...repo, path: '.wordpress-version-checker.json'}).then(function(result): void {
+		octokit.repos.getContent({...repo, path: '.wordpress-version-checker.json'}).then(function(result): void {
 			try {
 				const encodedContent = (result.data as {content?: string}).content;
 				if(!encodedContent) {
@@ -68,7 +68,7 @@ function getReadme(): Promise<string>
 					console.log('Invalid config file - doesn\'t contain the readme field.');
 					reject();
 				}
-				octokit.repos.getContents({...repo, path: config.readme}).then(function(result): void {
+				octokit.repos.getContent({...repo, path: config.readme}).then(function(result): void {
 					const encodedContent = (result.data as {content?: string}).content;
 					if(!encodedContent) {
 						console.log('Couldn\'t get the config file. Reason: GitHub failed to fetch the config file.');
