@@ -27,7 +27,7 @@ function outdated(testedVersion: string, latestVersion: string): void
 			createIssue(testedVersion, latestVersion);
 		}
 	}).catch(function(e): void {
-		console.log('Couldn\'t list repository issues for repository ' + repoName + '. Error message: ' + e);
+		console.log('Couldn\'t list repository issues for repository ' + repoName + '. Error message: ' + e.toString());
 	});
 }
 
