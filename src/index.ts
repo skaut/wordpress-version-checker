@@ -6,6 +6,22 @@ const octokit = github.getOctokit(core.getInput('repo-token'));
 const repo = github.context.repo;
 const repoName = repo.owner + '/' + repo.repo;
 
+interface Config {
+	readme: string
+}
+
+function isConfig(config: Record<string, unknown>): config is Record<string, unknown> & Config {
+	if(!config.readme)
+	{
+		return false;
+	}
+	return true;
+}
+
+function hasStatus(obj: Record<string, unknown>): obj is Record<"status", unknown> {
+	return Object.prototype.hasOwnProperty.call(obj, "status")
+}
+
 function createIssue(testedVersion: string, latestVersion: string): void
 {
 	const args = {
@@ -13,7 +29,9 @@ function createIssue(testedVersion: string, latestVersion: string): void
 		title: "[wpvc] The plugin hasn't been tested with the latest version of WordPress",
 		body: 'There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n\n**Tested up to:** ' + testedVersion + '\n**Latest version:** ' + latestVersion + '\n\nYou may then close this issue as it won\'t be done automatically.'
 	};
-	octokit.issues.create(args);
+	octokit.issues.create(args).catch(function(e): void {
+		console.log('Couldn\'t create an issue for repository ' + repoName + '. Error message: ' + String(e));
+	});
 }
 
 function outdated(testedVersion: string, latestVersion: string): void
@@ -27,7 +45,7 @@ function outdated(testedVersion: string, latestVersion: string): void
 			createIssue(testedVersion, latestVersion);
 		}
 	}).catch(function(e): void {
-		console.log('Couldn\'t list repository issues for repository ' + repoName + '. Error message: ' + e);
+		console.log('Couldn\'t list repository issues for repository ' + repoName + '. Error message: ' + String(e));
 	});
 }
 
@@ -44,10 +62,10 @@ function getReadme(): Promise<string>
 			}
 			resolve(Buffer.from(encodedContent, 'base64').toString());
 		}).catch(function(e): void {
-			if(e.status === 404) {
+			if(hasStatus(e) && e.status === 404) {
 				tryLocations(resolve, reject, locations.slice(1));
 			} else {
-				console.log('Couldn\'t get the readme of repository ' + repoName + ' at path ' + locations[0] +  '. Reason: No config file was found in repo and all usual locations were exhausted. Error message: ' + e);
+				console.log('Couldn\'t get the readme of repository ' + repoName + ' at path ' + locations[0] +  '. Reason: No config file was found in repo and all usual locations were exhausted. Error message: ' + String(e));
 				reject();
 			}
 		});
@@ -55,41 +73,42 @@ function getReadme(): Promise<string>
 
 	return new Promise(function(resolve, reject): void {
 		octokit.repos.getContent({...repo, path: '.wordpress-version-checker.json'}).then(function(result): void {
+			const encodedContent = (result.data as {content?: string}).content;
+			if(!encodedContent) {
+				console.log('Couldn\'t get the config file. Reason: GitHub failed to fetch the config file.');
+				reject();
+				return;
+			}
+			let config: Record<string, unknown> = {};
 			try {
+				config = JSON.parse(Buffer.from(encodedContent, 'base64').toString()) as Record<string, unknown>;
+			} catch(e) {
+				console.log('Failed to parse config file. Exception: ' + (e as SyntaxError).message);
+				reject();
+			}
+			if(!isConfig(config))
+			{
+				console.log('Invalid config file - doesn\'t contain the readme field.');
+				reject();
+			}
+			octokit.repos.getContent({...repo, path: config.readme as string}).then(function(result): void {
 				const encodedContent = (result.data as {content?: string}).content;
 				if(!encodedContent) {
 					console.log('Couldn\'t get the config file. Reason: GitHub failed to fetch the config file.');
 					reject();
 					return;
 				}
-				const config = JSON.parse(Buffer.from(encodedContent, 'base64').toString());
-				if(!config.readme)
-				{
-					console.log('Invalid config file - doesn\'t contain the readme field.');
-					reject();
-				}
-				octokit.repos.getContent({...repo, path: config.readme}).then(function(result): void {
-					const encodedContent = (result.data as {content?: string}).content;
-					if(!encodedContent) {
-						console.log('Couldn\'t get the config file. Reason: GitHub failed to fetch the config file.');
-						reject();
-						return;
-					}
-					resolve(Buffer.from(encodedContent, 'base64').toString());
-				}).catch(function(e): void {
-					console.log('Couldn\'t get the readme of repository ' + repoName + ' at path ' + config.readme +  '. Reason: The readme file location provided in the config file doesn\'t exist. Error message: ' + e);
-					reject();
-				});
-			} catch(e) {
-				console.log('Failed to parse config file. Exception: ' + e.message);
+				resolve(Buffer.from(encodedContent, 'base64').toString());
+			}).catch(function(e): void {
+				console.log('Couldn\'t get the readme of repository ' + repoName + ' at path ' + (config.readme as string) +  '. Reason: The readme file location provided in the config file doesn\'t exist. Error message: ' + String(e));
 				reject();
-			}
+			});
 		}).catch(function(e): void {
-			if(e.status === 404) {
+			if(hasStatus(e) && e.status === 404) {
 				// No config file, try usual locations
 				tryLocations(resolve, reject, ['readme.txt', 'plugin/readme.txt']);
 			} else {
-				console.log('Couldn\'t get the config file of repository ' + repoName + '. Reason: Unknown error when fetching config file. Error message: ' + e);
+				console.log('Couldn\'t get the config file of repository ' + repoName + '. Reason: Unknown error when fetching config file. Error message: ' + String(e));
 				reject();
 			}
 		});
@@ -138,30 +157,31 @@ function run(): void
 	https.get(options, function(response): void {
 		if(response.statusCode !== 200)
 		{
-			console.log('Failed to fetch latest WordPress version. Request status code: ' + response.statusCode);
+			console.log('Failed to fetch latest WordPress version. Request status code: ' + String(response.statusCode));
 			return;
 		}
 		response.setEncoding('utf8');
 		let rawData = '';
 		response.on('data', (chunk): void => { rawData += chunk; });
 		response.on('end', (): void => {
+			let list: Record<string, unknown> = {};
 			try {
-				const list = JSON.parse(rawData);
-				const latest = Object.keys(list).find((key): boolean => list[key] === 'latest');
-				if(!latest)
-				{
-					console.log('Failed to fetch latest WordPress version. Couldn\'t find latest version');
-					return;
-				}
-				checkRepo(latest);
+				list = JSON.parse(rawData) as Record<string, unknown>;
 			} catch(e) {
-				console.log('Failed to fetch latest WordPress version. Exception: ' + e.message);
+				console.log('Failed to fetch latest WordPress version. Exception: ' + (e as SyntaxError).message);
+				return;
 			}
+			const latest = Object.keys(list).find((key): boolean => list[key] === 'latest');
+			if(!latest)
+			{
+				console.log('Failed to fetch latest WordPress version. Couldn\'t find latest version');
+				return;
+			}
+			checkRepo(latest);
 		});
 	}).on('error', function(e): void {
 		console.log('Failed to fetch latest WordPress version. Exception: ' + e.message);
 	});
 }
-
 
 run();
