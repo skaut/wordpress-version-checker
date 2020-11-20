@@ -51,7 +51,7 @@ function outdated(testedVersion: string, latestVersion: string): void
 
 function getReadme(): Promise<string>
 {
-	function tryLocations(resolve: (value?: string | PromiseLike<string>) => void, reject: () => void, locations: Array<string>): void
+	function tryLocations(resolve: (value: string | PromiseLike<string>) => void, reject: () => void, locations: Array<string>): void
 	{
 		octokit.repos.getContent({...repo, path: locations[0]}).then(function(result): void {
 			const encodedContent = (result.data as {content?: string}).content;
