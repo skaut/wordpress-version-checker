@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import compareVersions from 'compare-versions';
 import * as https from 'https';
 
 const octokit = github.getOctokit(core.getInput('repo-token'));
@@ -134,7 +135,7 @@ function checkRepo(latest: string): void
 					console.log('Repository ' + repoName + ' doesn\'t have a valid readme.')
 					return;
 				}
-				if(!latest.startsWith(version))
+				if(compareVersions.compare(version, latest, '<'))
 				{
 					outdated(version, latest);
 					return;
