@@ -52,8 +52,7 @@ function upToDate(): void
 {
 	octokit.issues.listForRepo({...repo, creator: 'github-actions[bot]', labels: 'wpvc'}).then(function(result): void {
 		for (const issue of result.data) {
-			console.log(issue);
-			void octokit.issues.update({...repo, issue_number: issue.id, state: 'closed'});
+			void octokit.issues.update({...repo, issue_number: issue.number, state: 'closed'});
 		}
 	}).catch(function(e): void {
 		console.log('Couldn\'t list repository issues for repository ' + repoName + '. Error message: ' + String(e));
