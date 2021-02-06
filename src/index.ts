@@ -27,8 +27,8 @@ function createIssue(testedVersion: string, latestVersion: string): void
 {
 	const args = {
 		...repo,
-		title: "[wpvc] The plugin hasn't been tested with the latest version of WordPress",
-		body: 'There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n\n**Tested up to:** ' + testedVersion + '\n**Latest version:** ' + latestVersion + '\n\nYou may then close this issue as it won\'t be done automatically.',
+		title: "The plugin hasn't been tested with the latest version of WordPress",
+		body: 'There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n\n**Tested up to:** ' + testedVersion + '\n**Latest version:** ' + latestVersion + '\n\nThis issue will be closed automatically when the versions match.',
 		labels: ['wpvc']
 	};
 	octokit.issues.create(args).catch(function(e): void {
@@ -38,11 +38,8 @@ function createIssue(testedVersion: string, latestVersion: string): void
 
 function outdated(testedVersion: string, latestVersion: string): void
 {
-	octokit.issues.listForRepo({...repo, creator: 'github-actions[bot]'}).then(function(result): void {
-		const wpvcIssues = result.data.filter(function(issue) {
-			return issue.title.startsWith('[wpvc]')
-		});
-		if(wpvcIssues.length === 0)
+	octokit.issues.listForRepo({...repo, creator: 'github-actions[bot]', labels: 'wpvc'}).then(function(result): void {
+		if(result.data.length === 0)
 		{
 			createIssue(testedVersion, latestVersion);
 		}
