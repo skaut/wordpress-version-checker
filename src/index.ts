@@ -36,12 +36,20 @@ function createIssue(testedVersion: string, latestVersion: string): void
 	});
 }
 
+function updateIssue(issue: number, _: string) {
+	void octokit.issues.get({...repo, issue_number: issue}).then(function(result) { // TODO: catch
+		console.log(result);
+	});
+}
+
 function outdated(testedVersion: string, latestVersion: string): void
 {
 	octokit.issues.listForRepo({...repo, creator: 'github-actions[bot]', labels: 'wpvc'}).then(function(result): void {
 		if(result.data.length === 0)
 		{
 			createIssue(testedVersion, latestVersion);
+		} else {
+			updateIssue(result.data[0].number, latestVersion);
 		}
 	}).catch(function(e): void {
 		console.log('Couldn\'t list repository issues for repository ' + repoName + '. Error message: ' + String(e));
