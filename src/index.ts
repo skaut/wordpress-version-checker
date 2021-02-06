@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import compareVersions from 'compare-versions';
 import * as https from 'https';
 
 const octokit = github.getOctokit(core.getInput('repo-token'));
@@ -134,7 +135,7 @@ function checkRepo(latest: string): void
 					console.log('Repository ' + repoName + ' doesn\'t have a valid readme.')
 					return;
 				}
-				if(!latest.startsWith(version))
+				if(compareVersions.compare(version, latest, '<'))
 				{
 					outdated(version, latest);
 					return;
@@ -171,12 +172,13 @@ function run(): void
 				console.log('Failed to fetch latest WordPress version. Exception: ' + (e as SyntaxError).message);
 				return;
 			}
-			const latest = Object.keys(list).find((key): boolean => list[key] === 'latest');
+			let latest = Object.keys(list).find((key): boolean => list[key] === 'latest');
 			if(!latest)
 			{
 				console.log('Failed to fetch latest WordPress version. Couldn\'t find latest version');
 				return;
 			}
+			latest = latest.split('.').slice(0, 2).join('.'); // Discard patch version
 			checkRepo(latest);
 		});
 	}).on('error', function(e): void {
