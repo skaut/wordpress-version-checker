@@ -44,7 +44,7 @@ function updateIssue(issue: number, testedVersion: string, latestVersion: string
 	void octokit.issues.get({...repo, issue_number: issue}).then(function(result) { // TODO: catch
 		const latestVersionInIssue = result.data.body.split('\r\n').find(function(line) {
 			return line.startsWith('**Latest version:**');
-		})!.slice(19);
+		})!.slice(20);
 		if(compareVersions.compare(latestVersionInIssue, latestVersion, '<')) {
 			void octokit.issues.update({...repo, issue_number: issue, body: issueBody(testedVersion, latestVersion)}) // TODO
 		}
