@@ -28,7 +28,8 @@ function createIssue(testedVersion: string, latestVersion: string): void
 	const args = {
 		...repo,
 		title: "[wpvc] The plugin hasn't been tested with the latest version of WordPress",
-		body: 'There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n\n**Tested up to:** ' + testedVersion + '\n**Latest version:** ' + latestVersion + '\n\nYou may then close this issue as it won\'t be done automatically.'
+		body: 'There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n\n**Tested up to:** ' + testedVersion + '\n**Latest version:** ' + latestVersion + '\n\nYou may then close this issue as it won\'t be done automatically.',
+		labels: ['wpvc']
 	};
 	octokit.issues.create(args).catch(function(e): void {
 		console.log('Couldn\'t create an issue for repository ' + repoName + '. Error message: ' + String(e));
