@@ -48,6 +48,17 @@ function outdated(testedVersion: string, latestVersion: string): void
 	});
 }
 
+function upToDate(): void
+{
+	octokit.issues.listForRepo({...repo, creator: 'github-actions[bot]', labels: 'wpvc'}).then(function(result): void {
+		for (const issue of result.data) {
+			void octokit.issues.update({...repo, issue_number: issue.id, state: 'closed'});
+		}
+	}).catch(function(e): void {
+		console.log('Couldn\'t list repository issues for repository ' + repoName + '. Error message: ' + String(e));
+	});
+}
+
 function getReadme(): Promise<string>
 {
 	function tryLocations(resolve: (value: string | PromiseLike<string>) => void, reject: () => void, locations: Array<string>): void
@@ -136,7 +147,8 @@ function checkRepo(latest: string): void
 				if(compareVersions.compare(version, latest, '<'))
 				{
 					outdated(version, latest);
-					return;
+				} else {
+					upToDate();
 				}
 				return;
 			}
