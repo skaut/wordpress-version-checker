@@ -23,12 +23,16 @@ function hasStatus(obj: Record<string, unknown>): obj is Record<"status", unknow
 	return Object.prototype.hasOwnProperty.call(obj, "status")
 }
 
+function issueBody(testedVersion: string, latestVersion: string): string {
+	return 'There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n\n**Tested up to:** ' + testedVersion + '\n**Latest version:** ' + latestVersion + '\n\nThis issue will be closed automatically when the versions match.';
+}
+
 function createIssue(testedVersion: string, latestVersion: string): void
 {
 	const args = {
 		...repo,
 		title: "The plugin hasn't been tested with the latest version of WordPress",
-		body: 'There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n\n**Tested up to:** ' + testedVersion + '\n**Latest version:** ' + latestVersion + '\n\nThis issue will be closed automatically when the versions match.',
+		body: issueBody(testedVersion, latestVersion),
 		labels: ['wpvc']
 	};
 	octokit.issues.create(args).catch(function(e): void {
@@ -36,12 +40,14 @@ function createIssue(testedVersion: string, latestVersion: string): void
 	});
 }
 
-function updateIssue(issue: number, _: string) {
+function updateIssue(issue: number, testedVersion: string, latestVersion: string) {
 	void octokit.issues.get({...repo, issue_number: issue}).then(function(result) { // TODO: catch
 		const latestVersionInIssue = result.data.body.split('\r\n').find(function(line) {
 			return line.startsWith('**Latest version:**');
 		})!.slice(19);
-		console.log(latestVersionInIssue);
+		if(compareVersions.compare(latestVersionInIssue, latestVersion, '<')) {
+			void octokit.issues.update({...repo, issue_number: issue, body: issueBody(testedVersion, latestVersion)}) // TODO
+		}
 	});
 }
 
@@ -52,7 +58,7 @@ function outdated(testedVersion: string, latestVersion: string): void
 		{
 			createIssue(testedVersion, latestVersion);
 		} else {
-			updateIssue(result.data[0].number, latestVersion);
+			updateIssue(result.data[0].number, testedVersion, latestVersion);
 		}
 	}).catch(function(e): void {
 		console.log('Couldn\'t list repository issues for repository ' + repoName + '. Error message: ' + String(e));
