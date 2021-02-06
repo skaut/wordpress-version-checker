@@ -38,7 +38,9 @@ function createIssue(testedVersion: string, latestVersion: string): void
 
 function updateIssue(issue: number, _: string) {
 	void octokit.issues.get({...repo, issue_number: issue}).then(function(result) { // TODO: catch
+		console.log(result.data.body);
 		const line = result.data.body.split('\n').find(function(line) {
+			console.log(line);
 			return line.startsWith('**Latest vesion:**');
 		})
 		console.log(line);
