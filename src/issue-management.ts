@@ -31,18 +31,18 @@ export async function createIssue(testedVersion: string, latestVersion: string):
 
 export async function updateIssue(issueNumber: number, testedVersion: string, latestVersion: string): Promise<void> {
 	const issue = await octokit.issues.get({...repo, issue_number: issueNumber}).catch(function(e): never {
-		throw new GetIssueError(String(e));
+		throw new GetIssueError(issueNumber, String(e));
 	});
 	const matchingLine = issue.data.body.split('\r\n').find(function(line) {
 		return line.startsWith('**Latest version:**');
 	});
 	if(!matchingLine) {
-		throw new ExistingIssueFormatError();
+		throw new ExistingIssueFormatError(issueNumber);
 	}
 	const latestVersionInIssue = matchingLine.slice(20);
 	if(compareVersions.compare(latestVersionInIssue, latestVersion, '<')) {
 		octokit.issues.update({...repo, issue_number: issueNumber, body: issueBody(testedVersion, latestVersion)}).catch(function(e): never {
-			throw new IssueUpdateError(String(e));
+			throw new IssueUpdateError(issueNumber, String(e));
 		});
 	}
 }
