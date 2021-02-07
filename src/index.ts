@@ -1,10 +1,11 @@
 import compareVersions from 'compare-versions';
-import * as https from 'https';
+import { CustomError } from 'ts-custom-error';
 
 import { isConfig } from './interfaces/Config';
 import { octokit } from './octokit';
 import { repo, repoName } from './repo';
 import { createIssue, updateIssue } from './issue-management'
+import {latestWordPressVersion} from './latest-version';
 
 function hasStatus(obj: Record<string, unknown>): obj is Record<"status", unknown> {
 	return Object.prototype.hasOwnProperty.call(obj, "status")
@@ -135,41 +136,14 @@ function checkRepo(latest: string): void
 	});
 }
 
-function run(): void
+async function run(): Promise<void>
 {
-	const options = {
-		host: 'api.wordpress.org',
-		path: '/core/stable-check/1.0/'
-	};
-	https.get(options, function(response): void {
-		if(response.statusCode !== 200)
-		{
-			console.log('Failed to fetch latest WordPress version. Request status code: ' + String(response.statusCode));
-			return;
-		}
-		response.setEncoding('utf8');
-		let rawData = '';
-		response.on('data', (chunk): void => { rawData += chunk; });
-		response.on('end', (): void => {
-			let list: Record<string, unknown> = {};
-			try {
-				list = JSON.parse(rawData) as Record<string, unknown>;
-			} catch(e) {
-				console.log('Failed to fetch latest WordPress version. Exception: ' + (e as SyntaxError).message);
-				return;
-			}
-			let latest = Object.keys(list).find((key): boolean => list[key] === 'latest');
-			if(!latest)
-			{
-				console.log('Failed to fetch latest WordPress version. Couldn\'t find latest version');
-				return;
-			}
-			latest = latest.split('.').slice(0, 2).join('.'); // Discard patch version
-			checkRepo(latest);
-		});
-	}).on('error', function(e): void {
-		console.log('Failed to fetch latest WordPress version. Exception: ' + e.message);
-	});
+	try {
+		const latest = await latestWordPressVersion();
+		checkRepo(latest);
+	} catch(e) {
+		console.log((e as CustomError).message); // TODO
+	}
 }
 
-run();
+void run();
