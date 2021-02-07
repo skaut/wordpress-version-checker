@@ -1,3 +1,3 @@
-import * as github from '@actions/github';
+import * as github from "@actions/github";
 
 export const repo = github.context.repo;
