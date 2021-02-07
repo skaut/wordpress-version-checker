@@ -4,10 +4,10 @@ import { octokit } from './octokit';
 import { repo } from './repo';
 import { createIssue, updateIssue } from './issue-management'
 import {latestWordPressVersion} from './latest-version';
-import {getTestedVersion} from './tested-version';
+import {testedVersion} from './tested-version';
 
 import {IssueListError} from './exceptions/IssueListError';
-import {WPVCError} from './exceptions/WPVCError';
+import type {WPVCError} from './exceptions/WPVCError'; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 async function outdated(testedVersion: string, latestVersion: string): Promise<void>
 {
@@ -34,10 +34,10 @@ async function upToDate(): Promise<void>
 async function run(): Promise<void>
 {
 	try {
-		const testedVersion = await getTestedVersion();
+		const readmeVersion = await testedVersion();
 		const latestVersion = await latestWordPressVersion();
-		if(compareVersions.compare(testedVersion, latestVersion, '<')) {
-			await outdated(testedVersion, latestVersion);
+		if(compareVersions.compare(readmeVersion, latestVersion, '<')) {
+			await outdated(readmeVersion, latestVersion);
 		} else {
 			await upToDate();
 		}

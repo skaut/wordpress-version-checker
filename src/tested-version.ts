@@ -9,7 +9,7 @@ function hasStatus(obj: Record<string, unknown>): obj is Record<"status", unknow
 	return Object.prototype.hasOwnProperty.call(obj, "status")
 }
 
-async function getWPVCConfig(): Promise<Config|null> {
+async function WPVCConfig(): Promise<Config|null> {
 	const file = await octokit.repos.getContent({...repo, path: '.wordpress-version-checker.json'}).catch(function(e): null|never {
 		if(hasStatus(e) && e.status === 404) {
 			return null;
@@ -37,10 +37,10 @@ async function getWPVCConfig(): Promise<Config|null> {
 	return config;
 }
 
-async function getReadme(): Promise<string>
+async function readme(): Promise<string>
 {
 	let readmeLocations = ['readme.txt', 'plugin/readme.txt'];
-	const config = await getWPVCConfig();
+	const config = await WPVCConfig();
 	if(config !== null) {
 		readmeLocations = [config.readme];
 	}
@@ -64,9 +64,9 @@ async function getReadme(): Promise<string>
 	throw new ConfigError('No config file was found in repo and all usual locations were exhausted.');
 }
 
-export async function getTestedVersion(): Promise<string> {
-	const readme = await getReadme();
-	for(const line of readme.split('\n'))
+export async function testedVersion(): Promise<string> {
+	const readmeContents = await readme();
+	for(const line of readmeContents.split('\n'))
 	{
 		if(!line.startsWith('Tested up to:'))
 		{
