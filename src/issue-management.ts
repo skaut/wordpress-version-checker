@@ -25,13 +25,13 @@ export async function createIssue(testedVersion: string, latestVersion: string):
 		body: issueBody(testedVersion, latestVersion),
 		labels: ['wpvc']
 	}).catch(function(e): never {
-		throw new IssueCreationError(e);
+		throw new IssueCreationError(String(e));
 	});
 }
 
 export async function updateIssue(issueNumber: number, testedVersion: string, latestVersion: string): Promise<void> {
 	const issue = await octokit.issues.get({...repo, issue_number: issueNumber}).catch(function(e): never {
-		throw new GetIssueError(e);
+		throw new GetIssueError(String(e));
 	});
 	const matchingLine = issue.data.body.split('\r\n').find(function(line) {
 		return line.startsWith('**Latest version:**');
@@ -42,7 +42,7 @@ export async function updateIssue(issueNumber: number, testedVersion: string, la
 	const latestVersionInIssue = matchingLine.slice(20);
 	if(compareVersions.compare(latestVersionInIssue, latestVersion, '<')) {
 		octokit.issues.update({...repo, issue_number: issueNumber, body: issueBody(testedVersion, latestVersion)}).catch(function(e): never {
-			throw new IssueUpdateError(e);
+			throw new IssueUpdateError(String(e));
 		});
 	}
 }
