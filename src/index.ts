@@ -1,5 +1,4 @@
 import compareVersions from 'compare-versions';
-import { CustomError } from 'ts-custom-error';
 
 import { octokit } from './octokit';
 import { repo } from './repo';
@@ -8,6 +7,7 @@ import {latestWordPressVersion} from './latest-version';
 import {getTestedVersion} from './tested-version';
 
 import {IssueListError} from './exceptions/IssueListError';
+import {WPVCError} from './exceptions/WPVCError';
 
 async function outdated(testedVersion: string, latestVersion: string): Promise<void>
 {
@@ -42,7 +42,7 @@ async function run(): Promise<void>
 			await upToDate();
 		}
 	} catch(e) {
-		console.log((e as CustomError).message); // TODO
+		console.log((e as WPVCError).message);
 	}
 }
 

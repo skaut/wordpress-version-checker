@@ -1,6 +1,6 @@
-import { CustomError } from 'ts-custom-error';
+import {WPVCError} from './WPVCError';
 
-export class LatestVersionError extends CustomError {
+export class LatestVersionError extends WPVCError {
 	public constructor(e?: string) {
 		if(!e) {
 			super('Failed to fetch the latest WordPress version.');

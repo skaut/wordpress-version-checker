@@ -1,6 +1,6 @@
-import { CustomError } from 'ts-custom-error';
+import {WPVCError} from './WPVCError';
 
-export class InvalidReadmeError extends CustomError {
+export class InvalidReadmeError extends WPVCError {
 	public constructor() {
 		super('The repository has an invalid readme.')
 	}
