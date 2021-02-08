@@ -3,6 +3,8 @@ import compareVersions from "compare-versions";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
+import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
+
 import { ExistingIssueFormatError } from "./exceptions/ExistingIssueFormatError";
 import { GetIssueError } from "./exceptions/GetIssueError";
 import { IssueCreationError } from "./exceptions/IssueCreationError";
@@ -24,6 +26,7 @@ function issueBody(testedVersion: string, latestVersion: string): string {
 }
 
 export async function createIssue(
+  config: Config | null,
   testedVersion: string,
   latestVersion: string
 ): Promise<void> {
@@ -34,6 +37,7 @@ export async function createIssue(
         "The plugin hasn't been tested with the latest version of WordPress",
       body: issueBody(testedVersion, latestVersion),
       labels: ["wpvc"],
+      assignees: config !== null ? config.assignees : undefined,
     })
     .catch(function (e): never {
       throw new IssueCreationError(String(e));

@@ -7,10 +7,13 @@ import { latestWordPressVersion } from "./latest-version";
 import { testedVersion } from "./tested-version";
 import { WPVCConfig } from "./wpvc-config";
 
+import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
+
 import { IssueListError } from "./exceptions/IssueListError";
 import type { WPVCError } from "./exceptions/WPVCError"; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 async function outdated(
+  config: Config | null,
   testedVersion: string,
   latestVersion: string
 ): Promise<void> {
@@ -20,7 +23,7 @@ async function outdated(
       throw new IssueListError(String(e));
     });
   if (issues.data.length === 0) {
-    await createIssue(testedVersion, latestVersion);
+    await createIssue(config, testedVersion, latestVersion);
   } else {
     await updateIssue(issues.data[0].number, testedVersion, latestVersion);
   }
@@ -47,7 +50,7 @@ async function run(): Promise<void> {
     const readmeVersion = await testedVersion(config);
     const latestVersion = await latestWordPressVersion();
     if (compareVersions.compare(readmeVersion, latestVersion, "<")) {
-      await outdated(readmeVersion, latestVersion);
+      await outdated(config, readmeVersion, latestVersion);
     } else {
       await upToDate();
     }
