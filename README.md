@@ -29,7 +29,7 @@ By default, the app checks for readme in `readme.txt` and `plugin/readme.txt`. I
 
 ```json
 {
-	"readme": "path/to/your/readme.txt"
+    "readme": "path/to/your/readme.txt"
 }
 ```
 
@@ -37,7 +37,7 @@ If you want the issues to be automatically assigned to someone, you can put thei
 
 ```json
 {
-	"readme": "path/to/your/readme.txt",
-        "assignees": ["alice", "bob"]
+    "readme": "path/to/your/readme.txt",
+    "assignees": ["alice", "bob"]
 }
 ```
