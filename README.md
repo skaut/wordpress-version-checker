@@ -32,3 +32,12 @@ By default, the app checks for readme in `readme.txt` and `plugin/readme.txt`. I
 	"readme": "path/to/your/readme.txt"
 }
 ```
+
+If you want the issues to be automatically assigned to someone, you can put their GitHub usernames in the config as well:
+
+```json
+{
+	"readme": "path/to/your/readme.txt",
+        "assignees": ["alice", "bob"]
+}
+```
