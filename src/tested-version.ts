@@ -1,15 +1,14 @@
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
-import { WPVCConfig } from "./wpvc-config";
 import { hasStatus } from "./has-status";
+import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 import { ConfigError } from "./exceptions/ConfigError";
 import { InvalidReadmeError } from "./exceptions/InvalidReadmeError";
 
-async function readme(): Promise<string> {
+async function readme(config: Config | null): Promise<string> {
   let readmeLocations = ["readme.txt", "plugin/readme.txt"];
-  const config = await WPVCConfig();
   if (config !== null) {
     readmeLocations = [config.readme];
   }
@@ -42,8 +41,8 @@ async function readme(): Promise<string> {
   );
 }
 
-export async function testedVersion(): Promise<string> {
-  const readmeContents = await readme();
+export async function testedVersion(config: Config | null): Promise<string> {
+  const readmeContents = await readme(config);
   for (const line of readmeContents.split("\n")) {
     if (!line.startsWith("Tested up to:")) {
       continue;

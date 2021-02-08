@@ -5,6 +5,7 @@ import { repo } from "./repo";
 import { createIssue, updateIssue } from "./issue-management";
 import { latestWordPressVersion } from "./latest-version";
 import { testedVersion } from "./tested-version";
+import { WPVCConfig } from "./wpvc-config";
 
 import { IssueListError } from "./exceptions/IssueListError";
 import type { WPVCError } from "./exceptions/WPVCError"; // eslint-disable-line @typescript-eslint/no-unused-vars
@@ -42,7 +43,8 @@ async function upToDate(): Promise<void> {
 
 async function run(): Promise<void> {
   try {
-    const readmeVersion = await testedVersion();
+    const config = await WPVCConfig();
+    const readmeVersion = await testedVersion(config);
     const latestVersion = await latestWordPressVersion();
     if (compareVersions.compare(readmeVersion, latestVersion, "<")) {
       await outdated(readmeVersion, latestVersion);
