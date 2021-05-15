@@ -30,7 +30,7 @@ export async function createIssue(
   testedVersion: string,
   latestVersion: string
 ): Promise<void> {
-  await octokit.issues
+  await octokit.rest.issues
     .create({
       ...repo,
       title:
@@ -49,11 +49,14 @@ export async function updateIssue(
   testedVersion: string,
   latestVersion: string
 ): Promise<void> {
-  const issue = await octokit.issues
+  const issue = await octokit.rest.issues
     .get({ ...repo, issue_number: issueNumber })
     .catch(function (e): never {
       throw new GetIssueError(issueNumber, String(e));
     });
+  if (!issue.data.body) {
+    throw new GetIssueError(issueNumber, "There is no issue body.");
+  }
   const matchingLine = issue.data.body.split("\r\n").find(function (line) {
     return line.startsWith("**Latest version:**");
   });
@@ -62,7 +65,7 @@ export async function updateIssue(
   }
   const latestVersionInIssue = matchingLine.slice(20);
   if (compareVersions.compare(latestVersionInIssue, latestVersion, "<")) {
-    octokit.issues
+    octokit.rest.issues
       .update({
         ...repo,
         issue_number: issueNumber,

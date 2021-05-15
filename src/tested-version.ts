@@ -13,7 +13,7 @@ async function readme(config: Config | null): Promise<string> {
     readmeLocations = [config.readme];
   }
   for (const readmeLocation of readmeLocations) {
-    const result = await octokit.repos
+    const result = await octokit.rest.repos
       .getContent({ ...repo, path: readmeLocation })
       .catch(function (e): null | never {
         if (hasStatus(e) && e.status === 404) {

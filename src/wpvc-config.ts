@@ -16,7 +16,7 @@ function isConfig(
 }
 
 export async function WPVCConfig(): Promise<Config | null> {
-  const file = await octokit.repos
+  const file = await octokit.rest.repos
     .getContent({ ...repo, path: ".wordpress-version-checker.json" })
     .catch(function (e): null | never {
       if (hasStatus(e) && e.status === 404) {
