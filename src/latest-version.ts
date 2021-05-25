@@ -3,15 +3,15 @@ import * as https from "https";
 import { LatestVersionError } from "./exceptions/LatestVersionError";
 
 async function httpsRequest(options: https.RequestOptions): Promise<string> {
-  return new Promise(function (resolve, reject) {
-    https.get(options, function (response) {
+  return new Promise((resolve, reject) => {
+    https.get(options, (response) => {
       let data = "";
       response.setEncoding("utf8");
       response.on("data", (chunk): void => {
         data += chunk;
       });
       response.on("error", (e): void => reject(e));
-      response.on("end", function (): void {
+      response.on("end", (): void => {
         if (response.statusCode === 200) {
           resolve(data);
         } else {
@@ -26,7 +26,7 @@ export async function latestWordPressVersion(): Promise<string> {
   const rawData = await httpsRequest({
     host: "api.wordpress.org",
     path: "/core/stable-check/1.0/",
-  }).catch(function (e): never {
+  }).catch((e): never => {
     throw new LatestVersionError(e);
   });
   let list: Record<string, unknown> = {};
