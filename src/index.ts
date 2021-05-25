@@ -19,7 +19,7 @@ async function outdated(
 ): Promise<void> {
   const issues = await octokit.rest.issues
     .listForRepo({ ...repo, creator: "github-actions[bot]", labels: "wpvc" })
-    .catch(function (e): never {
+    .catch((e): never => {
       throw new IssueListError(String(e));
     });
   if (issues.data.length === 0) {
@@ -32,7 +32,7 @@ async function outdated(
 async function upToDate(): Promise<void> {
   const issues = await octokit.rest.issues
     .listForRepo({ ...repo, creator: "github-actions[bot]", labels: "wpvc" })
-    .catch(function (e): never {
+    .catch((e): never => {
       throw new IssueListError(String(e));
     });
   for (const issue of issues.data) {

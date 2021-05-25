@@ -39,7 +39,7 @@ export async function createIssue(
       labels: ["wpvc"],
       assignees: config !== null ? config.assignees : undefined,
     })
-    .catch(function (e): never {
+    .catch((e): never => {
       throw new IssueCreationError(String(e));
     });
 }
@@ -51,15 +51,15 @@ export async function updateIssue(
 ): Promise<void> {
   const issue = await octokit.rest.issues
     .get({ ...repo, issue_number: issueNumber })
-    .catch(function (e): never {
+    .catch((e): never => {
       throw new GetIssueError(issueNumber, String(e));
     });
   if (!issue.data.body) {
     throw new GetIssueError(issueNumber, "There is no issue body.");
   }
-  const matchingLine = issue.data.body.split("\r\n").find(function (line) {
-    return line.startsWith("**Latest version:**");
-  });
+  const matchingLine = issue.data.body
+    .split("\r\n")
+    .find((line) => line.startsWith("**Latest version:**"));
   if (!matchingLine) {
     throw new ExistingIssueFormatError(issueNumber);
   }
@@ -71,7 +71,7 @@ export async function updateIssue(
         issue_number: issueNumber,
         body: issueBody(testedVersion, latestVersion),
       })
-      .catch(function (e): never {
+      .catch((e): never => {
         throw new IssueUpdateError(issueNumber, String(e));
       });
   }
