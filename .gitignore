@@ -1,5 +1,5 @@
-# Created by https://www.gitignore.io/api/vim,node
-# Edit at https://www.gitignore.io/?templates=vim,node
+# Created by https://www.toptal.com/developers/gitignore/api/vim,node
+# Edit at https://www.toptal.com/developers/gitignore?templates=vim,node
 
 ### Node ###
 # Logs
@@ -9,6 +9,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
+.pnpm-debug.log*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -24,6 +25,7 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+*.lcov
 
 # nyc test coverage
 .nyc_output
@@ -41,17 +43,26 @@ bower_components
 build/Release
 
 # Dependency directories
-# node_modules/
+#node_modules/
 jspm_packages/
 
-# TypeScript v1 declaration files
-typings/
+# Snowpack dependency directory (https://snowpack.dev/)
+web_modules/
+
+# TypeScript cache
+*.tsbuildinfo
 
 # Optional npm cache directory
 .npm
 
 # Optional eslint cache
 .eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
 
 # Optional REPL history
 .node_repl_history
@@ -65,15 +76,25 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
+.env.production
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
+.parcel-cache
 
-# next.js build output
+# Next.js build output
 .next
+out
 
-# nuxt.js build output
+# Nuxt.js build / generate output
 .nuxt
+dist
+
+# Gatsby files
+.cache/
+# Comment in the public line in if your project uses Gatsby and not Next.js
+# https://nextjs.org/blog/next-9-1#public-directory-support
+# public
 
 # vuepress build output
 .vuepress/dist
@@ -87,9 +108,23 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
 ### Vim ###
 # Swap
 [._]*.s[a-v][a-z]
+#!*.svg  # comment out if you don't need vector files
 [._]*.sw[a-p]
 [._]s[a-rt-v][a-z]
 [._]ss[a-gi-z]
@@ -97,6 +132,7 @@ typings/
 
 # Session
 Session.vim
+Sessionx.vim
 
 # Temporary
 .netrwhist
@@ -106,4 +142,4 @@ tags
 # Persistent undo
 [._]*.un~
 
-# End of https://www.gitignore.io/api/vim,node
+# End of https://www.toptal.com/developers/gitignore/api/vim,node
