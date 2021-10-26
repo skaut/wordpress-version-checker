@@ -15,7 +15,7 @@ async function readme(config: Config | null): Promise<string> {
   for (const readmeLocation of readmeLocations) {
     const result = await octokit.rest.repos
       .getContent({ ...repo, path: readmeLocation })
-      .catch(function (e: unknown): null | never {
+      .catch(function (e: unknown): never | null {
         if (hasStatus(e) && e.status === 404) {
           return null;
         } else {
@@ -29,7 +29,7 @@ async function readme(config: Config | null): Promise<string> {
       continue;
     }
     const encodedContent = (result.data as { content?: string }).content;
-    if (!encodedContent) {
+    if (encodedContent === undefined) {
       throw new ConfigError(
         "No config file was found in repo and all usual locations were exhausted."
       );
@@ -52,7 +52,7 @@ export async function testedVersion(config: Config | null): Promise<string> {
       throw new InvalidReadmeError();
     }
     const version = matches.pop();
-    if (!version) {
+    if (version === undefined) {
       throw new InvalidReadmeError();
     }
     return version;

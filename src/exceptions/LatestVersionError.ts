@@ -2,7 +2,7 @@ import { WPVCError } from "./WPVCError";
 
 export class LatestVersionError extends WPVCError {
   public constructor(e?: string) {
-    if (!e) {
+    if (e === undefined) {
       super("Failed to fetch the latest WordPress version.");
     } else {
       super(
