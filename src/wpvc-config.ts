@@ -8,17 +8,17 @@ import { ConfigError } from "./exceptions/ConfigError";
 
 function isConfig(
   config: Record<string, unknown>
-): config is Record<string, unknown> & Config {
-  if (!config.readme) {
-    return false;
+): config is Config & Record<string, unknown> {
+  if ("readme" in config) {
+    return true;
   }
-  return true;
+  return false;
 }
 
 export async function WPVCConfig(): Promise<Config | null> {
   const file = await octokit.rest.repos
     .getContent({ ...repo, path: ".wordpress-version-checker.json" })
-    .catch(function (e): null | never {
+    .catch(function (e: unknown): never | null {
       if (hasStatus(e) && e.status === 404) {
         return null;
       } else {
@@ -29,7 +29,7 @@ export async function WPVCConfig(): Promise<Config | null> {
     return null;
   }
   const encodedContent = (file.data as { content?: string }).content;
-  if (!encodedContent) {
+  if (encodedContent === undefined) {
     throw new ConfigError("Failed to decode the file.");
   }
   let config: Record<string, unknown> = {};

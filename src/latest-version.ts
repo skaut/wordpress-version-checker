@@ -10,7 +10,9 @@ async function httpsRequest(options: https.RequestOptions): Promise<string> {
       response.on("data", (chunk): void => {
         data += chunk;
       });
-      response.on("error", (e): void => reject(e));
+      response.on("error", (e): void => {
+        reject(e);
+      });
       response.on("end", function (): void {
         if (response.statusCode === 200) {
           resolve(data);
@@ -26,7 +28,7 @@ export async function latestWordPressVersion(): Promise<string> {
   const rawData = await httpsRequest({
     host: "api.wordpress.org",
     path: "/core/stable-check/1.0/",
-  }).catch(function (e): never {
+  }).catch(function (e: string): never {
     throw new LatestVersionError(e);
   });
   let list: Record<string, unknown> = {};
@@ -38,7 +40,7 @@ export async function latestWordPressVersion(): Promise<string> {
   const latest = Object.keys(list).find(
     (key): boolean => list[key] === "latest"
   );
-  if (!latest) {
+  if (latest === undefined) {
     throw new LatestVersionError("Couldn't find the latest version");
   }
   return latest.split(".").slice(0, 2).join("."); // Discard patch version
