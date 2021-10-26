@@ -26,7 +26,7 @@ export async function latestWordPressVersion(): Promise<string> {
   const rawData = await httpsRequest({
     host: "api.wordpress.org",
     path: "/core/stable-check/1.0/",
-  }).catch(function (e): never {
+  }).catch(function (e: string): never {
     throw new LatestVersionError(e);
   });
   let list: Record<string, unknown> = {};
