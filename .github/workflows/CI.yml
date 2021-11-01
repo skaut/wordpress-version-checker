@@ -1,21 +1,58 @@
-name: "Test wordpress-version-checker"
-on: [push, pull_request]
+name: "CI"
+on:
+  push:
+    branches: "*"
+  pull_request:
+env:
+  cache-version: 1
 
 jobs:
   build:
+    name: "Build"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.3.5
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/upload-artifact@v2.2.4
+      - name: "Checkout"
+        uses: actions/checkout@v2.3.5
+
+      - name: "Cache NPM dependencies"
+        uses: actions/cache@v2.1.6
         with:
-          name: lib
-          path: lib
+          path: "~/.npm"
+          key: npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-
+            npm-dependencies-${{ runner.os }}-
+
+      - name: "Install NPM dependencies"
+        run: |
+          npm ci
+
+      - name: "Build"
+        run: |
+          npm run build-frontend
 
   lint:
+    name: "Lint"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.3.5
-      - run: npm ci
-      - run: npm run lint
+      - name: "Checkout"
+        uses: actions/checkout@v2.3.5
+
+      - name: "Cache NPM dependencies"
+        uses: actions/cache@v2.1.6
+        with:
+          path: "~/.npm"
+          key: npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-
+            npm-dependencies-${{ runner.os }}-
+
+      - name: "Install NPM dependencies"
+        run: |
+          npm ci
+
+      - name: "Lint"
+        run: |
+          npm run lint
