@@ -30,7 +30,7 @@ jobs:
 
       - name: "Build"
         run: |
-          npm run build-frontend
+          npm run build
 
   lint:
     name: "Lint"
