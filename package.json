@@ -40,8 +40,8 @@
   },
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc",
-    "lint": "eslint \"src/**/*\" \"__tests/**/*\"",
+    "build": "tsc --build wpvc.tsconfig.json",
+    "lint": "eslint \"src/**/*\" \"__tests__/**/*\"",
     "test": "jest"
   }
 }
