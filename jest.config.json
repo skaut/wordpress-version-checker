@@ -5,7 +5,8 @@
 	],
 	"coverageDirectory": "coverage",
 	"coverageProvider": "babel",
+	"setupFiles": ["<rootDir>/__tests__/setup.ts"],
 	"preset": "ts-jest/presets/default-esm",
 	"resetMocks": true,
-	"testMatch": ["<rootDir>/__tests__/**/*"]
+	"testMatch": ["<rootDir>/__tests__/**/*.test.ts"]
 }

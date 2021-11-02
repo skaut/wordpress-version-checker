@@ -4,13 +4,6 @@ import { latestWordPressVersion } from "../src/latest-version";
 
 import { LatestVersionError } from "../src/exceptions/LatestVersionError";
 
-beforeAll(() => {
-  nock.disableNetConnect();
-});
-afterAll(() => {
-  nock.enableNetConnect();
-});
-
 test("latestWordPressVersion works correctly", async () => {
   nock("https://api.wordpress.org").get("/core/stable-check/1.0/").reply(200, {
     "0.40": "insecure",
