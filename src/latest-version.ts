@@ -4,23 +4,24 @@ import { LatestVersionError } from "./exceptions/LatestVersionError";
 
 async function httpsRequest(options: https.RequestOptions): Promise<string> {
   return new Promise(function (resolve, reject) {
-    https.get(options, function (response) {
-      let data = "";
-      response.setEncoding("utf8");
-      response.on("data", (chunk): void => {
-        data += chunk;
-      });
-      response.on("error", (e): void => {
+    https
+      .get(options, function (response) {
+        let data = "";
+        response.setEncoding("utf8");
+        response.on("data", (chunk): void => {
+          data += chunk;
+        });
+        response.on("end", function (): void {
+          if (response.statusCode === 200) {
+            resolve(data);
+          } else {
+            reject();
+          }
+        });
+      })
+      .on("error", (e) => {
         reject(e);
       });
-      response.on("end", function (): void {
-        if (response.statusCode === 200) {
-          resolve(data);
-        } else {
-          reject();
-        }
-      });
-    });
   });
 }
 
