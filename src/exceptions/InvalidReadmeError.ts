@@ -1,7 +1,7 @@
 import { WPVCError } from "./WPVCError";
 
 export class InvalidReadmeError extends WPVCError {
-  public constructor() {
-    super("The repository has an invalid readme.");
+  public constructor(e: string) {
+    super("Couldn't get the repository readme. Error message: " + e);
   }
 }
