@@ -32,7 +32,7 @@ export async function createIssue(
 ): Promise<void> {
   await octokit()
     .rest.issues.create({
-      ...repo,
+      ...repo(),
       title:
         "The plugin hasn't been tested with the latest version of WordPress",
       body: issueBody(testedVersion, latestVersion),
@@ -50,7 +50,7 @@ export async function updateIssue(
   latestVersion: string
 ): Promise<void> {
   const issue = await octokit()
-    .rest.issues.get({ ...repo, issue_number: issueNumber })
+    .rest.issues.get({ ...repo(), issue_number: issueNumber })
     .catch(function (e): never {
       throw new GetIssueError(issueNumber, String(e));
     });
@@ -67,7 +67,7 @@ export async function updateIssue(
   if (compareVersions.compare(latestVersionInIssue, latestVersion, "<")) {
     octokit()
       .rest.issues.update({
-        ...repo,
+        ...repo(),
         issue_number: issueNumber,
         body: issueBody(testedVersion, latestVersion),
       })

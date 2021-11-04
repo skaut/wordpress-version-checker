@@ -1,3 +1,10 @@
 import * as github from "@actions/github";
 
-export const repo = github.context.repo;
+interface Repo {
+  owner: string;
+  repo: string;
+}
+
+export function repo(): Repo {
+  return github.context.repo;
+}
