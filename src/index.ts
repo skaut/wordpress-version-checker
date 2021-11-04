@@ -17,8 +17,12 @@ async function outdated(
   testedVersion: string,
   latestVersion: string
 ): Promise<void> {
-  const issues = await octokit.rest.issues
-    .listForRepo({ ...repo, creator: "github-actions[bot]", labels: "wpvc" })
+  const issues = await octokit()
+    .rest.issues.listForRepo({
+      ...repo,
+      creator: "github-actions[bot]",
+      labels: "wpvc",
+    })
     .catch(function (e): never {
       throw new IssueListError(String(e));
     });
@@ -30,13 +34,17 @@ async function outdated(
 }
 
 async function upToDate(): Promise<void> {
-  const issues = await octokit.rest.issues
-    .listForRepo({ ...repo, creator: "github-actions[bot]", labels: "wpvc" })
+  const issues = await octokit()
+    .rest.issues.listForRepo({
+      ...repo,
+      creator: "github-actions[bot]",
+      labels: "wpvc",
+    })
     .catch(function (e): never {
       throw new IssueListError(String(e));
     });
   for (const issue of issues.data) {
-    void octokit.rest.issues.update({
+    void octokit().rest.issues.update({
       ...repo,
       issue_number: issue.number,
       state: "closed",
