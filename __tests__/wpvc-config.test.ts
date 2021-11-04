@@ -13,22 +13,23 @@ describe("Mocked env variables", () => {
 
   beforeEach(() => {
     restore = mockedEnv({ GITHUB_REPOSITORY: "OWNER/REPO" });
+    mocked(core).getInput.mockReturnValue("GH_TOKEN");
   });
   afterEach(() => {
     restore();
   });
 
-  const config = {
-    readme: "path/to/readme.txt",
-  };
-
   test("WPVCConfig works correctly", async () => {
+    const config = {
+      readme: "path/to/readme.txt",
+    };
+
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
       .reply(200, {
         content: Buffer.from(JSON.stringify(config)).toString("base64"),
       });
-    mocked(core).getInput.mockReturnValue("GH_TOKEN");
+
     await expect(WPVCConfig()).resolves.toStrictEqual(config);
   });
 });
