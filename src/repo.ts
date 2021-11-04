@@ -5,6 +5,11 @@ interface Repo {
   repo: string;
 }
 
+let repoInstance: Repo | undefined = undefined;
+
 export function repo(): Repo {
-  return github.context.repo;
+  if (repoInstance === undefined) {
+    repoInstance = github.context.repo;
+  }
+  return repoInstance;
 }
