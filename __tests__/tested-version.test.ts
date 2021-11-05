@@ -21,28 +21,19 @@ describe("[env variable mock]", () => {
     restore();
   });
 
-  test("testedVersion works correctly", async () => {
+  test.each([
+    "Tested up to: 0.42",
+    "Tested up to:0.42",
+    "LINE1\nNot Tested up to: 0.41\nTested up to: 0.42\nLINE2",
+    " Tested up to: 0.42",
+    "    Tested up to: 0.42",
+    "\tTested up to: 0.42",
+    "\nTested up to: 0.42\n",
+  ])("testedVersion works correctly", async (readme) => {
     const readmePath = "path/to/readme.txt";
     const config = {
       readme: readmePath,
     };
-    const readme = "Tested up to: 0.42";
-
-    nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/" + encodeURIComponent(readmePath))
-      .reply(200, {
-        content: Buffer.from(readme).toString("base64"),
-      });
-
-    await expect(testedVersion(config)).resolves.toStrictEqual("0.42");
-  });
-
-  test("testedVersion works correctly with multi-line readme", async () => {
-    const readmePath = "path/to/readme.txt";
-    const config = {
-      readme: readmePath,
-    };
-    const readme = "LINE1\nNot Tested up to: 0.41\nTested up to: 0.42\nLINE2";
 
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/" + encodeURIComponent(readmePath))
