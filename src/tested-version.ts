@@ -43,18 +43,11 @@ async function readme(config: Config | null): Promise<string> {
 export async function testedVersion(config: Config | null): Promise<string> {
   const readmeContents = await readme(config);
   for (const line of readmeContents.split("\n")) {
-    if (!line.startsWith("Tested up to:")) {
+    const matches = [...line.matchAll(/^[\s]*Tested up to: ?([.\d]+)$/g)];
+    if (matches.length !== 1) {
       continue;
     }
-    const matches = line.match(/[^:\s]+/g);
-    if (!matches) {
-      throw new InvalidReadmeError('No "Tested up to:" line found');
-    }
-    const version = matches.pop();
-    if (version === undefined) {
-      throw new InvalidReadmeError('No "Tested up to:" line found');
-    }
-    return version;
+    return matches[0][1];
   }
   throw new InvalidReadmeError('No "Tested up to:" line found');
 }
