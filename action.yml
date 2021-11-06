@@ -9,5 +9,5 @@ inputs:
     description: 'The GITHUB_TOKEN environment variable'
     required: true
 runs:
-  using: "node12"
+  using: "node14"
   main: "lib/index.js"
