@@ -1,11 +1,10 @@
-import { createActionAuth } from "@octokit/auth-action";
-import { Octokit } from "octokit";
+import { Octokit } from "@octokit/action";
 
 let octokitInstance: Octokit | undefined = undefined;
 
 export function octokit(): Octokit {
   if (octokitInstance === undefined) {
-    octokitInstance = new Octokit({ authStrategy: createActionAuth });
+    octokitInstance = new Octokit();
   }
   return octokitInstance;
 }
