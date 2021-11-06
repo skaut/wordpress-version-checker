@@ -1,15 +1,11 @@
-import * as core from "@actions/core";
-import * as github from "@actions/github";
-import type { Octokit } from "@octokit/core";
-import type { Api } from "@octokit/plugin-rest-endpoint-methods/dist-types/types";
-import type { PaginateInterface } from "@octokit/plugin-paginate-rest";
+import { createActionAuth } from "@octokit/auth-action";
+import { Octokit } from "octokit";
 
-type GitHub = Api & Octokit & { paginate: PaginateInterface };
-let octokitInstance: GitHub | undefined = undefined;
+let octokitInstance: Octokit | undefined = undefined;
 
-export function octokit(): GitHub {
+export function octokit(): Octokit {
   if (octokitInstance === undefined) {
-    octokitInstance = github.getOctokit(core.getInput("repo-token"));
+    octokitInstance = new Octokit({ auth: createActionAuth });
   }
   return octokitInstance;
 }
