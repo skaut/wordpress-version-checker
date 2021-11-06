@@ -1,4 +1,5 @@
 import compareVersions from "compare-versions";
+import * as core from "@actions/core";
 
 import {
   closeIssue,
@@ -45,6 +46,6 @@ export async function run(): Promise<void> {
       await upToDate();
     }
   } catch (e) {
-    console.log((e as WPVCError).message);
+    core.setFailed((e as WPVCError).message);
   }
 }
