@@ -65,7 +65,7 @@ export async function updateIssue(
   }
   const latestVersionInIssue = matchingLine.slice(20);
   if (compareVersions.compare(latestVersionInIssue, latestVersion, "<")) {
-    octokit()
+    await octokit()
       .rest.issues.update({
         ...repo(),
         issue_number: issueNumber,
