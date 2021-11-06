@@ -5,7 +5,7 @@ let octokitInstance: Octokit | undefined = undefined;
 
 export function octokit(): Octokit {
   if (octokitInstance === undefined) {
-    octokitInstance = new Octokit({ auth: createActionAuth });
+    octokitInstance = new Octokit({ authStrategy: createActionAuth });
   }
   return octokitInstance;
 }
