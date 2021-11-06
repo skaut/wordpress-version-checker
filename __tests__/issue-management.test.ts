@@ -4,7 +4,12 @@ import mockedEnv from "mocked-env";
 
 import * as core from "@actions/core";
 
-import { createIssue, getIssue, updateIssue } from "../src/issue-management";
+import {
+  closeIssue,
+  createIssue,
+  getIssue,
+  updateIssue,
+} from "../src/issue-management";
 
 import { ExistingIssueFormatError } from "../src/exceptions/ExistingIssueFormatError";
 import { GetIssueError } from "../src/exceptions/GetIssueError";
@@ -55,6 +60,30 @@ describe("[env variable mock]", () => {
       .reply(404);
 
     await expect(getIssue()).rejects.toThrow(IssueListError);
+  });
+
+  test("closeIssue works correctly", async () => {
+    nock("https://api.github.com")
+      .patch("/repos/OWNER/REPO/issues/123", {
+        state: "closed",
+      })
+      .reply(200);
+
+    await expect(closeIssue(123)).resolves.toBeUndefined();
+  });
+
+  test("closeIssue fails gracefully on connection issues", async () => {
+    await expect(closeIssue(123)).rejects.toThrow(IssueUpdateError);
+  });
+
+  test("closeIssue fails gracefully on nonexistent repo", async () => {
+    nock("https://api.github.com")
+      .patch("/repos/OWNER/REPO/issues/123", {
+        state: "closed",
+      })
+      .reply(404);
+
+    await expect(closeIssue(123)).rejects.toThrow(IssueUpdateError);
   });
 
   test("createIssue works correctly", async () => {
