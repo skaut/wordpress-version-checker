@@ -39,6 +39,18 @@ export async function getIssue(): Promise<number | null> {
   return issues.data.length > 0 ? issues.data[0].number : null;
 }
 
+export async function closeIssue(issue: number): Promise<void> {
+  await octokit()
+    .rest.issues.update({
+      ...repo(),
+      issue_number: issue,
+      state: "closed",
+    })
+    .catch(function (e): never {
+      throw new IssueUpdateError(issue, String(e));
+    });
+}
+
 export async function createIssue(
   config: Config | null,
   testedVersion: string,

@@ -1,8 +1,11 @@
 import compareVersions from "compare-versions";
 
-import { octokit } from "./octokit";
-import { repo } from "./repo";
-import { createIssue, getIssue, updateIssue } from "./issue-management";
+import {
+  closeIssue,
+  createIssue,
+  getIssue,
+  updateIssue,
+} from "./issue-management";
 import { latestWordPressVersion } from "./latest-version";
 import { testedVersion } from "./tested-version";
 import { WPVCConfig } from "./wpvc-config";
@@ -27,11 +30,7 @@ async function outdated(
 async function upToDate(): Promise<void> {
   const existingIssue = await getIssue();
   if (existingIssue !== null) {
-    void octokit().rest.issues.update({
-      ...repo(),
-      issue_number: existingIssue,
-      state: "closed",
-    });
+    await closeIssue(existingIssue);
   }
 }
 
