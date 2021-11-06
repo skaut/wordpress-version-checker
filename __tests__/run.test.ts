@@ -1,4 +1,5 @@
 import { mocked } from "ts-jest/utils";
+import * as core from "@actions/core";
 
 import {
   closeIssue,
@@ -11,12 +12,13 @@ import { testedVersion } from "../src/tested-version";
 import { WPVCConfig } from "../src/wpvc-config";
 import { run } from "../src/run";
 
+jest.mock("@actions/core");
 jest.mock("../src/issue-management");
 jest.mock("../src/latest-version");
 jest.mock("../src/tested-version");
 jest.mock("../src/wpvc-config");
 
-describe("[env variable mock]", () => {
+describe("Succesful runs", () => {
   beforeEach(() => {
     mocked(closeIssue).mockResolvedValue(undefined);
     mocked(createIssue).mockResolvedValue(undefined);
@@ -99,4 +101,14 @@ describe("[env variable mock]", () => {
     expect(mocked(createIssue).mock.calls.length).toBe(0);
     expect(mocked(updateIssue).mock.calls.length).toBe(0);
   });
+});
+
+test("run fails gracefully on error", async () => {
+  mocked(WPVCConfig).mockImplementationOnce(() => {
+    throw new Error();
+  });
+
+  await run();
+
+  expect(mocked(core).setFailed.mock.calls.length).toBe(1);
 });
