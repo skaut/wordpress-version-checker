@@ -5,8 +5,8 @@ branding:
   icon: "bell"
   color: "gray-dark"
 inputs:
-  repo-token:
-    description: 'GitHub token'
+  GITHUB_TOKEN:
+    description: 'The GITHUB_TOKEN environment variable'
     required: true
 runs:
   using: "node12"
