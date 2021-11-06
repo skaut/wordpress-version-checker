@@ -8,6 +8,7 @@ import type { Config } from "./interfaces/Config"; // eslint-disable-line @types
 import { ExistingIssueFormatError } from "./exceptions/ExistingIssueFormatError";
 import { GetIssueError } from "./exceptions/GetIssueError";
 import { IssueCreationError } from "./exceptions/IssueCreationError";
+import { IssueListError } from "./exceptions/IssueListError";
 import { IssueUpdateError } from "./exceptions/IssueUpdateError";
 
 function issueBody(testedVersion: string, latestVersion: string): string {
@@ -23,6 +24,19 @@ function issueBody(testedVersion: string, latestVersion: string): string {
     "\n" +
     "This issue will be closed automatically when the versions match."
   );
+}
+
+export async function getIssue(): Promise<number | null> {
+  const issues = await octokit()
+    .rest.issues.listForRepo({
+      ...repo(),
+      creator: "github-actions[bot]",
+      labels: "wpvc",
+    })
+    .catch(function (e): never {
+      throw new IssueListError(String(e));
+    });
+  return issues.data.length > 0 ? issues.data[0].number : null;
 }
 
 export async function createIssue(
