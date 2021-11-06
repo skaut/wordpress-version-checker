@@ -55,7 +55,7 @@ export async function updateIssue(
       throw new GetIssueError(issueNumber, String(e));
     });
   if (issue.data.body === undefined || issue.data.body === null) {
-    throw new GetIssueError(issueNumber, "There is no issue body.");
+    throw new ExistingIssueFormatError(issueNumber);
   }
   const matchingLine = issue.data.body.split("\r\n").find(function (line) {
     return line.startsWith("**Latest version:**");
