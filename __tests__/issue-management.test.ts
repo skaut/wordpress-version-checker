@@ -4,11 +4,12 @@ import mockedEnv from "mocked-env";
 
 import * as core from "@actions/core";
 
-import { createIssue, updateIssue } from "../src/issue-management";
+import { createIssue, getIssue, updateIssue } from "../src/issue-management";
 
 import { ExistingIssueFormatError } from "../src/exceptions/ExistingIssueFormatError";
 import { GetIssueError } from "../src/exceptions/GetIssueError";
 import { IssueCreationError } from "../src/exceptions/IssueCreationError";
+import { IssueListError } from "../src/exceptions/IssueListError";
 import { IssueUpdateError } from "../src/exceptions/IssueUpdateError";
 
 jest.mock("@actions/core");
@@ -23,6 +24,37 @@ describe("[env variable mock]", () => {
   afterEach(() => {
     restore();
     nock.cleanAll();
+  });
+
+  test("getIssue works correctly", async () => {
+    nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/issues")
+      .query({ creator: "github-actions[bot]", labels: "wpvc" })
+      .reply(200, [{ number: 123 }]);
+
+    await expect(getIssue()).resolves.toEqual(123);
+  });
+
+  test("getIssue works correctly when the issue doesn't exist", async () => {
+    nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/issues")
+      .query({ creator: "github-actions[bot]", labels: "wpvc" })
+      .reply(200, []);
+
+    await expect(getIssue()).resolves.toEqual(null);
+  });
+
+  test("getIssue fails gracefully on connection issues", async () => {
+    await expect(getIssue()).rejects.toThrow(IssueListError);
+  });
+
+  test("getIssue fails gracefully on nonexistent repo", async () => {
+    nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/issues")
+      .query({ creator: "github-actions[bot]", labels: "wpvc" })
+      .reply(404);
+
+    await expect(getIssue()).rejects.toThrow(IssueListError);
   });
 
   test("createIssue works correctly", async () => {
