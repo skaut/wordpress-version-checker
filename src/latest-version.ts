@@ -4,21 +4,24 @@ import { LatestVersionError } from "./exceptions/LatestVersionError";
 
 async function httpsRequest(options: https.RequestOptions): Promise<string> {
   return new Promise((resolve, reject) => {
-    https.get(options, (response) => {
-      let data = "";
-      response.setEncoding("utf8");
-      response.on("data", (chunk): void => {
-        data += chunk;
+    https
+      .get(options, (response) => {
+        let data = "";
+        response.setEncoding("utf8");
+        response.on("data", (chunk): void => {
+          data += chunk;
+        });
+        response.on("end", (): void => {
+          if (response.statusCode === 200) {
+            resolve(data);
+          } else {
+            reject();
+          }
+        });
+      })
+      .on("error", (e) => {
+        reject(e);
       });
-      response.on("error", (e): void => reject(e));
-      response.on("end", (): void => {
-        if (response.statusCode === 200) {
-          resolve(data);
-        } else {
-          reject();
-        }
-      });
-    });
   });
 }
 
@@ -26,7 +29,7 @@ export async function latestWordPressVersion(): Promise<string> {
   const rawData = await httpsRequest({
     host: "api.wordpress.org",
     path: "/core/stable-check/1.0/",
-  }).catch((e): never => {
+  }).catch((e: string): never => {
     throw new LatestVersionError(e);
   });
   let list: Record<string, unknown> = {};
@@ -38,7 +41,7 @@ export async function latestWordPressVersion(): Promise<string> {
   const latest = Object.keys(list).find(
     (key): boolean => list[key] === "latest"
   );
-  if (!latest) {
+  if (latest === undefined) {
     throw new LatestVersionError("Couldn't find the latest version");
   }
   return latest.split(".").slice(0, 2).join("."); // Discard patch version

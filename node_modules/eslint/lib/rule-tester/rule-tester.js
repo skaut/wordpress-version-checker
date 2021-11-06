@@ -4,7 +4,7 @@
  */
 "use strict";
 
-/* global describe, it */
+/* eslint-env mocha -- Mocha wrapper */
 
 /*
  * This is a wrapper around mocha to allow for DRY unittests for eslint
@@ -53,6 +53,9 @@ const
 const ajv = require("../shared/ajv")({ strictDefaults: true });
 
 const espreePath = require.resolve("espree");
+const parserSymbol = Symbol.for("eslint.RuleTester.parser");
+
+const { SourceCode } = require("../source-code");
 
 //------------------------------------------------------------------------------
 // Typedefs
@@ -60,9 +63,11 @@ const espreePath = require.resolve("espree");
 
 /** @typedef {import("../shared/types").Parser} Parser */
 
+/* eslint-disable jsdoc/valid-types -- https://github.com/jsdoc-type-pratt-parser/jsdoc-type-pratt-parser/issues/4#issuecomment-778805577 */
 /**
  * A test case that is expected to pass lint.
  * @typedef {Object} ValidTestCase
+ * @property {string} [name] Name for the test case.
  * @property {string} code Code for the test case.
  * @property {any[]} [options] Options for the test case.
  * @property {{ [name: string]: any }} [settings] Settings for the test case.
@@ -71,11 +76,13 @@ const espreePath = require.resolve("espree");
  * @property {{ [name: string]: any }} [parserOptions] Options for the parser.
  * @property {{ [name: string]: "readonly" | "writable" | "off" }} [globals] The additional global variables.
  * @property {{ [name: string]: boolean }} [env] Environments for the test case.
+ * @property {boolean} [only] Run only this test case or the subset of test cases with this property.
  */
 
 /**
  * A test case that is expected to fail lint.
  * @typedef {Object} InvalidTestCase
+ * @property {string} [name] Name for the test case.
  * @property {string} code Code for the test case.
  * @property {number | Array<TestCaseError | string | RegExp>} errors Expected errors.
  * @property {string | null} [output] The expected code after autofixes are applied. If set to `null`, the test runner will assert that no autofix is suggested.
@@ -86,6 +93,7 @@ const espreePath = require.resolve("espree");
  * @property {{ [name: string]: any }} [parserOptions] Options for the parser.
  * @property {{ [name: string]: "readonly" | "writable" | "off" }} [globals] The additional global variables.
  * @property {{ [name: string]: boolean }} [env] Environments for the test case.
+ * @property {boolean} [only] Run only this test case or the subset of test cases with this property.
  */
 
 /**
@@ -100,6 +108,7 @@ const espreePath = require.resolve("espree");
  * @property {number} [endLine] The 1-based line number of the reported end location.
  * @property {number} [endColumn] The 1-based column number of the reported end location.
  */
+/* eslint-enable jsdoc/valid-types -- https://github.com/jsdoc-type-pratt-parser/jsdoc-type-pratt-parser/issues/4#issuecomment-778805577 */
 
 //------------------------------------------------------------------------------
 // Private Members
@@ -117,11 +126,13 @@ let defaultConfig = { rules: {} };
  * configuration
  */
 const RuleTesterParameters = [
+    "name",
     "code",
     "filename",
     "options",
     "errors",
-    "output"
+    "output",
+    "only"
 ];
 
 /*
@@ -206,7 +217,7 @@ function freezeDeeply(x) {
  */
 function sanitize(text) {
     return text.replace(
-        /[\u0000-\u0009\u000b-\u001a]/gu, // eslint-disable-line no-control-regex
+        /[\u0000-\u0009\u000b-\u001a]/gu, // eslint-disable-line no-control-regex -- Escaping controls
         c => `\\u${c.codePointAt(0).toString(16).padStart(4, "0")}`
     );
 }
@@ -236,6 +247,7 @@ function defineStartEndAsError(objName, node) {
     });
 }
 
+
 /**
  * Define `start`/`end` properties of all nodes of the given AST as throwing error.
  * @param {ASTNode} ast The root node to errorize `start`/`end` properties.
@@ -255,8 +267,10 @@ function defineStartEndAsErrorInTree(ast, visitorKeys) {
  * @returns {Parser} Wrapped parser object.
  */
 function wrapParser(parser) {
+
     if (typeof parser.parseForESLint === "function") {
         return {
+            [parserSymbol]: parser,
             parseForESLint(...args) {
                 const ret = parser.parseForESLint(...args);
 
@@ -265,7 +279,9 @@ function wrapParser(parser) {
             }
         };
     }
+
     return {
+        [parserSymbol]: parser,
         parse(...args) {
             const ast = parser.parse(...args);
 
@@ -275,6 +291,17 @@ function wrapParser(parser) {
     };
 }
 
+/**
+ * Function to replace `SourceCode.prototype.getComments`.
+ * @returns {void}
+ * @throws {Error} Deprecation message.
+ */
+function getCommentsDeprecation() {
+    throw new Error(
+        "`SourceCode#getComments()` is deprecated and will be removed in a future major version. Use `getCommentsBefore()`, `getCommentsAfter()`, and `getCommentsInside()` instead."
+    );
+}
+
 //------------------------------------------------------------------------------
 // Public Interface
 //------------------------------------------------------------------------------
@@ -282,12 +309,14 @@ function wrapParser(parser) {
 // default separators for testing
 const DESCRIBE = Symbol("describe");
 const IT = Symbol("it");
+const IT_ONLY = Symbol("itOnly");
 
 /**
  * This is `it` default handler if `it` don't exist.
  * @this {Mocha}
  * @param {string} text The description of the test case.
  * @param {Function} method The logic of the test case.
+ * @throws {Error} Any error upon execution of `method`.
  * @returns {any} Returned value of `method`.
  */
 function itDefaultHandler(text, method) {
@@ -312,6 +341,9 @@ function describeDefaultHandler(text, method) {
     return method.call(this);
 }
 
+/**
+ * Mocha test wrapper.
+ */
 class RuleTester {
 
     /**
@@ -343,6 +375,7 @@ class RuleTester {
     /**
      * Set the configuration to use for all future tests
      * @param {Object} config the configuration to use.
+     * @throws {TypeError} If non-object config.
      * @returns {void}
      */
     static setDefaultConfig(config) {
@@ -401,6 +434,46 @@ class RuleTester {
     }
 
     /**
+     * Adds the `only` property to a test to run it in isolation.
+     * @param {string | ValidTestCase | InvalidTestCase} item A single test to run by itself.
+     * @returns {ValidTestCase | InvalidTestCase} The test with `only` set.
+     */
+    static only(item) {
+        if (typeof item === "string") {
+            return { code: item, only: true };
+        }
+
+        return { ...item, only: true };
+    }
+
+    static get itOnly() {
+        if (typeof this[IT_ONLY] === "function") {
+            return this[IT_ONLY];
+        }
+        if (typeof this[IT] === "function" && typeof this[IT].only === "function") {
+            return Function.bind.call(this[IT].only, this[IT]);
+        }
+        if (typeof it === "function" && typeof it.only === "function") {
+            return Function.bind.call(it.only, it);
+        }
+
+        if (typeof this[DESCRIBE] === "function" || typeof this[IT] === "function") {
+            throw new Error(
+                "Set `RuleTester.itOnly` to use `only` with a custom test framework.\n" +
+                "See https://eslint.org/docs/developer-guide/nodejs-api#customizing-ruletester for more."
+            );
+        }
+        if (typeof it === "function") {
+            throw new Error("The current test framework does not support exclusive tests with `only`.");
+        }
+        throw new Error("To use `only`, use RuleTester with a test framework that provides `it.only()` like Mocha.");
+    }
+
+    static set itOnly(value) {
+        this[IT_ONLY] = value;
+    }
+
+    /**
      * Define a rule for one particular run of tests.
      * @param {string} name The name of the rule to define.
      * @param {Function} rule The rule definition.
@@ -418,6 +491,8 @@ class RuleTester {
      *   valid: (ValidTestCase | string)[],
      *   invalid: InvalidTestCase[]
      * }} test The collection of tests to run.
+     * @throws {TypeError|Error} If non-object `test`, or if a required
+     * scenario of the given type is missing.
      * @returns {void}
      */
     run(ruleName, rule, test) {
@@ -461,6 +536,7 @@ class RuleTester {
         /**
          * Run the rule for the given item
          * @param {string|Object} item Item to run the rule against
+         * @throws {Error} If an invalid schema.
          * @returns {Object} Eslint run result
          * @private
          */
@@ -557,7 +633,16 @@ class RuleTester {
             validate(config, "rule-tester", id => (id === ruleName ? rule : null));
 
             // Verify the code.
-            const messages = linter.verify(code, config, filename);
+            const { getComments } = SourceCode.prototype;
+            let messages;
+
+            try {
+                SourceCode.prototype.getComments = getCommentsDeprecation;
+                messages = linter.verify(code, config, filename);
+            } finally {
+                SourceCode.prototype.getComments = getComments;
+            }
+
             const fatalErrorMessage = messages.find(m => m.fatal);
 
             assert(!fatalErrorMessage, `A fatal parsing error occurred: ${fatalErrorMessage && fatalErrorMessage.message}`);
@@ -610,7 +695,8 @@ class RuleTester {
             const messages = result.messages;
 
             assert.strictEqual(messages.length, 0, util.format("Should have no errors but had %d: %s",
-                messages.length, util.inspect(messages)));
+                messages.length,
+                util.inspect(messages)));
 
             assertASTDidntChange(result.beforeAST, result.afterAST);
         }
@@ -665,13 +751,18 @@ class RuleTester {
                 }
 
                 assert.strictEqual(messages.length, item.errors, util.format("Should have %d error%s but had %d: %s",
-                    item.errors, item.errors === 1 ? "" : "s", messages.length, util.inspect(messages)));
+                    item.errors,
+                    item.errors === 1 ? "" : "s",
+                    messages.length,
+                    util.inspect(messages)));
             } else {
                 assert.strictEqual(
-                    messages.length, item.errors.length,
-                    util.format(
+                    messages.length, item.errors.length, util.format(
                         "Should have %d error%s but had %d: %s",
-                        item.errors.length, item.errors.length === 1 ? "" : "s", messages.length, util.inspect(messages)
+                        item.errors.length,
+                        item.errors.length === 1 ? "" : "s",
+                        messages.length,
+                        util.inspect(messages)
                     )
                 );
 
@@ -865,16 +956,6 @@ class RuleTester {
                 );
             }
 
-            // Rules that produce fixes must have `meta.fixable` property.
-            if (result.output !== item.code) {
-                assert.ok(
-                    hasOwnProperty(rule, "meta"),
-                    "Fixable rules should export a `meta.fixable` property."
-                );
-
-                // Linter throws if a rule that produced a fix has `meta` but doesn't have `meta.fixable`.
-            }
-
             assertASTDidntChange(result.beforeAST, result.afterAST);
         }
 
@@ -885,23 +966,29 @@ class RuleTester {
         RuleTester.describe(ruleName, () => {
             RuleTester.describe("valid", () => {
                 test.valid.forEach(valid => {
-                    RuleTester.it(sanitize(typeof valid === "object" ? valid.code : valid), () => {
-                        testValidTemplate(valid);
-                    });
+                    RuleTester[valid.only ? "itOnly" : "it"](
+                        sanitize(typeof valid === "object" ? valid.name || valid.code : valid),
+                        () => {
+                            testValidTemplate(valid);
+                        }
+                    );
                 });
             });
 
             RuleTester.describe("invalid", () => {
                 test.invalid.forEach(invalid => {
-                    RuleTester.it(sanitize(invalid.code), () => {
-                        testInvalidTemplate(invalid);
-                    });
+                    RuleTester[invalid.only ? "itOnly" : "it"](
+                        sanitize(invalid.name || invalid.code),
+                        () => {
+                            testInvalidTemplate(invalid);
+                        }
+                    );
                 });
             });
         });
     }
 }
 
-RuleTester[DESCRIBE] = RuleTester[IT] = null;
+RuleTester[DESCRIBE] = RuleTester[IT] = RuleTester[IT_ONLY] = null;
 
 module.exports = RuleTester;
