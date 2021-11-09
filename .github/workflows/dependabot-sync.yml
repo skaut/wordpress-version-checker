@@ -39,5 +39,4 @@ jobs:
           git commit -m "[gh-actions-bot] node_modules sync"
 
       - name: "Git push"
-        uses: actions/checkout@v2.4.0
         run: git push
