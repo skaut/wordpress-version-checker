@@ -1,6 +1,9 @@
 name: "Dependabot node_modules sync"
 on: "pull_request"
 
+permissions:
+  contents: write
+
 jobs:
   npm-sync:
     name: "node_modules sync"
