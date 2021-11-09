@@ -36,4 +36,4 @@ jobs:
           git commit -m "[gh-actions-bot] node_modules sync"
 
       - name: "Git push"
-        run: git push origin
+        run: git push origin $GITHUB_HEAD_REF
