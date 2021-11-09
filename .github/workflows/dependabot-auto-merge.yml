@@ -1,12 +1,16 @@
 name: "Dependabot auto-merge"
-on: "pull_request_target"
+on:
+  workflow_run:
+    workflows: ["Dependabot node_modules sync"]
+    types:
+      - completed
 
 permissions:
   pull-requests: write
   contents: write
 
 jobs:
-  dependabot:
+  dependabot-auto-merge:
     name: "Dependabot auto-merge"
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' }}
