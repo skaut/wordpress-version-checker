@@ -1,0 +1,39 @@
+name: "Dependabot node_modules sync"
+on: "pull_request"
+
+jobs:
+  npm-sync:
+    name: "node_modules sync"
+    runs-on: ubuntu-latest
+    #if: ${{ github.actor == 'dependabot[bot]' }}
+    if: ${{ github.actor == 'marekdedic' }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2.4.0
+
+      - name: "Cache NPM dependencies"
+        uses: actions/cache@v2.1.6
+        with:
+          path: "~/.npm"
+          key: npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-
+            npm-dependencies-${{ runner.os }}-
+
+      - name: "Install NPM dependencies"
+        run: |
+          npm ci
+
+      - name: "Configure git"
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+
+      - name: "Commit node_modules"
+        run: |
+          git add node_modules/
+          git commit -m "[gh-actions-bot] node_modules sync"
+
+      - name: "Git push"
+        run: git push origin
