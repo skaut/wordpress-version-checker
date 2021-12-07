@@ -1,5 +1,5 @@
 import nock from "nock";
-import { mocked } from "ts-jest/utils";
+import { mocked } from "jest-mock";
 import mockedEnv from "mocked-env";
 
 import * as core from "@actions/core";
