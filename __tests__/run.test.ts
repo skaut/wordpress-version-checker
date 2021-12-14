@@ -26,6 +26,7 @@ describe("Succesful runs", () => {
   });
 
   test("run works correctly with outdated version and no existing issue", async () => {
+    expect.assertions(6);
     const config = { readme: "readme.txt" };
     const testedVersionValue = "0.41";
     const latestVersionValue = "0.42";
@@ -37,15 +38,16 @@ describe("Succesful runs", () => {
 
     await run();
 
-    expect(mocked(closeIssue).mock.calls.length).toBe(0);
-    expect(mocked(createIssue).mock.calls.length).toBe(1);
+    expect(mocked(closeIssue).mock.calls).toHaveLength(0);
+    expect(mocked(createIssue).mock.calls).toHaveLength(1);
     expect(mocked(createIssue).mock.calls[0][0]).toStrictEqual(config);
     expect(mocked(createIssue).mock.calls[0][1]).toBe(testedVersionValue);
     expect(mocked(createIssue).mock.calls[0][2]).toBe(latestVersionValue);
-    expect(mocked(updateIssue).mock.calls.length).toBe(0);
+    expect(mocked(updateIssue).mock.calls).toHaveLength(0);
   });
 
   test("run works correctly with outdated version and an existing issue", async () => {
+    expect.assertions(6);
     const config = { readme: "readme.txt" };
     const testedVersionValue = "0.41";
     const latestVersionValue = "0.42";
@@ -58,15 +60,16 @@ describe("Succesful runs", () => {
 
     await run();
 
-    expect(mocked(closeIssue).mock.calls.length).toBe(0);
-    expect(mocked(createIssue).mock.calls.length).toBe(0);
-    expect(mocked(updateIssue).mock.calls.length).toBe(1);
+    expect(mocked(closeIssue).mock.calls).toHaveLength(0);
+    expect(mocked(createIssue).mock.calls).toHaveLength(0);
+    expect(mocked(updateIssue).mock.calls).toHaveLength(1);
     expect(mocked(updateIssue).mock.calls[0][0]).toBe(existingIssue);
     expect(mocked(updateIssue).mock.calls[0][1]).toBe(testedVersionValue);
     expect(mocked(updateIssue).mock.calls[0][2]).toBe(latestVersionValue);
   });
 
   test("run works correctly with up-to-date version and no existing issue", async () => {
+    expect.assertions(3);
     const config = { readme: "readme.txt" };
     const testedVersionValue = "0.42";
     const latestVersionValue = "0.42";
@@ -78,12 +81,13 @@ describe("Succesful runs", () => {
 
     await run();
 
-    expect(mocked(closeIssue).mock.calls.length).toBe(0);
-    expect(mocked(createIssue).mock.calls.length).toBe(0);
-    expect(mocked(updateIssue).mock.calls.length).toBe(0);
+    expect(mocked(closeIssue).mock.calls).toHaveLength(0);
+    expect(mocked(createIssue).mock.calls).toHaveLength(0);
+    expect(mocked(updateIssue).mock.calls).toHaveLength(0);
   });
 
   test("run works correctly with up-to-date version and an existing issue", async () => {
+    expect.assertions(4);
     const config = { readme: "readme.txt" };
     const testedVersionValue = "0.42";
     const latestVersionValue = "0.42";
@@ -96,19 +100,20 @@ describe("Succesful runs", () => {
 
     await run();
 
-    expect(mocked(closeIssue).mock.calls.length).toBe(1);
+    expect(mocked(closeIssue).mock.calls).toHaveLength(1);
     expect(mocked(closeIssue).mock.calls[0][0]).toBe(existingIssue);
-    expect(mocked(createIssue).mock.calls.length).toBe(0);
-    expect(mocked(updateIssue).mock.calls.length).toBe(0);
+    expect(mocked(createIssue).mock.calls).toHaveLength(0);
+    expect(mocked(updateIssue).mock.calls).toHaveLength(0);
   });
 });
 
 test("run fails gracefully on error", async () => {
+  expect.assertions(1);
   mocked(WPVCConfig).mockImplementationOnce(() => {
     throw new Error();
   });
 
   await run();
 
-  expect(mocked(core).setFailed.mock.calls.length).toBe(1);
+  expect(mocked(core).setFailed.mock.calls).toHaveLength(1);
 });

@@ -22,6 +22,7 @@ describe("Mocked env variables", () => {
   });
 
   test("WPVCConfig works correctly", async () => {
+    expect.assertions(1);
     const config = {
       readme: "path/to/readme.txt",
     };
@@ -36,6 +37,7 @@ describe("Mocked env variables", () => {
   });
 
   test("WPVCConfig works correctly with assignees", async () => {
+    expect.assertions(1);
     const config = {
       readme: "path/to/readme.txt",
       assignees: ["PERSON1", "PERSON2"],
@@ -51,18 +53,21 @@ describe("Mocked env variables", () => {
   });
 
   test("WPVCConfig fails gracefully on connection issues", async () => {
+    expect.assertions(1);
     await expect(WPVCConfig()).rejects.toThrow(ConfigError);
   });
 
   test("WPVCConfig returns null on no config", async () => {
+    expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
       .reply(404);
 
-    await expect(WPVCConfig()).resolves.toStrictEqual(null);
+    await expect(WPVCConfig()).resolves.toBeNull();
   });
 
   test("WPVCConfig fails gracefully on invalid response", async () => {
+    expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
       .reply(200);
@@ -71,6 +76,7 @@ describe("Mocked env variables", () => {
   });
 
   test("WPVCConfig fails gracefully on invalid response 2", async () => {
+    expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
       .reply(200, {
@@ -81,6 +87,7 @@ describe("Mocked env variables", () => {
   });
 
   test("WPVCConfig fails gracefully on invalid config", async () => {
+    expect.assertions(1);
     const config = {
       readme_incorrect: "path/to/readme.txt",
     };
