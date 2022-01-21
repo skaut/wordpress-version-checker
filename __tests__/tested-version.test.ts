@@ -1,5 +1,5 @@
 import nock from "nock";
-import { mocked } from "ts-jest/utils";
+import { mocked } from "jest-mock";
 import mockedEnv from "mocked-env";
 
 import * as core from "@actions/core";
@@ -30,6 +30,7 @@ describe("[env variable mock]", () => {
     "\tTested up to: 0.42",
     "\nTested up to: 0.42\n",
   ])("testedVersion works correctly", async (readme) => {
+    expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
       readme: readmePath,
@@ -41,10 +42,11 @@ describe("[env variable mock]", () => {
         content: Buffer.from(readme).toString("base64"),
       });
 
-    await expect(testedVersion(config)).resolves.toStrictEqual("0.42");
+    await expect(testedVersion(config)).resolves.toBe("0.42");
   });
 
   test("testedVersion works correctly with no config and readme.txt in repo root", async () => {
+    expect.assertions(1);
     const readme = "Tested up to: 0.42";
 
     nock("https://api.github.com")
@@ -53,10 +55,11 @@ describe("[env variable mock]", () => {
         content: Buffer.from(readme).toString("base64"),
       });
 
-    await expect(testedVersion(null)).resolves.toStrictEqual("0.42");
+    await expect(testedVersion(null)).resolves.toBe("0.42");
   });
 
   test("testedVersion works correctly with no config and readme.txt in the plugin folder", async () => {
+    expect.assertions(1);
     const readme = "Tested up to: 0.42";
 
     nock("https://api.github.com")
@@ -70,10 +73,11 @@ describe("[env variable mock]", () => {
         content: Buffer.from(readme).toString("base64"),
       });
 
-    await expect(testedVersion(null)).resolves.toStrictEqual("0.42");
+    await expect(testedVersion(null)).resolves.toBe("0.42");
   });
 
   test("testedVersion fails gracefully on connection issues", async () => {
+    expect.assertions(1);
     const config = {
       readme: "path/to/readme.txt",
     };
@@ -82,6 +86,7 @@ describe("[env variable mock]", () => {
   });
 
   test("testedVersion fails gracefully on no readme", async () => {
+    expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
       readme: readmePath,
@@ -95,6 +100,7 @@ describe("[env variable mock]", () => {
   });
 
   test("testedVersion fails gracefully on invalid response", async () => {
+    expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
       readme: readmePath,
@@ -108,6 +114,7 @@ describe("[env variable mock]", () => {
   });
 
   test("testedVersion fails gracefully on invalid response 2", async () => {
+    expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
       readme: readmePath,
@@ -130,6 +137,7 @@ describe("[env variable mock]", () => {
     "Tested up to 0.42:",
     "Tested up to: 0.41: 0.42",
   ])("testedVersion fails gracefully on invalid readme", async (readme) => {
+    expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
       readme: readmePath,

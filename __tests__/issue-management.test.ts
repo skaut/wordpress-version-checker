@@ -1,5 +1,5 @@
 import nock from "nock";
-import { mocked } from "ts-jest/utils";
+import { mocked } from "jest-mock";
 import mockedEnv from "mocked-env";
 
 import * as core from "@actions/core";
@@ -32,28 +32,32 @@ describe("[env variable mock]", () => {
   });
 
   test("getIssue works correctly", async () => {
+    expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues")
       .query({ creator: "github-actions[bot]", labels: "wpvc" })
       .reply(200, [{ number: 123 }]);
 
-    await expect(getIssue()).resolves.toEqual(123);
+    await expect(getIssue()).resolves.toBe(123);
   });
 
   test("getIssue works correctly when the issue doesn't exist", async () => {
+    expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues")
       .query({ creator: "github-actions[bot]", labels: "wpvc" })
       .reply(200, []);
 
-    await expect(getIssue()).resolves.toEqual(null);
+    await expect(getIssue()).resolves.toBeNull();
   });
 
   test("getIssue fails gracefully on connection issues", async () => {
+    expect.assertions(1);
     await expect(getIssue()).rejects.toThrow(IssueListError);
   });
 
   test("getIssue fails gracefully on nonexistent repo", async () => {
+    expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues")
       .query({ creator: "github-actions[bot]", labels: "wpvc" })
@@ -63,6 +67,7 @@ describe("[env variable mock]", () => {
   });
 
   test("closeIssue works correctly", async () => {
+    expect.assertions(1);
     nock("https://api.github.com")
       .patch("/repos/OWNER/REPO/issues/123", {
         state: "closed",
@@ -73,10 +78,12 @@ describe("[env variable mock]", () => {
   });
 
   test("closeIssue fails gracefully on connection issues", async () => {
+    expect.assertions(1);
     await expect(closeIssue(123)).rejects.toThrow(IssueUpdateError);
   });
 
   test("closeIssue fails gracefully on nonexistent repo", async () => {
+    expect.assertions(1);
     nock("https://api.github.com")
       .patch("/repos/OWNER/REPO/issues/123", {
         state: "closed",
@@ -87,6 +94,7 @@ describe("[env variable mock]", () => {
   });
 
   test("createIssue works correctly", async () => {
+    expect.assertions(2);
     const config = {
       readme: "readme.txt",
     };
@@ -101,10 +109,11 @@ describe("[env variable mock]", () => {
       .reply(201);
 
     await expect(createIssue(config, "0.41", "0.42")).resolves.toBeUndefined();
-    expect(scope.isDone()).toEqual(true);
+    expect(scope.isDone()).toBe(true);
   });
 
   test("createIssue works correctly with assignees", async () => {
+    expect.assertions(2);
     const config = {
       readme: "readme.txt",
       assignees: ["PERSON1", "PERSON2"],
@@ -121,10 +130,11 @@ describe("[env variable mock]", () => {
       .reply(201);
 
     await expect(createIssue(config, "0.41", "0.42")).resolves.toBeUndefined();
-    expect(scope.isDone()).toEqual(true);
+    expect(scope.isDone()).toBe(true);
   });
 
   test("createIssue works correctly with no config", async () => {
+    expect.assertions(2);
     const scope = nock("https://api.github.com")
       .post("/repos/OWNER/REPO/issues", {
         title:
@@ -135,16 +145,18 @@ describe("[env variable mock]", () => {
       .reply(201);
 
     await expect(createIssue(null, "0.41", "0.42")).resolves.toBeUndefined();
-    expect(scope.isDone()).toEqual(true);
+    expect(scope.isDone()).toBe(true);
   });
 
   test("createIssue fails gracefully on connection issues", async () => {
+    expect.assertions(1);
     await expect(createIssue(null, "0.41", "0.42")).rejects.toThrow(
       IssueCreationError
     );
   });
 
   test("createIssue fails gracefully on nonexistent repo", async () => {
+    expect.assertions(1);
     nock("https://api.github.com").post("/repos/OWNER/REPO/issues").reply(404);
 
     await expect(createIssue(null, "0.41", "0.42")).rejects.toThrow(
@@ -153,6 +165,7 @@ describe("[env variable mock]", () => {
   });
 
   test("updateIssue works correctly", async () => {
+    expect.assertions(2);
     const scope = nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues/123")
       .reply(200, { body: "**Latest version:** 0.42" })
@@ -160,19 +173,21 @@ describe("[env variable mock]", () => {
       .reply(200);
 
     await expect(updateIssue(123, "0.41", "0.43")).resolves.toBeUndefined();
-    expect(scope.isDone()).toEqual(true);
+    expect(scope.isDone()).toBe(true);
   });
 
   test("updateIssue correctly does not update the issue if it isn't needed", async () => {
+    expect.assertions(2);
     const scope = nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues/123")
       .reply(200, { body: "**Latest version:** 0.42" });
 
     await expect(updateIssue(123, "0.41", "0.42")).resolves.toBeUndefined();
-    expect(scope.isDone()).toEqual(true);
+    expect(scope.isDone()).toBe(true);
   });
 
   test("updateIssue fails gracefully on connection issues on getting the existing issue", async () => {
+    expect.assertions(1);
     nock("https://api.github.com")
       .patch("/repos/OWNER/REPO/issues/123")
       .reply(200);
@@ -183,6 +198,7 @@ describe("[env variable mock]", () => {
   });
 
   test("updateIssue fails gracefully on connection issues on updating the existing issue", async () => {
+    expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues/123")
       .reply(200, { body: "**Latest version:** 0.42" });
@@ -193,6 +209,7 @@ describe("[env variable mock]", () => {
   });
 
   test("updateIssue fails gracefully on nonexistent repo", async () => {
+    expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues/123")
       .reply(404)
@@ -205,6 +222,7 @@ describe("[env variable mock]", () => {
   });
 
   test("updateIssue fails gracefully on malformed issue 1", async () => {
+    expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues/123")
       .reply(200, {});
@@ -215,6 +233,7 @@ describe("[env variable mock]", () => {
   });
 
   test("updateIssue fails gracefully on malformed issue 2", async () => {
+    expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues/123")
       .reply(200, { body: "**Latest NOT version:** 0.42" });
