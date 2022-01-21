@@ -83,14 +83,4 @@ jobs:
           npm test
 
       - name: "Upload coverage results"
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        run: |
-          curl -s https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --import
-          curl -Os https://uploader.codecov.io/latest/linux/codecov
-          curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM
-          curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM.sig
-          gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
-          shasum -a 256 -c codecov.SHA256SUM
-          chmod +x codecov
-          ./codecov -t ${CODECOV_TOKEN} -s coverage
+        uses: codecov/codecov-action@v2.1.0
