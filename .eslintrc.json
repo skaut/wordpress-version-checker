@@ -73,7 +73,14 @@
 	"jest/no-if": "error",
 	"jest/no-test-return-statement": "error",
 	"jest/prefer-called-with": "error",
-	"jest/prefer-expect-assertions": ["error", {"onlyFunctionsWithAsyncKeyword": true}],
+	"jest/prefer-expect-assertions": [
+	  "error",
+	  {
+	    "onlyFunctionsWithAsyncKeyword": true,
+            "onlyFunctionsWithExpectInLoop": true,
+            "onlyFunctionsWithExpectInCallback": true
+	  }
+	],
 	"jest/prefer-expect-resolves": "error",
 	"jest/prefer-hooks-on-top": "error",
 	"jest/prefer-spy-on": "error",
