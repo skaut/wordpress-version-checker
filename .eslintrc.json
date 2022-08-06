@@ -7,8 +7,9 @@
     "node": true
   },
   "plugins": [
+    "deprecation",
     "@typescript-eslint",
-	"jest"
+    "jest"
   ],
   "extends": [
     "eslint:recommended",
@@ -17,6 +18,7 @@
     "plugin:prettier/recommended"
   ],
   "rules": {
+    "deprecation/deprecation": "warn",
     "no-warning-comments": "warn",
     "@typescript-eslint/array-type": ["error", {"default": "generic"}],
     "@typescript-eslint/consistent-indexed-object-style": "error",
