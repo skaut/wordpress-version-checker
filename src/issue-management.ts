@@ -1,4 +1,4 @@
-import compareVersions from "compare-versions";
+import { compare } from "compare-versions";
 
 import { octokit } from "./octokit";
 import { repo } from "./repo";
@@ -90,7 +90,7 @@ export async function updateIssue(
     throw new ExistingIssueFormatError(issueNumber);
   }
   const latestVersionInIssue = matchingLine.slice(20);
-  if (compareVersions.compare(latestVersionInIssue, latestVersion, "<")) {
+  if (compare(latestVersionInIssue, latestVersion, "<")) {
     await octokit()
       .rest.issues.update({
         ...repo(),
