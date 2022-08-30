@@ -1,4 +1,4 @@
-import compareVersions from "compare-versions";
+import { compare } from "compare-versions";
 import * as core from "@actions/core";
 
 import {
@@ -40,7 +40,7 @@ export async function run(): Promise<void> {
     const config = await WPVCConfig();
     const readmeVersion = await testedVersion(config);
     const latestVersion = await latestWordPressVersion();
-    if (compareVersions.compare(readmeVersion, latestVersion, "<")) {
+    if (compare(readmeVersion, latestVersion, "<")) {
       await outdated(config, readmeVersion, latestVersion);
     } else {
       await upToDate();
