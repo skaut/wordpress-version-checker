@@ -1,12 +1,10 @@
-import nock from "nock";
+import * as core from "@actions/core";
 import { mocked } from "jest-mock";
 import mockedEnv from "mocked-env";
-
-import * as core from "@actions/core";
-
-import { testedVersion } from "../src/tested-version";
+import nock from "nock";
 
 import { InvalidReadmeError } from "../src/exceptions/InvalidReadmeError";
+import { testedVersion } from "../src/tested-version";
 
 jest.mock("@actions/core");
 

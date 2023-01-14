@@ -1,6 +1,8 @@
-import { compare } from "compare-versions";
 import * as core from "@actions/core";
+import { compare } from "compare-versions";
 
+import type { WPVCError } from "./exceptions/WPVCError"; // eslint-disable-line @typescript-eslint/no-unused-vars
+import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
 import {
   closeIssue,
   createIssue,
@@ -10,10 +12,6 @@ import {
 import { latestWordPressVersion } from "./latest-version";
 import { testedVersion } from "./tested-version";
 import { WPVCConfig } from "./wpvc-config";
-
-import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
-
-import type { WPVCError } from "./exceptions/WPVCError"; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 async function outdated(
   config: Config | null,
