@@ -1,5 +1,7 @@
 # Disallow explicitly returning from tests (`no-test-return-statement`)
 
+<!-- end auto-generated rule header -->
+
 Tests in Jest should be void and not return values.
 
 If you are returning Promises then you should update the test to use
