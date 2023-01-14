@@ -1,5 +1,10 @@
 # Prefer `await expect(...).resolves` over `expect(await ...)` syntax (`prefer-expect-resolves`)
 
+🔧 This rule is automatically fixable by the
+[`--fix` CLI option](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix).
+
+<!-- end auto-generated rule header -->
+
 When working with promises, there are two primary ways you can test the resolved
 value:
 
@@ -48,6 +53,8 @@ it('is true', async () => {
 });
 
 it('errors', async () => {
-  await expect(Promise.rejects('oh noes!')).rejects.toThrow('oh noes!');
+  await expect(Promise.reject(new Error('oh noes!'))).rejects.toThrowError(
+    'oh noes!',
+  );
 });
 ```

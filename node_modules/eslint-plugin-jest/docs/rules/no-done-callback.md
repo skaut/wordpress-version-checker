@@ -1,4 +1,12 @@
-# Avoid using a callback in asynchronous tests and hooks (`no-done-callback`)
+# Disallow using a callback in asynchronous tests and hooks (`no-done-callback`)
+
+💼 This rule is enabled in the ✅ `recommended`
+[config](https://github.com/jest-community/eslint-plugin-jest/blob/main/README.md#shareable-configurations).
+
+💡 This rule is manually fixable by
+[editor suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).
+
+<!-- end auto-generated rule header -->
 
 When calling asynchronous code in hooks and tests, `jest` needs to know when the
 asynchronous work is complete to progress the current run.

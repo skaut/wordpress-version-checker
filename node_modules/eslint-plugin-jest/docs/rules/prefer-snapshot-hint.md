@@ -1,5 +1,7 @@
 # Prefer including a hint with external snapshots (`prefer-snapshot-hint`)
 
+<!-- end auto-generated rule header -->
+
 When working with external snapshot matchers it's considered best practice to
 provide a hint (as the last argument to the matcher) describing the expected
 snapshot content that will be included in the snapshots name by Jest.

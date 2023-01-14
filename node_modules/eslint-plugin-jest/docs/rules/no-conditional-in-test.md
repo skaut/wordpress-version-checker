@@ -1,11 +1,13 @@
 # Disallow conditional logic in tests (`no-conditional-in-test`)
 
+<!-- end auto-generated rule header -->
+
 Conditional logic in tests is usually an indication that a test is attempting to
 cover too much, and not testing the logic it intends to. Each branch of code
 executing within a conditional statement will usually be better served by a test
 devoted to it.
 
-## Rule Details
+## Rule details
 
 This rule reports on any use of a conditional statement such as `if`, `switch`,
 and ternary expressions.

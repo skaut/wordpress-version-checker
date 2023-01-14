@@ -1,5 +1,13 @@
 # Enforce valid titles (`valid-title`)
 
+💼 This rule is enabled in the ✅ `recommended`
+[config](https://github.com/jest-community/eslint-plugin-jest/blob/main/README.md#shareable-configurations).
+
+🔧 This rule is automatically fixable by the
+[`--fix` CLI option](https://eslint.org/docs/latest/user-guide/command-line-interface#--fix).
+
+<!-- end auto-generated rule header -->
+
 Checks that the title of Jest blocks are valid by ensuring that titles are:
 
 - not empty,
@@ -7,7 +15,7 @@ Checks that the title of Jest blocks are valid by ensuring that titles are:
 - not prefixed with their block name,
 - have no leading or trailing spaces
 
-## Rule Details
+## Rule details
 
 **emptyTitle**
 

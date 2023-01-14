@@ -1,15 +1,13 @@
 import { compare } from "compare-versions";
 
-import { octokit } from "./octokit";
-import { repo } from "./repo";
-
-import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
-
 import { ExistingIssueFormatError } from "./exceptions/ExistingIssueFormatError";
 import { GetIssueError } from "./exceptions/GetIssueError";
 import { IssueCreationError } from "./exceptions/IssueCreationError";
 import { IssueListError } from "./exceptions/IssueListError";
 import { IssueUpdateError } from "./exceptions/IssueUpdateError";
+import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
+import { octokit } from "./octokit";
+import { repo } from "./repo";
 
 function issueBody(testedVersion: string, latestVersion: string): string {
   return (
