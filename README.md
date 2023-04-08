@@ -1,6 +1,6 @@
 # WordPress version checker
 
-[![GitHub CI](https://img.shields.io/github/workflow/status/skaut/wordpress-version-checker/CI?label=CI&logo=github)](https://github.com/skaut/wordpress-version-checker/actions?query=branch%3Amaster)
+[![GitHub CI](https://img.shields.io/github/actions/workflow/status/skaut/wordpress-version-checker/CI.yml?label=CI&logo=github)](https://github.com/skaut/wordpress-version-checker/actions?query=branch%3Amaster)
 [![Codecov](https://img.shields.io/codecov/c/gh/skaut/wordpress-version-checker?logo=codecov)](https://app.codecov.io/gh/skaut/wordpress-version-checker)
 
 A GitHub action to automatically create issues when a plugin "tested up to" version doesn't match the latest WordPress version.
