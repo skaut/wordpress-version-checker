@@ -1,21 +1,19 @@
-import nock from "nock";
+import * as core from "@actions/core";
 import { mocked } from "jest-mock";
 import mockedEnv from "mocked-env";
-
-import * as core from "@actions/core";
-
-import {
-  closeIssue,
-  createIssue,
-  getIssue,
-  updateIssue,
-} from "../src/issue-management";
+import nock from "nock";
 
 import { ExistingIssueFormatError } from "../src/exceptions/ExistingIssueFormatError";
 import { GetIssueError } from "../src/exceptions/GetIssueError";
 import { IssueCreationError } from "../src/exceptions/IssueCreationError";
 import { IssueListError } from "../src/exceptions/IssueListError";
 import { IssueUpdateError } from "../src/exceptions/IssueUpdateError";
+import {
+  closeIssue,
+  createIssue,
+  getIssue,
+  updateIssue,
+} from "../src/issue-management";
 
 jest.mock("@actions/core");
 

@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
 
       - name: "Cache NPM dependencies"
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: "~/.npm"
           key: npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
@@ -32,15 +32,19 @@ jobs:
         run: |
           npm run build
 
+      - name: "Check for clean repo"
+        run: |
+          [ -z "$(git status --porcelain)" ] || (c=$?; git status; (exit $c))
+
   lint:
     name: "Lint"
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
 
       - name: "Cache NPM dependencies"
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: "~/.npm"
           key: npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
@@ -62,10 +66,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
 
       - name: "Cache NPM dependencies"
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: "~/.npm"
           key: npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
@@ -83,4 +87,4 @@ jobs:
           npm test
 
       - name: "Upload coverage results"
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v3.1.1

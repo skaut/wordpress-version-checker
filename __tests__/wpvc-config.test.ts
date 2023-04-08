@@ -1,12 +1,10 @@
-import nock from "nock";
+import * as core from "@actions/core";
 import { mocked } from "jest-mock";
 import mockedEnv from "mocked-env";
-
-import * as core from "@actions/core";
-
-import { WPVCConfig } from "../src/wpvc-config";
+import nock from "nock";
 
 import { ConfigError } from "../src/exceptions/ConfigError";
+import { WPVCConfig } from "../src/wpvc-config";
 
 jest.mock("@actions/core");
 

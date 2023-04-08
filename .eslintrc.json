@@ -7,9 +7,11 @@
     "node": true
   },
   "plugins": [
+    "deprecation",
+    "jest",
     "prefer-arrow",
-    "@typescript-eslint",
-    "jest"
+    "simple-import-sort",
+    "@typescript-eslint"
   ],
   "extends": [
     "eslint:recommended",
@@ -19,8 +21,11 @@
   ],
   "rules": {
     "arrow-body-style": ["error", "as-needed"],
+    "deprecation/deprecation": "warn",
     "no-warning-comments": "warn",
     "prefer-arrow/prefer-arrow-functions": ["error", {"allowStandaloneDeclarations": true}],
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
     "@typescript-eslint/array-type": ["error", {"default": "generic"}],
     "@typescript-eslint/consistent-indexed-object-style": "error",
     "@typescript-eslint/consistent-type-assertions": "error",
@@ -76,7 +81,14 @@
 	"jest/no-if": "error",
 	"jest/no-test-return-statement": "error",
 	"jest/prefer-called-with": "error",
-	"jest/prefer-expect-assertions": ["error", {"onlyFunctionsWithAsyncKeyword": true}],
+	"jest/prefer-expect-assertions": [
+	  "error",
+	  {
+	    "onlyFunctionsWithAsyncKeyword": true,
+            "onlyFunctionsWithExpectInLoop": true,
+            "onlyFunctionsWithExpectInCallback": true
+	  }
+	],
 	"jest/prefer-expect-resolves": "error",
 	"jest/prefer-hooks-on-top": "error",
 	"jest/prefer-spy-on": "error",

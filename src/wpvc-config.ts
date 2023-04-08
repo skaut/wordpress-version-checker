@@ -1,10 +1,8 @@
+import { ConfigError } from "./exceptions/ConfigError";
+import { hasStatus } from "./has-status";
+import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
 import { octokit } from "./octokit";
 import { repo } from "./repo";
-
-import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
-import { hasStatus } from "./has-status";
-
-import { ConfigError } from "./exceptions/ConfigError";
 
 function isConfig(
   config: Record<string, unknown>
