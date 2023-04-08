@@ -32,6 +32,10 @@ jobs:
         run: |
           npm run build
 
+      - name: "Check for clean repo"
+        run: |
+          [ -z "$(git status --porcelain)" ] || (c=$?; git status; (exit $c))
+
   lint:
     name: "Lint"
     runs-on: ubuntu-latest
