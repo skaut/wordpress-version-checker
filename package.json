@@ -30,6 +30,7 @@
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
+    "@vercel/ncc": "^0.36.1",
     "eslint": "^8.37.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-deprecation": "^1.4.0",
@@ -43,9 +44,9 @@
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.4"
   },
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc --build wpvc.tsconfig.json",
+    "build": "ncc build src/index.ts",
     "lint": "eslint \"src/**/*\" \"__tests__/**/*\"",
     "test": "jest"
   }
