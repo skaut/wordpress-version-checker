@@ -5,6 +5,7 @@ import nock from "nock";
 
 import { ExistingIssueFormatError } from "../src/exceptions/ExistingIssueFormatError";
 import { GetIssueError } from "../src/exceptions/GetIssueError";
+import { IssueCommentError } from "../src/exceptions/IssueCommentError";
 import { IssueCreationError } from "../src/exceptions/IssueCreationError";
 import { IssueListError } from "../src/exceptions/IssueListError";
 import { IssueUpdateError } from "../src/exceptions/IssueUpdateError";
@@ -67,6 +68,10 @@ describe("[env variable mock]", () => {
   test("closeIssue works correctly", async () => {
     expect.assertions(1);
     nock("https://api.github.com")
+      .post("/repos/OWNER/REPO/issues/123/comments", {
+        body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.',
+      })
+      .reply(200)
       .patch("/repos/OWNER/REPO/issues/123", {
         state: "closed",
       })
@@ -75,14 +80,43 @@ describe("[env variable mock]", () => {
     await expect(closeIssue(123)).resolves.toBeUndefined();
   });
 
-  test("closeIssue fails gracefully on connection issues", async () => {
+  test("closeIssue fails gracefully on connection issues when commenting", async () => {
     expect.assertions(1);
+    await expect(closeIssue(123)).rejects.toThrow(IssueCommentError);
+  });
+
+  test("closeIssue fails gracefully on nonexistent repo when commenting", async () => {
+    expect.assertions(1);
+    nock("https://api.github.com")
+      .post("/repos/OWNER/REPO/issues/123/comments", {
+        body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.',
+      })
+      .reply(404)
+      .patch("/repos/OWNER/REPO/issues/123", {
+        state: "closed",
+      })
+      .reply(404);
+
+    await expect(closeIssue(123)).rejects.toThrow(IssueCommentError);
+  });
+
+  test("closeIssue fails gracefully on connection issues when closing", async () => {
+    expect.assertions(1);
+    nock("https://api.github.com")
+      .post("/repos/OWNER/REPO/issues/123/comments", {
+        body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.',
+      })
+      .reply(200);
     await expect(closeIssue(123)).rejects.toThrow(IssueUpdateError);
   });
 
-  test("closeIssue fails gracefully on nonexistent repo", async () => {
+  test("closeIssue fails gracefully on nonexistent repo when closing", async () => {
     expect.assertions(1);
     nock("https://api.github.com")
+      .post("/repos/OWNER/REPO/issues/123/comments", {
+        body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.',
+      })
+      .reply(200)
       .patch("/repos/OWNER/REPO/issues/123", {
         state: "closed",
       })
