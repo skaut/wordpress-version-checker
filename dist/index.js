@@ -9991,6 +9991,27 @@ exports.InvalidReadmeError = InvalidReadmeError;
 
 /***/ }),
 
+/***/ 5809:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IssueCommentError = void 0;
+const WPVCError_1 = __nccwpck_require__(2805);
+class IssueCommentError extends WPVCError_1.WPVCError {
+    constructor(issueNumber, e) {
+        super("Couldn't add a comment to issue #" +
+            String(issueNumber) +
+            ". Error message: " +
+            e);
+    }
+}
+exports.IssueCommentError = IssueCommentError;
+
+
+/***/ }),
+
 /***/ 2188:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -10123,6 +10144,7 @@ exports.updateIssue = exports.createIssue = exports.closeIssue = exports.getIssu
 const compare_versions_1 = __nccwpck_require__(4773);
 const ExistingIssueFormatError_1 = __nccwpck_require__(259);
 const GetIssueError_1 = __nccwpck_require__(4418);
+const IssueCommentError_1 = __nccwpck_require__(5809);
 const IssueCreationError_1 = __nccwpck_require__(2188);
 const IssueListError_1 = __nccwpck_require__(2444);
 const IssueUpdateError_1 = __nccwpck_require__(9719);
@@ -10153,6 +10175,11 @@ function getIssue() {
 exports.getIssue = getIssue;
 function closeIssue(issue) {
     return __awaiter(this, void 0, void 0, function* () {
+        yield (0, octokit_1.octokit)()
+            .rest.issues.createComment(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issue, body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.' }))
+            .catch(function (e) {
+            throw new IssueCommentError_1.IssueCommentError(issue, String(e));
+        });
         yield (0, octokit_1.octokit)()
             .rest.issues.update(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issue, state: "closed" }))
             .catch(function (e) {

@@ -2,6 +2,7 @@ import { compare } from "compare-versions";
 
 import { ExistingIssueFormatError } from "./exceptions/ExistingIssueFormatError";
 import { GetIssueError } from "./exceptions/GetIssueError";
+import { IssueCommentError } from "./exceptions/IssueCommentError";
 import { IssueCreationError } from "./exceptions/IssueCreationError";
 import { IssueListError } from "./exceptions/IssueListError";
 import { IssueUpdateError } from "./exceptions/IssueUpdateError";
@@ -38,6 +39,15 @@ export async function getIssue(): Promise<number | null> {
 }
 
 export async function closeIssue(issue: number): Promise<void> {
+  await octokit()
+    .rest.issues.createComment({
+      ...repo(),
+      issue_number: issue,
+      body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.',
+    })
+    .catch(function (e): never {
+      throw new IssueCommentError(issue, String(e));
+    });
   await octokit()
     .rest.issues.update({
       ...repo(),
