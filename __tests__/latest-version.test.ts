@@ -1,8 +1,7 @@
 import nock from "nock";
 
-import { latestWordPressVersion } from "../src/latest-version";
-
 import { LatestVersionError } from "../src/exceptions/LatestVersionError";
+import { latestWordPressVersion } from "../src/latest-version";
 
 test("latestWordPressVersion works correctly", async () => {
   expect.assertions(1);

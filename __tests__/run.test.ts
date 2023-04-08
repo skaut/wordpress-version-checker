@@ -1,5 +1,5 @@
-import { mocked } from "jest-mock";
 import * as core from "@actions/core";
+import { mocked } from "jest-mock";
 
 import {
   closeIssue,
@@ -8,9 +8,9 @@ import {
   updateIssue,
 } from "../src/issue-management";
 import { latestWordPressVersion } from "../src/latest-version";
+import { run } from "../src/run";
 import { testedVersion } from "../src/tested-version";
 import { WPVCConfig } from "../src/wpvc-config";
-import { run } from "../src/run";
 
 jest.mock("@actions/core");
 jest.mock("../src/issue-management");

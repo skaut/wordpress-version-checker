@@ -1,10 +1,8 @@
-import { octokit } from "./octokit";
-import { repo } from "./repo";
-
+import { InvalidReadmeError } from "./exceptions/InvalidReadmeError";
 import { hasStatus } from "./has-status";
 import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
-
-import { InvalidReadmeError } from "./exceptions/InvalidReadmeError";
+import { octokit } from "./octokit";
+import { repo } from "./repo";
 
 async function readme(config: Config | null): Promise<string> {
   let readmeLocations = ["readme.txt", "plugin/readme.txt"];
