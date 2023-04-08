@@ -18,6 +18,9 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+permissions:
+  issues: write
+
 jobs:
   wordpress-version-checker:
     runs-on: ubuntu-latest
