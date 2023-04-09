@@ -3,7 +3,7 @@ import nock from "nock";
 import { LatestVersionError } from "../src/exceptions/LatestVersionError";
 import { wordpressVersions } from "../src/wordpress-versions";
 
-test("latestWordPressVersion works correctly when only stable version is available", async () => {
+test("wordpressVersions works correctly when only stable version is available", async () => {
   expect.assertions(1);
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
@@ -23,7 +23,7 @@ test("latestWordPressVersion works correctly when only stable version is availab
   });
 });
 
-test("latestWordPressVersion works correctly when both stable and RC versions are available", async () => {
+test("wordpressVersions works correctly when both stable and RC versions are available", async () => {
   expect.assertions(1);
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
@@ -47,12 +47,12 @@ test("latestWordPressVersion works correctly when both stable and RC versions ar
   });
 });
 
-test("latestWordPressVersion fails gracefully on connection issues", async () => {
+test("wordpressVersions fails gracefully on connection issues", async () => {
   expect.assertions(1);
   await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
 });
 
-test("latestWordPressVersion fails gracefully on connection issues 2", async () => {
+test("wordpressVersions fails gracefully on connection issues 2", async () => {
   expect.assertions(1);
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
@@ -60,7 +60,7 @@ test("latestWordPressVersion fails gracefully on connection issues 2", async () 
   await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
 });
 
-test("latestWordPressVersion fails gracefully on invalid response", async () => {
+test("wordpressVersions fails gracefully on invalid response", async () => {
   expect.assertions(1);
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
@@ -68,7 +68,7 @@ test("latestWordPressVersion fails gracefully on invalid response", async () => 
   await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
 });
 
-test("latestWordPressVersion fails gracefully on invalid response 2", async () => {
+test("wordpressVersions fails gracefully on invalid response 2", async () => {
   expect.assertions(1);
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
@@ -78,7 +78,7 @@ test("latestWordPressVersion fails gracefully on invalid response 2", async () =
   await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
 });
 
-test("latestWordPressVersion fails gracefully on invalid response 3", async () => {
+test("wordpressVersions fails gracefully on invalid response 3", async () => {
   expect.assertions(1);
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
@@ -89,7 +89,7 @@ test("latestWordPressVersion fails gracefully on invalid response 3", async () =
   await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
 });
 
-test("latestWordPressVersion fails gracefully on invalid response 4", async () => {
+test("wordpressVersions fails gracefully on invalid response 4", async () => {
   expect.assertions(1);
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
@@ -104,7 +104,7 @@ test("latestWordPressVersion fails gracefully on invalid response 4", async () =
   await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
 });
 
-test("latestWordPressVersion fails gracefully on invalid response 5", async () => {
+test("wordpressVersions fails gracefully on invalid response 5", async () => {
   expect.assertions(1);
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
