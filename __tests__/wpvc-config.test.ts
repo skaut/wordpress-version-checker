@@ -145,4 +145,36 @@ describe("Mocked env variables", () => {
 
     await expect(WPVCConfig()).rejects.toThrow(ConfigError);
   });
+
+  test("WPVCConfig fails gracefully on invalid config 5", async () => {
+    expect.assertions(1);
+    const config = {
+      readme: "path/to/readme.txt",
+      channel: false,
+    };
+
+    nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
+      .reply(200, {
+        content: Buffer.from(JSON.stringify(config)).toString("base64"),
+      });
+
+    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+  });
+
+  test("WPVCConfig fails gracefully on invalid config 6", async () => {
+    expect.assertions(1);
+    const config = {
+      readme: "path/to/readme.txt",
+      channel: "not-stable",
+    };
+
+    nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
+      .reply(200, {
+        content: Buffer.from(JSON.stringify(config)).toString("base64"),
+      });
+
+    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+  });
 });
