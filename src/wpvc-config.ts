@@ -7,10 +7,23 @@ import { repo } from "./repo";
 function isConfig(
   config: Record<string, unknown>
 ): config is Config & Record<string, unknown> {
-  if ("readme" in config) {
-    return true;
+  if (!("readme" in config)) {
+    return false;
   }
-  return false;
+  if (typeof config.readme !== "string") {
+    return false;
+  }
+  if ("assignees" in config) {
+    if (!Array.isArray(config.assignees)) {
+      return false;
+    }
+    for (const assignee of config.assignees) {
+      if (typeof assignee !== "string") {
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 export async function WPVCConfig(): Promise<Config | null> {
