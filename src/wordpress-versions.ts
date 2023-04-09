@@ -27,6 +27,10 @@ async function httpsRequest(options: https.RequestOptions): Promise<string> {
   });
 }
 
+function normalizeVersion(version: string): string {
+  return version.split("-")[0].split(".").slice(0, 2).join("."); // Discard patch version and RC designations
+}
+
 export async function wordpressVersions(): Promise<VersionOffers> {
   const rawData = await httpsRequest({
     host: "api.wordpress.org",
@@ -49,9 +53,12 @@ export async function wordpressVersions(): Promise<VersionOffers> {
   if (latest?.current === undefined) {
     throw new LatestVersionError("Couldn't find the latest version");
   }
+  const rc = response.offers.find(
+    (record): boolean => record["response"] === "development"
+  );
   return {
     beta: null,
-    rc: null,
-    stable: latest.current.split(".").slice(0, 2).join("."), // Discard patch version
+    rc: rc?.current !== undefined ? normalizeVersion(rc.current) : null,
+    stable: normalizeVersion(latest.current),
   };
 }

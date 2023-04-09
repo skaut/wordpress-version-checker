@@ -3,7 +3,7 @@ import nock from "nock";
 import { LatestVersionError } from "../src/exceptions/LatestVersionError";
 import { wordpressVersions } from "../src/wordpress-versions";
 
-test("latestWordPressVersion works correctly when only stable version", async () => {
+test("latestWordPressVersion works correctly when only stable version is available", async () => {
   expect.assertions(1);
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
@@ -11,7 +11,7 @@ test("latestWordPressVersion works correctly when only stable version", async ()
       offers: [
         {
           response: "latest",
-          current: "0.42",
+          current: "0.42.1",
         },
       ],
       translations: [],
@@ -19,6 +19,30 @@ test("latestWordPressVersion works correctly when only stable version", async ()
   await expect(wordpressVersions()).resolves.toStrictEqual({
     beta: null,
     rc: null,
+    stable: "0.42",
+  });
+});
+
+test("latestWordPressVersion works correctly when both stable and RC versions are available", async () => {
+  expect.assertions(1);
+  nock("https://api.wordpress.org")
+    .get("/core/version-check/1.7/?channel=beta")
+    .reply(200, {
+      offers: [
+        {
+          response: "development",
+          current: "0.43-RC2",
+        },
+        {
+          response: "latest",
+          current: "0.42.1",
+        },
+      ],
+      translations: [],
+    });
+  await expect(wordpressVersions()).resolves.toStrictEqual({
+    beta: null,
+    rc: "0.43",
     stable: "0.42",
   });
 });
@@ -70,7 +94,7 @@ test("latestWordPressVersion fails gracefully on invalid response 4", async () =
     .reply(200, {
       offers: [
         {
-          current: "0.42",
+          current: "0.42.1",
         },
       ],
       translations: [],
