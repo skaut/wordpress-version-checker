@@ -10537,6 +10537,9 @@ function httpsRequest(options) {
         });
     });
 }
+function normalizeVersion(version) {
+    return version.split("-")[0].split(".").slice(0, 2).join("."); // Discard patch version and RC designations
+}
 function wordpressVersions() {
     return __awaiter(this, void 0, void 0, function* () {
         const rawData = yield httpsRequest({
@@ -10559,10 +10562,11 @@ function wordpressVersions() {
         if ((latest === null || latest === void 0 ? void 0 : latest.current) === undefined) {
             throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
         }
+        const rc = response.offers.find((record) => record["response"] === "development");
         return {
             beta: null,
-            rc: null,
-            stable: latest.current.split(".").slice(0, 2).join("."), // Discard patch version
+            rc: (rc === null || rc === void 0 ? void 0 : rc.current) !== undefined ? normalizeVersion(rc.current) : null,
+            stable: normalizeVersion(latest.current),
         };
     });
 }
