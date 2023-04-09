@@ -1,6 +1,6 @@
 import { InvalidReadmeError } from "./exceptions/InvalidReadmeError";
 import { hasStatus } from "./has-status";
-import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
+import type { Config } from "./interfaces/Config";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
