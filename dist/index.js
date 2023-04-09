@@ -10273,6 +10273,68 @@ exports.octokit = octokit;
 
 /***/ }),
 
+/***/ 9762:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.outdatedBeta = void 0;
+function outdatedBeta() {
+    throw new Error("Not implemented outdatedBeta");
+}
+exports.outdatedBeta = outdatedBeta;
+
+
+/***/ }),
+
+/***/ 9153:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.outdatedRC = void 0;
+function outdatedRC() {
+    throw new Error("Not implemented outdatedRC");
+}
+exports.outdatedRC = outdatedRC;
+
+
+/***/ }),
+
+/***/ 1666:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.outdatedStable = void 0;
+const issue_management_1 = __nccwpck_require__(3813);
+function outdatedStable(config, testedVersion, latestVersion, existingIssue) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (existingIssue !== null) {
+            yield (0, issue_management_1.updateIssue)(existingIssue, testedVersion, latestVersion);
+        }
+        else {
+            yield (0, issue_management_1.createIssue)(config, testedVersion, latestVersion);
+        }
+    });
+}
+exports.outdatedStable = outdatedStable;
+
+
+/***/ }),
+
 /***/ 1413:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -10358,39 +10420,42 @@ exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const compare_versions_1 = __nccwpck_require__(4773);
 const issue_management_1 = __nccwpck_require__(3813);
+const outdated_beta_1 = __nccwpck_require__(9762);
+const outdated_rc_1 = __nccwpck_require__(9153);
+const outdated_stable_1 = __nccwpck_require__(1666);
 const tested_version_1 = __nccwpck_require__(5198);
+const up_to_date_1 = __nccwpck_require__(7771);
 const wordpress_versions_1 = __nccwpck_require__(6725);
 const wpvc_config_1 = __nccwpck_require__(1086);
-function outdated(config, testedVersion, latestVersion) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const existingIssue = yield (0, issue_management_1.getIssue)();
-        if (existingIssue !== null) {
-            yield (0, issue_management_1.updateIssue)(existingIssue, testedVersion, latestVersion);
-        }
-        else {
-            yield (0, issue_management_1.createIssue)(config, testedVersion, latestVersion);
-        }
-    });
-}
-function upToDate() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const existingIssue = yield (0, issue_management_1.getIssue)();
-        if (existingIssue !== null) {
-            yield (0, issue_management_1.closeIssue)(existingIssue);
-        }
-    });
+function isUpToDate(channel, availableVersions, readmeVersion) {
+    var _a, _b;
+    const minVersion = (_b = (_a = (channel === "beta" ? availableVersions.beta : null)) !== null && _a !== void 0 ? _a : (["beta", "rc"].includes(channel) ? availableVersions.rc : null)) !== null && _b !== void 0 ? _b : availableVersions.stable;
+    return (0, compare_versions_1.compare)(minVersion, readmeVersion, "<=");
 }
 function run() {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const config = yield (0, wpvc_config_1.WPVCConfig)();
             const readmeVersion = yield (0, tested_version_1.testedVersion)(config);
             const availableVersions = yield (0, wordpress_versions_1.wordpressVersions)();
-            if ((0, compare_versions_1.compare)(readmeVersion, availableVersions.stable, "<")) {
-                yield outdated(config, readmeVersion, availableVersions.stable);
+            const channel = (_a = config === null || config === void 0 ? void 0 : config.channel) !== null && _a !== void 0 ? _a : "stable";
+            if (isUpToDate(channel, availableVersions, readmeVersion)) {
+                yield (0, up_to_date_1.upToDate)();
+                return;
+            }
+            const rcVersion = ["beta", "rc"].includes(channel)
+                ? availableVersions.rc
+                : null;
+            const existingIssue = yield (0, issue_management_1.getIssue)();
+            if (rcVersion !== null && (0, compare_versions_1.compare)(rcVersion, readmeVersion, "<=")) {
+                (0, outdated_beta_1.outdatedBeta)();
+            }
+            else if ((0, compare_versions_1.compare)(availableVersions.stable, readmeVersion, "<=")) {
+                (0, outdated_rc_1.outdatedRC)();
             }
             else {
-                yield upToDate();
+                yield (0, outdated_stable_1.outdatedStable)(config, readmeVersion, availableVersions.stable, existingIssue);
             }
         }
         catch (e) {
@@ -10467,6 +10532,36 @@ function testedVersion(config) {
     });
 }
 exports.testedVersion = testedVersion;
+
+
+/***/ }),
+
+/***/ 7771:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.upToDate = void 0;
+const issue_management_1 = __nccwpck_require__(3813);
+function upToDate() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const existingIssue = yield (0, issue_management_1.getIssue)();
+        if (existingIssue !== null) {
+            yield (0, issue_management_1.closeIssue)(existingIssue);
+        }
+    });
+}
+exports.upToDate = upToDate;
 
 
 /***/ }),
@@ -10596,6 +10691,9 @@ const has_status_1 = __nccwpck_require__(9272);
 const octokit_1 = __nccwpck_require__(6161);
 const repo_1 = __nccwpck_require__(1413);
 function isConfig(config) {
+    if (typeof config !== "object" || config === null) {
+        return false;
+    }
     if (!("readme" in config)) {
         return false;
     }
@@ -10610,6 +10708,14 @@ function isConfig(config) {
             if (typeof assignee !== "string") {
                 return false;
             }
+        }
+    }
+    if ("channel" in config) {
+        if (typeof config.channel !== "string") {
+            return false;
+        }
+        if (!["beta", "rc", "stable"].includes(config.channel)) {
+            return false;
         }
     }
     return true;

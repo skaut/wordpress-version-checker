@@ -6,7 +6,7 @@ import { IssueCommentError } from "./exceptions/IssueCommentError";
 import { IssueCreationError } from "./exceptions/IssueCreationError";
 import { IssueListError } from "./exceptions/IssueListError";
 import { IssueUpdateError } from "./exceptions/IssueUpdateError";
-import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
+import type { Config } from "./interfaces/Config";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
