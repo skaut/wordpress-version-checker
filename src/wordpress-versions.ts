@@ -1,6 +1,8 @@
 import * as https from "https";
 
 import { LatestVersionError } from "./exceptions/LatestVersionError";
+import type { VersionCheckResponse } from "./interfaces/VersionCheckResponse";
+import type { VersionOffers } from "./interfaces/VersionOffers";
 
 async function httpsRequest(options: https.RequestOptions): Promise<string> {
   return new Promise(function (resolve, reject) {
@@ -25,24 +27,31 @@ async function httpsRequest(options: https.RequestOptions): Promise<string> {
   });
 }
 
-export async function latestWordPressVersion(): Promise<string> {
+export async function wordpressVersions(): Promise<VersionOffers> {
   const rawData = await httpsRequest({
     host: "api.wordpress.org",
-    path: "/core/stable-check/1.0/",
+    path: "/core/version-check/1.7/?channel=beta",
   }).catch(function (e: string): never {
     throw new LatestVersionError(e);
   });
-  let list: Record<string, unknown> = {};
+  let response: VersionCheckResponse = {};
   try {
-    list = JSON.parse(rawData) as Record<string, unknown>;
+    response = JSON.parse(rawData) as VersionCheckResponse;
   } catch (e) {
     throw new LatestVersionError((e as SyntaxError).message);
   }
-  const latest = Object.keys(list).find(
-    (key): boolean => list[key] === "latest"
-  );
-  if (latest === undefined) {
+  if (response.offers === undefined) {
     throw new LatestVersionError("Couldn't find the latest version");
   }
-  return latest.split(".").slice(0, 2).join("."); // Discard patch version
+  const latest = response.offers.find(
+    (record): boolean => record["response"] === "latest"
+  );
+  if (latest?.current === undefined) {
+    throw new LatestVersionError("Couldn't find the latest version");
+  }
+  return {
+    beta: null,
+    rc: null,
+    stable: latest.current.split(".").slice(0, 2).join("."), // Discard patch version
+  };
 }

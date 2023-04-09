@@ -10229,99 +10229,6 @@ exports.updateIssue = updateIssue;
 
 /***/ }),
 
-/***/ 6598:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.latestWordPressVersion = void 0;
-const https = __importStar(__nccwpck_require__(5687));
-const LatestVersionError_1 = __nccwpck_require__(4241);
-function httpsRequest(options) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise(function (resolve, reject) {
-            https
-                .get(options, function (response) {
-                let data = "";
-                response.setEncoding("utf8");
-                response.on("data", (chunk) => {
-                    data += chunk;
-                });
-                response.on("end", function () {
-                    if (response.statusCode === 200) {
-                        resolve(data);
-                    }
-                    else {
-                        reject();
-                    }
-                });
-            })
-                .on("error", (e) => {
-                reject(e);
-            });
-        });
-    });
-}
-function latestWordPressVersion() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const rawData = yield httpsRequest({
-            host: "api.wordpress.org",
-            path: "/core/stable-check/1.0/",
-        }).catch(function (e) {
-            throw new LatestVersionError_1.LatestVersionError(e);
-        });
-        let list = {};
-        try {
-            list = JSON.parse(rawData);
-        }
-        catch (e) {
-            throw new LatestVersionError_1.LatestVersionError(e.message);
-        }
-        const latest = Object.keys(list).find((key) => list[key] === "latest");
-        if (latest === undefined) {
-            throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
-        }
-        return latest.split(".").slice(0, 2).join("."); // Discard patch version
-    });
-}
-exports.latestWordPressVersion = latestWordPressVersion;
-
-
-/***/ }),
-
 /***/ 6161:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -10451,8 +10358,8 @@ exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const compare_versions_1 = __nccwpck_require__(4773);
 const issue_management_1 = __nccwpck_require__(3813);
-const latest_version_1 = __nccwpck_require__(6598);
 const tested_version_1 = __nccwpck_require__(5198);
+const wordpress_versions_1 = __nccwpck_require__(6725);
 const wpvc_config_1 = __nccwpck_require__(1086);
 function outdated(config, testedVersion, latestVersion) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -10478,9 +10385,9 @@ function run() {
         try {
             const config = yield (0, wpvc_config_1.WPVCConfig)();
             const readmeVersion = yield (0, tested_version_1.testedVersion)(config);
-            const latestVersion = yield (0, latest_version_1.latestWordPressVersion)();
-            if ((0, compare_versions_1.compare)(readmeVersion, latestVersion, "<")) {
-                yield outdated(config, readmeVersion, latestVersion);
+            const availableVersions = yield (0, wordpress_versions_1.wordpressVersions)();
+            if ((0, compare_versions_1.compare)(readmeVersion, availableVersions.stable, "<")) {
+                yield outdated(config, readmeVersion, availableVersions.stable);
             }
             else {
                 yield upToDate();
@@ -10560,6 +10467,106 @@ function testedVersion(config) {
     });
 }
 exports.testedVersion = testedVersion;
+
+
+/***/ }),
+
+/***/ 6725:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.wordpressVersions = void 0;
+const https = __importStar(__nccwpck_require__(5687));
+const LatestVersionError_1 = __nccwpck_require__(4241);
+function httpsRequest(options) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise(function (resolve, reject) {
+            https
+                .get(options, function (response) {
+                let data = "";
+                response.setEncoding("utf8");
+                response.on("data", (chunk) => {
+                    data += chunk;
+                });
+                response.on("end", function () {
+                    if (response.statusCode === 200) {
+                        resolve(data);
+                    }
+                    else {
+                        reject();
+                    }
+                });
+            })
+                .on("error", (e) => {
+                reject(e);
+            });
+        });
+    });
+}
+function wordpressVersions() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const rawData = yield httpsRequest({
+            host: "api.wordpress.org",
+            path: "/core/version-check/1.7/?channel=beta",
+        }).catch(function (e) {
+            throw new LatestVersionError_1.LatestVersionError(e);
+        });
+        let response = {};
+        try {
+            response = JSON.parse(rawData);
+        }
+        catch (e) {
+            throw new LatestVersionError_1.LatestVersionError(e.message);
+        }
+        if (response.offers === undefined) {
+            throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
+        }
+        const latest = response.offers.find((record) => record["response"] === "latest");
+        if ((latest === null || latest === void 0 ? void 0 : latest.current) === undefined) {
+            throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
+        }
+        return {
+            beta: null,
+            rc: null,
+            stable: latest.current.split(".").slice(0, 2).join("."), // Discard patch version
+        };
+    });
+}
+exports.wordpressVersions = wordpressVersions;
 
 
 /***/ }),

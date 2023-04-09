@@ -7,15 +7,15 @@ import {
   getIssue,
   updateIssue,
 } from "../src/issue-management";
-import { latestWordPressVersion } from "../src/latest-version";
 import { run } from "../src/run";
 import { testedVersion } from "../src/tested-version";
+import { wordpressVersions } from "../src/wordpress-versions";
 import { WPVCConfig } from "../src/wpvc-config";
 
 jest.mock("@actions/core");
 jest.mock("../src/issue-management");
-jest.mock("../src/latest-version");
 jest.mock("../src/tested-version");
+jest.mock("../src/wordpress-versions");
 jest.mock("../src/wpvc-config");
 
 describe("Succesful runs", () => {
@@ -29,10 +29,10 @@ describe("Succesful runs", () => {
     expect.assertions(6);
     const config = { readme: "readme.txt" };
     const testedVersionValue = "0.41";
-    const latestVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: null, rc: null, stable: "0.42" };
 
     mocked(getIssue).mockResolvedValue(null);
-    mocked(latestWordPressVersion).mockResolvedValue(latestVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(WPVCConfig).mockResolvedValue(config);
 
@@ -42,7 +42,9 @@ describe("Succesful runs", () => {
     expect(mocked(createIssue).mock.calls).toHaveLength(1);
     expect(mocked(createIssue).mock.calls[0][0]).toStrictEqual(config);
     expect(mocked(createIssue).mock.calls[0][1]).toBe(testedVersionValue);
-    expect(mocked(createIssue).mock.calls[0][2]).toBe(latestVersionValue);
+    expect(mocked(createIssue).mock.calls[0][2]).toBe(
+      wordpressVersionsValue.stable
+    );
     expect(mocked(updateIssue).mock.calls).toHaveLength(0);
   });
 
@@ -50,11 +52,11 @@ describe("Succesful runs", () => {
     expect.assertions(6);
     const config = { readme: "readme.txt" };
     const testedVersionValue = "0.41";
-    const latestVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: null, rc: null, stable: "0.42" };
     const existingIssue = 123;
 
     mocked(getIssue).mockResolvedValue(existingIssue);
-    mocked(latestWordPressVersion).mockResolvedValue(latestVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(WPVCConfig).mockResolvedValue(config);
 
@@ -65,17 +67,19 @@ describe("Succesful runs", () => {
     expect(mocked(updateIssue).mock.calls).toHaveLength(1);
     expect(mocked(updateIssue).mock.calls[0][0]).toBe(existingIssue);
     expect(mocked(updateIssue).mock.calls[0][1]).toBe(testedVersionValue);
-    expect(mocked(updateIssue).mock.calls[0][2]).toBe(latestVersionValue);
+    expect(mocked(updateIssue).mock.calls[0][2]).toBe(
+      wordpressVersionsValue.stable
+    );
   });
 
   test("run works correctly with up-to-date version and no existing issue", async () => {
     expect.assertions(3);
     const config = { readme: "readme.txt" };
     const testedVersionValue = "0.42";
-    const latestVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: null, rc: null, stable: "0.42" };
 
     mocked(getIssue).mockResolvedValue(null);
-    mocked(latestWordPressVersion).mockResolvedValue(latestVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(WPVCConfig).mockResolvedValue(config);
 
@@ -90,11 +94,11 @@ describe("Succesful runs", () => {
     expect.assertions(4);
     const config = { readme: "readme.txt" };
     const testedVersionValue = "0.42";
-    const latestVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: null, rc: null, stable: "0.42" };
     const existingIssue = 123;
 
     mocked(getIssue).mockResolvedValue(existingIssue);
-    mocked(latestWordPressVersion).mockResolvedValue(latestVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(WPVCConfig).mockResolvedValue(config);
 

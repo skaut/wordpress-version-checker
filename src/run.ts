@@ -9,8 +9,8 @@ import {
   getIssue,
   updateIssue,
 } from "./issue-management";
-import { latestWordPressVersion } from "./latest-version";
 import { testedVersion } from "./tested-version";
+import { wordpressVersions } from "./wordpress-versions";
 import { WPVCConfig } from "./wpvc-config";
 
 async function outdated(
@@ -37,9 +37,9 @@ export async function run(): Promise<void> {
   try {
     const config = await WPVCConfig();
     const readmeVersion = await testedVersion(config);
-    const latestVersion = await latestWordPressVersion();
-    if (compare(readmeVersion, latestVersion, "<")) {
-      await outdated(config, readmeVersion, latestVersion);
+    const availableVersions = await wordpressVersions();
+    if (compare(readmeVersion, availableVersions.stable, "<")) {
+      await outdated(config, readmeVersion, availableVersions.stable);
     } else {
       await upToDate();
     }
