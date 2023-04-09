@@ -1,8 +1,8 @@
 import * as core from "@actions/core";
 import { compare } from "compare-versions";
 
-import type { WPVCError } from "./exceptions/WPVCError"; // eslint-disable-line @typescript-eslint/no-unused-vars
-import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
+import type { WPVCError } from "./exceptions/WPVCError";
+import type { Config } from "./interfaces/Config";
 import {
   closeIssue,
   createIssue,
