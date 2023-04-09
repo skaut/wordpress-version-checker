@@ -10585,10 +10585,23 @@ const has_status_1 = __nccwpck_require__(9272);
 const octokit_1 = __nccwpck_require__(6161);
 const repo_1 = __nccwpck_require__(1413);
 function isConfig(config) {
-    if ("readme" in config) {
-        return true;
+    if (!("readme" in config)) {
+        return false;
     }
-    return false;
+    if (typeof config.readme !== "string") {
+        return false;
+    }
+    if ("assignees" in config) {
+        if (!Array.isArray(config.assignees)) {
+            return false;
+        }
+        for (const assignee of config.assignees) {
+            if (typeof assignee !== "string") {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 function WPVCConfig() {
     return __awaiter(this, void 0, void 0, function* () {

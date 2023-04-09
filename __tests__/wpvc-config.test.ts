@@ -98,4 +98,51 @@ describe("Mocked env variables", () => {
 
     await expect(WPVCConfig()).rejects.toThrow(ConfigError);
   });
+
+  test("WPVCConfig fails gracefully on invalid config 2", async () => {
+    expect.assertions(1);
+    const config = {
+      readme: false,
+    };
+
+    nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
+      .reply(200, {
+        content: Buffer.from(JSON.stringify(config)).toString("base64"),
+      });
+
+    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+  });
+
+  test("WPVCConfig fails gracefully on invalid config 3", async () => {
+    expect.assertions(1);
+    const config = {
+      readme: "path/to/readme.txt",
+      assignees: false,
+    };
+
+    nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
+      .reply(200, {
+        content: Buffer.from(JSON.stringify(config)).toString("base64"),
+      });
+
+    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+  });
+
+  test("WPVCConfig fails gracefully on invalid config 4", async () => {
+    expect.assertions(1);
+    const config = {
+      readme: "path/to/readme.txt",
+      assignees: ["user", false],
+    };
+
+    nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
+      .reply(200, {
+        content: Buffer.from(JSON.stringify(config)).toString("base64"),
+      });
+
+    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+  });
 });
