@@ -1,36 +1,27 @@
 import * as core from "@actions/core";
 import { compare } from "compare-versions";
 
-import type { WPVCError } from "./exceptions/WPVCError"; // eslint-disable-line @typescript-eslint/no-unused-vars
-import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
-import {
-  closeIssue,
-  createIssue,
-  getIssue,
-  updateIssue,
-} from "./issue-management";
+import type { WPVCError } from "./exceptions/WPVCError";
+import type { VersionOffers } from "./interfaces/VersionOffers";
+import { getIssue } from "./issue-management";
+import { outdatedBeta } from "./outdated-beta";
+import { outdatedRC } from "./outdated-rc";
+import { outdatedStable } from "./outdated-stable";
 import { testedVersion } from "./tested-version";
+import { upToDate } from "./up-to-date";
 import { wordpressVersions } from "./wordpress-versions";
 import { WPVCConfig } from "./wpvc-config";
 
-async function outdated(
-  config: Config | null,
-  testedVersion: string,
-  latestVersion: string
-): Promise<void> {
-  const existingIssue = await getIssue();
-  if (existingIssue !== null) {
-    await updateIssue(existingIssue, testedVersion, latestVersion);
-  } else {
-    await createIssue(config, testedVersion, latestVersion);
-  }
-}
-
-async function upToDate(): Promise<void> {
-  const existingIssue = await getIssue();
-  if (existingIssue !== null) {
-    await closeIssue(existingIssue);
-  }
+function isUpToDate(
+  channel: "beta" | "rc" | "stable",
+  availableVersions: VersionOffers,
+  readmeVersion: string
+): boolean {
+  const minVersion =
+    (channel === "beta" ? availableVersions.beta : null) ??
+    (["beta", "rc"].includes(channel) ? availableVersions.rc : null) ??
+    availableVersions.stable;
+  return compare(minVersion, readmeVersion, "<=");
 }
 
 export async function run(): Promise<void> {
@@ -38,10 +29,26 @@ export async function run(): Promise<void> {
     const config = await WPVCConfig();
     const readmeVersion = await testedVersion(config);
     const availableVersions = await wordpressVersions();
-    if (compare(readmeVersion, availableVersions.stable, "<")) {
-      await outdated(config, readmeVersion, availableVersions.stable);
-    } else {
+    const channel = config?.channel ?? "stable";
+    if (isUpToDate(channel, availableVersions, readmeVersion)) {
       await upToDate();
+      return;
+    }
+    const rcVersion = ["beta", "rc"].includes(channel)
+      ? availableVersions.rc
+      : null;
+    const existingIssue = await getIssue();
+    if (rcVersion !== null && compare(rcVersion, readmeVersion, "<=")) {
+      outdatedBeta();
+    } else if (compare(availableVersions.stable, readmeVersion, "<=")) {
+      outdatedRC();
+    } else {
+      await outdatedStable(
+        config,
+        readmeVersion,
+        availableVersions.stable,
+        existingIssue
+      );
     }
   } catch (e) {
     core.setFailed((e as WPVCError).message);
