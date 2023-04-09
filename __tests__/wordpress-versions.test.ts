@@ -54,7 +54,9 @@ test("latestWordPressVersion fails gracefully on connection issues", async () =>
 
 test("latestWordPressVersion fails gracefully on connection issues 2", async () => {
   expect.assertions(1);
-  nock("https://api.wordpress.org").get("/core/stable-check/1.0/").reply(404);
+  nock("https://api.wordpress.org")
+    .get("/core/version-check/1.7/?channel=beta")
+    .reply(404);
   await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
 });
 
