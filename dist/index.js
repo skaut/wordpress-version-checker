@@ -10320,8 +10320,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedStable = void 0;
 const issue_management_1 = __nccwpck_require__(3813);
-function outdatedStable(config, testedVersion, latestVersion, existingIssue) {
+function outdatedStable(config, testedVersion, latestVersion) {
     return __awaiter(this, void 0, void 0, function* () {
+        const existingIssue = yield (0, issue_management_1.getIssue)();
         if (existingIssue !== null) {
             yield (0, issue_management_1.updateIssue)(existingIssue, testedVersion, latestVersion);
         }
@@ -10419,7 +10420,6 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const compare_versions_1 = __nccwpck_require__(4773);
-const issue_management_1 = __nccwpck_require__(3813);
 const outdated_beta_1 = __nccwpck_require__(9762);
 const outdated_rc_1 = __nccwpck_require__(9153);
 const outdated_stable_1 = __nccwpck_require__(1666);
@@ -10445,7 +10445,6 @@ function run() {
             const rcVersion = ["beta", "rc"].includes(config.channel)
                 ? availableVersions.rc
                 : null;
-            const existingIssue = yield (0, issue_management_1.getIssue)();
             if (rcVersion !== null && (0, compare_versions_1.compare)(rcVersion, readmeVersion, "<=")) {
                 (0, outdated_beta_1.outdatedBeta)();
             }
@@ -10453,7 +10452,7 @@ function run() {
                 (0, outdated_rc_1.outdatedRC)();
             }
             else {
-                yield (0, outdated_stable_1.outdatedStable)(config, readmeVersion, availableVersions.stable, existingIssue);
+                yield (0, outdated_stable_1.outdatedStable)(config, readmeVersion, availableVersions.stable);
             }
         }
         catch (e) {

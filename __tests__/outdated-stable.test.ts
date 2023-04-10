@@ -1,7 +1,7 @@
 import { mocked } from "jest-mock";
 
 import type { Config } from "../src/interfaces/Config";
-import { createIssue, updateIssue } from "../src/issue-management";
+import { createIssue, getIssue, updateIssue } from "../src/issue-management";
 import { outdatedStable } from "../src/outdated-stable";
 
 jest.mock("../src/issue-management");
@@ -13,7 +13,7 @@ describe("Succesful runs", () => {
   });
 
   test("run works correctly with outdated version and no existing issue", async () => {
-    expect.assertions(5);
+    expect.assertions(6);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "stable",
@@ -22,8 +22,11 @@ describe("Succesful runs", () => {
     const testedVersion = "0.41";
     const latestVersion = "0.42";
 
-    await outdatedStable(config, testedVersion, latestVersion, null);
+    mocked(getIssue).mockResolvedValue(null);
 
+    await outdatedStable(config, testedVersion, latestVersion);
+
+    expect(mocked(getIssue).mock.calls).toHaveLength(1);
     expect(mocked(createIssue).mock.calls).toHaveLength(1);
     expect(mocked(createIssue).mock.calls[0][0]).toStrictEqual(config);
     expect(mocked(createIssue).mock.calls[0][1]).toBe(testedVersion);
@@ -32,7 +35,7 @@ describe("Succesful runs", () => {
   });
 
   test("run works correctly with outdated version and an existing issue", async () => {
-    expect.assertions(5);
+    expect.assertions(6);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "stable",
@@ -42,8 +45,11 @@ describe("Succesful runs", () => {
     const latestVersion = "0.42";
     const existingIssue = 123;
 
-    await outdatedStable(config, testedVersion, latestVersion, existingIssue);
+    mocked(getIssue).mockResolvedValue(existingIssue);
 
+    await outdatedStable(config, testedVersion, latestVersion);
+
+    expect(mocked(getIssue).mock.calls).toHaveLength(1);
     expect(mocked(createIssue).mock.calls).toHaveLength(0);
     expect(mocked(updateIssue).mock.calls).toHaveLength(1);
     expect(mocked(updateIssue).mock.calls[0][0]).toBe(existingIssue);

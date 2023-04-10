@@ -3,7 +3,6 @@ import { compare } from "compare-versions";
 
 import type { WPVCError } from "./exceptions/WPVCError";
 import type { WordpressVersions } from "./interfaces/WordpressVersions";
-import { getIssue } from "./issue-management";
 import { outdatedBeta } from "./outdated-beta";
 import { outdatedRC } from "./outdated-rc";
 import { outdatedStable } from "./outdated-stable";
@@ -36,18 +35,12 @@ export async function run(): Promise<void> {
     const rcVersion = ["beta", "rc"].includes(config.channel)
       ? availableVersions.rc
       : null;
-    const existingIssue = await getIssue();
     if (rcVersion !== null && compare(rcVersion, readmeVersion, "<=")) {
       outdatedBeta();
     } else if (compare(availableVersions.stable, readmeVersion, "<=")) {
       outdatedRC();
     } else {
-      await outdatedStable(
-        config,
-        readmeVersion,
-        availableVersions.stable,
-        existingIssue
-      );
+      await outdatedStable(config, readmeVersion, availableVersions.stable);
     }
   } catch (e) {
     core.setFailed((e as WPVCError).message);

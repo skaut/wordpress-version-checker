@@ -2,7 +2,6 @@ import * as core from "@actions/core";
 import { mocked } from "jest-mock";
 
 import type { Config } from "../src/interfaces/Config";
-import { getIssue } from "../src/issue-management";
 import { outdatedBeta } from "../src/outdated-beta";
 import { outdatedRC } from "../src/outdated-rc";
 import { outdatedStable } from "../src/outdated-stable";
@@ -13,7 +12,6 @@ import { wordpressVersions } from "../src/wordpress-versions";
 import { WPVCConfig } from "../src/wpvc-config";
 
 jest.mock("@actions/core");
-jest.mock("../src/issue-management");
 jest.mock("../src/outdated-beta");
 jest.mock("../src/outdated-rc");
 jest.mock("../src/outdated-stable");
@@ -24,7 +22,6 @@ jest.mock("../src/wpvc-config");
 
 describe("runs succesfully", () => {
   beforeEach(() => {
-    mocked(getIssue).mockResolvedValue(123);
     mocked(outdatedBeta).mockReturnValue();
     mocked(outdatedRC).mockReturnValue();
     mocked(outdatedStable).mockResolvedValue();
@@ -32,7 +29,7 @@ describe("runs succesfully", () => {
   });
 
   test("works with stable channel and up-to-date version", async () => {
-    expect.assertions(5);
+    expect.assertions(4);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "stable",
@@ -47,7 +44,6 @@ describe("runs succesfully", () => {
 
     await run();
 
-    expect(mocked(getIssue).mock.calls).toHaveLength(0);
     expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
     expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
     expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
@@ -55,7 +51,7 @@ describe("runs succesfully", () => {
   });
 
   test("works with stable channel and newer beta version", async () => {
-    expect.assertions(5);
+    expect.assertions(4);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "stable",
@@ -70,7 +66,6 @@ describe("runs succesfully", () => {
 
     await run();
 
-    expect(mocked(getIssue).mock.calls).toHaveLength(0);
     expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
     expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
     expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
@@ -78,7 +73,7 @@ describe("runs succesfully", () => {
   });
 
   test("works with stable channel and newer RC version", async () => {
-    expect.assertions(5);
+    expect.assertions(4);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "stable",
@@ -93,7 +88,6 @@ describe("runs succesfully", () => {
 
     await run();
 
-    expect(mocked(getIssue).mock.calls).toHaveLength(0);
     expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
     expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
     expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
@@ -101,7 +95,7 @@ describe("runs succesfully", () => {
   });
 
   test("works with stable channel and newer stable version", async () => {
-    expect.assertions(9);
+    expect.assertions(7);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "stable",
@@ -116,7 +110,6 @@ describe("runs succesfully", () => {
 
     await run();
 
-    expect(mocked(getIssue).mock.calls).toHaveLength(1);
     expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
     expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
     expect(mocked(outdatedStable).mock.calls).toHaveLength(1);
@@ -125,12 +118,11 @@ describe("runs succesfully", () => {
     expect(mocked(outdatedStable).mock.calls[0][2]).toBe(
       wordpressVersionsValue.stable
     );
-    expect(mocked(outdatedStable).mock.calls[0][3]).toBe(123);
     expect(mocked(upToDate).mock.calls).toHaveLength(0);
   });
 
   test("works with RC channel and up-to-date version", async () => {
-    expect.assertions(5);
+    expect.assertions(4);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "rc",
@@ -145,7 +137,6 @@ describe("runs succesfully", () => {
 
     await run();
 
-    expect(mocked(getIssue).mock.calls).toHaveLength(0);
     expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
     expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
     expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
@@ -153,7 +144,7 @@ describe("runs succesfully", () => {
   });
 
   test("works with RC channel and newer beta version", async () => {
-    expect.assertions(5);
+    expect.assertions(4);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "rc",
@@ -168,7 +159,6 @@ describe("runs succesfully", () => {
 
     await run();
 
-    expect(mocked(getIssue).mock.calls).toHaveLength(0);
     expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
     expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
     expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
@@ -176,7 +166,7 @@ describe("runs succesfully", () => {
   });
 
   test("works with RC channel and newer RC version", async () => {
-    expect.assertions(5);
+    expect.assertions(4);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "rc",
@@ -191,7 +181,6 @@ describe("runs succesfully", () => {
 
     await run();
 
-    expect(mocked(getIssue).mock.calls).toHaveLength(1);
     expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
     expect(mocked(outdatedRC).mock.calls).toHaveLength(1);
     expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
@@ -199,7 +188,7 @@ describe("runs succesfully", () => {
   });
 
   test("works with RC channel and newer stable version", async () => {
-    expect.assertions(9);
+    expect.assertions(7);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "rc",
@@ -214,7 +203,6 @@ describe("runs succesfully", () => {
 
     await run();
 
-    expect(mocked(getIssue).mock.calls).toHaveLength(1);
     expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
     expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
     expect(mocked(outdatedStable).mock.calls).toHaveLength(1);
@@ -223,12 +211,11 @@ describe("runs succesfully", () => {
     expect(mocked(outdatedStable).mock.calls[0][2]).toBe(
       wordpressVersionsValue.stable
     );
-    expect(mocked(outdatedStable).mock.calls[0][3]).toBe(123);
     expect(mocked(upToDate).mock.calls).toHaveLength(0);
   });
 
   test("works with beta channel and up-to-date version", async () => {
-    expect.assertions(5);
+    expect.assertions(4);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "beta",
@@ -243,7 +230,6 @@ describe("runs succesfully", () => {
 
     await run();
 
-    expect(mocked(getIssue).mock.calls).toHaveLength(0);
     expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
     expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
     expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
@@ -251,7 +237,7 @@ describe("runs succesfully", () => {
   });
 
   test("works with beta channel and newer beta version", async () => {
-    expect.assertions(5);
+    expect.assertions(4);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "beta",
@@ -266,7 +252,6 @@ describe("runs succesfully", () => {
 
     await run();
 
-    expect(mocked(getIssue).mock.calls).toHaveLength(1);
     expect(mocked(outdatedBeta).mock.calls).toHaveLength(1);
     expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
     expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
@@ -274,7 +259,7 @@ describe("runs succesfully", () => {
   });
 
   test("works with beta channel and newer RC version", async () => {
-    expect.assertions(5);
+    expect.assertions(4);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "beta",
@@ -289,7 +274,6 @@ describe("runs succesfully", () => {
 
     await run();
 
-    expect(mocked(getIssue).mock.calls).toHaveLength(1);
     expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
     expect(mocked(outdatedRC).mock.calls).toHaveLength(1);
     expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
@@ -297,7 +281,7 @@ describe("runs succesfully", () => {
   });
 
   test("works with beta channel and newer stable version", async () => {
-    expect.assertions(9);
+    expect.assertions(7);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "beta",
@@ -312,7 +296,6 @@ describe("runs succesfully", () => {
 
     await run();
 
-    expect(mocked(getIssue).mock.calls).toHaveLength(1);
     expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
     expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
     expect(mocked(outdatedStable).mock.calls).toHaveLength(1);
@@ -321,7 +304,6 @@ describe("runs succesfully", () => {
     expect(mocked(outdatedStable).mock.calls[0][2]).toBe(
       wordpressVersionsValue.stable
     );
-    expect(mocked(outdatedStable).mock.calls[0][3]).toBe(123);
     expect(mocked(upToDate).mock.calls).toHaveLength(0);
   });
 });
