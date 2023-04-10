@@ -23,6 +23,7 @@ describe("Mocked env variables", () => {
     expect.assertions(1);
     const config = {
       readme: "path/to/readme.txt",
+      assignees: [],
     };
 
     nock("https://api.github.com")

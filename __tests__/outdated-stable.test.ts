@@ -13,7 +13,7 @@ describe("Succesful runs", () => {
 
   test("run works correctly with outdated version and no existing issue", async () => {
     expect.assertions(5);
-    const config = { readme: "readme.txt" };
+    const config = { readme: "readme.txt", assignees: [] };
     const testedVersion = "0.41";
     const latestVersion = "0.42";
 
@@ -28,7 +28,7 @@ describe("Succesful runs", () => {
 
   test("run works correctly with outdated version and an existing issue", async () => {
     expect.assertions(5);
-    const config = { readme: "readme.txt" };
+    const config = { readme: "readme.txt", assignees: [] };
     const testedVersion = "0.41";
     const latestVersion = "0.42";
     const existingIssue = 123;

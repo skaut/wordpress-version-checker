@@ -71,7 +71,7 @@ export async function createIssue(
         "The plugin hasn't been tested with the latest version of WordPress",
       body: issueBody(testedVersion, latestVersion),
       labels: ["wpvc"],
-      assignees: config !== null ? config.assignees : undefined,
+      assignees: config?.assignees,
     })
     .catch(function (e): never {
       throw new IssueCreationError(String(e));

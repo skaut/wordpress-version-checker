@@ -32,6 +32,7 @@ describe("[env variable mock]", () => {
     const readmePath = "path/to/readme.txt";
     const config = {
       readme: readmePath,
+      assignees: [],
     };
 
     nock("https://api.github.com")
@@ -78,6 +79,7 @@ describe("[env variable mock]", () => {
     expect.assertions(1);
     const config = {
       readme: "path/to/readme.txt",
+      assignees: [],
     };
 
     await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
@@ -88,6 +90,7 @@ describe("[env variable mock]", () => {
     const readmePath = "path/to/readme.txt";
     const config = {
       readme: readmePath,
+      assignees: [],
     };
 
     nock("https://api.github.com")
@@ -102,6 +105,7 @@ describe("[env variable mock]", () => {
     const readmePath = "path/to/readme.txt";
     const config = {
       readme: readmePath,
+      assignees: [],
     };
 
     nock("https://api.github.com")
@@ -116,6 +120,7 @@ describe("[env variable mock]", () => {
     const readmePath = "path/to/readme.txt";
     const config = {
       readme: readmePath,
+      assignees: [],
     };
 
     nock("https://api.github.com")
@@ -139,6 +144,7 @@ describe("[env variable mock]", () => {
     const readmePath = "path/to/readme.txt";
     const config = {
       readme: readmePath,
+      assignees: [],
     };
 
     nock("https://api.github.com")
