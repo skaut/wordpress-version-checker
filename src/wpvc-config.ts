@@ -4,40 +4,55 @@ import type { Config } from "./interfaces/Config";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
-function isConfig(
-  config: unknown
-): config is Partial<Config> & { readme: string } {
-  if (typeof config !== "object" || config === null) {
-    return false;
+function normalizeConfig(rawConfig: unknown): Config {
+  if (typeof rawConfig !== "object" || rawConfig === null) {
+    throw new ConfigError("Invalid config file.");
   }
-  if (!("readme" in config)) {
-    return false;
-  }
-  if (typeof config.readme !== "string") {
-    return false;
-  }
-  if ("assignees" in config) {
-    if (!Array.isArray(config.assignees)) {
-      return false;
-    }
-    for (const assignee of config.assignees) {
-      if (typeof assignee !== "string") {
-        return false;
-      }
-    }
-  }
-  if ("channel" in config) {
-    if (typeof config.channel !== "string") {
-      return false;
-    }
-    if (!["beta", "rc", "stable"].includes(config.channel)) {
-      return false;
+  const config: Config = {
+    assignees: [],
+    channel: "stable",
+    readme: ["readme.txt", "plugin/readme.txt"],
+  };
+  if ("readme" in rawConfig) {
+    if (typeof rawConfig.readme === "string") {
+      config.readme = [rawConfig.readme];
+    } else if (
+      Array.isArray(rawConfig.readme) &&
+      rawConfig.readme.every((item) => typeof item === "string")
+    ) {
+      config.readme = rawConfig.readme as Array<string>;
+    } else {
+      throw new ConfigError(
+        'Invalid config file, the "readme" field should be a string or an array of strings.'
+      );
     }
   }
-  return true;
+  if ("assignees" in rawConfig) {
+    if (
+      !Array.isArray(rawConfig.assignees) ||
+      !rawConfig.assignees.every((item) => typeof item === "string")
+    ) {
+      throw new ConfigError(
+        'Invalid config file, the "assignees" field should be an array of strings.'
+      );
+    }
+    config.assignees = rawConfig.assignees as Array<string>;
+  }
+  if ("channel" in rawConfig) {
+    if (
+      typeof rawConfig.channel !== "string" ||
+      !["beta", "rc", "stable"].includes(rawConfig.channel)
+    ) {
+      throw new ConfigError(
+        'Invalid config file, the "channel" field should be one of "beta", "rc" or "stable".'
+      );
+    }
+    config.channel = rawConfig.channel as "beta" | "rc" | "stable";
+  }
+  return config;
 }
 
-export async function WPVCConfig(): Promise<Config | null> {
+export async function WPVCConfig(): Promise<Config> {
   const file = await octokit()
     .rest.repos.getContent({
       ...repo(),
@@ -51,24 +66,17 @@ export async function WPVCConfig(): Promise<Config | null> {
       }
     });
   if (file === null) {
-    return null;
+    return normalizeConfig({});
   }
   const encodedContent = (file.data as { content?: string }).content;
   if (encodedContent === undefined) {
     throw new ConfigError("Failed to decode the file.");
   }
-  let config: unknown = {};
+  let config: unknown;
   try {
     config = JSON.parse(Buffer.from(encodedContent, "base64").toString());
   } catch (e) {
     throw new ConfigError((e as SyntaxError).message);
   }
-  if (!isConfig(config)) {
-    throw new ConfigError("Invalid config file.");
-  }
-  return {
-    channel: "stable",
-    assignees: [],
-    ...config,
-  };
+  return normalizeConfig(config);
 }

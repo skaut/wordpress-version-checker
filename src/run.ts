@@ -29,12 +29,11 @@ export async function run(): Promise<void> {
     const config = await WPVCConfig();
     const readmeVersion = await testedVersion(config);
     const availableVersions = await wordpressVersions();
-    const channel = config?.channel ?? "stable";
-    if (isUpToDate(channel, availableVersions, readmeVersion)) {
+    if (isUpToDate(config.channel, availableVersions, readmeVersion)) {
       await upToDate();
       return;
     }
-    const rcVersion = ["beta", "rc"].includes(channel)
+    const rcVersion = ["beta", "rc"].includes(config.channel)
       ? availableVersions.rc
       : null;
     const existingIssue = await getIssue();

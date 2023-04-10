@@ -34,7 +34,7 @@ describe("runs succesfully", () => {
   test("works with stable channel and up-to-date version", async () => {
     expect.assertions(5);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "stable",
       assignees: [],
     };
@@ -57,7 +57,7 @@ describe("runs succesfully", () => {
   test("works with stable channel and newer beta version", async () => {
     expect.assertions(5);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "stable",
       assignees: [],
     };
@@ -80,7 +80,7 @@ describe("runs succesfully", () => {
   test("works with stable channel and newer RC version", async () => {
     expect.assertions(5);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "stable",
       assignees: [],
     };
@@ -103,7 +103,7 @@ describe("runs succesfully", () => {
   test("works with stable channel and newer stable version", async () => {
     expect.assertions(9);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "stable",
       assignees: [],
     };
@@ -132,7 +132,7 @@ describe("runs succesfully", () => {
   test("works with RC channel and up-to-date version", async () => {
     expect.assertions(5);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "rc",
       assignees: [],
     };
@@ -155,7 +155,7 @@ describe("runs succesfully", () => {
   test("works with RC channel and newer beta version", async () => {
     expect.assertions(5);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "rc",
       assignees: [],
     };
@@ -178,7 +178,7 @@ describe("runs succesfully", () => {
   test("works with RC channel and newer RC version", async () => {
     expect.assertions(5);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "rc",
       assignees: [],
     };
@@ -201,7 +201,7 @@ describe("runs succesfully", () => {
   test("works with RC channel and newer stable version", async () => {
     expect.assertions(9);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "rc",
       assignees: [],
     };
@@ -230,7 +230,7 @@ describe("runs succesfully", () => {
   test("works with beta channel and up-to-date version", async () => {
     expect.assertions(5);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "beta",
       assignees: [],
     };
@@ -253,7 +253,7 @@ describe("runs succesfully", () => {
   test("works with beta channel and newer beta version", async () => {
     expect.assertions(5);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "beta",
       assignees: [],
     };
@@ -276,7 +276,7 @@ describe("runs succesfully", () => {
   test("works with beta channel and newer RC version", async () => {
     expect.assertions(5);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "beta",
       assignees: [],
     };
@@ -299,7 +299,7 @@ describe("runs succesfully", () => {
   test("works with beta channel and newer stable version", async () => {
     expect.assertions(9);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "beta",
       assignees: [],
     };

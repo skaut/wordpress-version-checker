@@ -2,7 +2,7 @@ import type { Config } from "./interfaces/Config";
 import { createIssue, updateIssue } from "./issue-management";
 
 export async function outdatedStable(
-  config: Config | null,
+  config: Config,
   testedVersion: string,
   latestVersion: string,
   existingIssue: number | null

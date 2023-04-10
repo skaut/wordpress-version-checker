@@ -15,7 +15,7 @@ describe("Succesful runs", () => {
   test("run works correctly with outdated version and no existing issue", async () => {
     expect.assertions(5);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "stable",
       assignees: [],
     };
@@ -34,7 +34,7 @@ describe("Succesful runs", () => {
   test("run works correctly with outdated version and an existing issue", async () => {
     expect.assertions(5);
     const config: Config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       channel: "stable",
       assignees: [],
     };

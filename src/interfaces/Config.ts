@@ -1,5 +1,5 @@
 export interface Config {
-  readme: string;
+  readme: Array<string>;
   channel: "beta" | "rc" | "stable";
   assignees: Array<string>;
 }

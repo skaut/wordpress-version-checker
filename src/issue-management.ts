@@ -60,7 +60,7 @@ export async function closeIssue(issue: number): Promise<void> {
 }
 
 export async function createIssue(
-  config: Config | null,
+  config: Config,
   testedVersion: string,
   latestVersion: string
 ): Promise<void> {
@@ -71,7 +71,7 @@ export async function createIssue(
         "The plugin hasn't been tested with the latest version of WordPress",
       body: issueBody(testedVersion, latestVersion),
       labels: ["wpvc"],
-      assignees: config?.assignees,
+      assignees: config.assignees,
     })
     .catch(function (e): never {
       throw new IssueCreationError(String(e));
