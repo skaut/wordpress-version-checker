@@ -10427,32 +10427,28 @@ const tested_version_1 = __nccwpck_require__(5198);
 const up_to_date_1 = __nccwpck_require__(7771);
 const wordpress_versions_1 = __nccwpck_require__(6725);
 const wpvc_config_1 = __nccwpck_require__(1086);
-function isUpToDate(channel, availableVersions, readmeVersion) {
-    var _a, _b;
-    const minVersion = (_b = (_a = (channel === "beta" ? availableVersions.beta : null)) !== null && _a !== void 0 ? _a : (["beta", "rc"].includes(channel) ? availableVersions.rc : null)) !== null && _b !== void 0 ? _b : availableVersions.stable;
-    return (0, compare_versions_1.compare)(minVersion, readmeVersion, "<=");
-}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const config = yield (0, wpvc_config_1.WPVCConfig)();
             const readmeVersion = yield (0, tested_version_1.testedVersion)(config);
             const availableVersions = yield (0, wordpress_versions_1.wordpressVersions)();
-            if (isUpToDate(config.channel, availableVersions, readmeVersion)) {
-                yield (0, up_to_date_1.upToDate)();
-                return;
-            }
+            const betaVersion = config.channel === "beta" ? availableVersions.beta : null;
             const rcVersion = ["beta", "rc"].includes(config.channel)
                 ? availableVersions.rc
                 : null;
-            if (rcVersion !== null && (0, compare_versions_1.compare)(rcVersion, readmeVersion, "<=")) {
-                (0, outdated_beta_1.outdatedBeta)();
+            if ((0, compare_versions_1.compare)(readmeVersion, availableVersions.stable, "<")) {
+                yield (0, outdated_stable_1.outdatedStable)(config, readmeVersion, availableVersions.stable);
             }
-            else if ((0, compare_versions_1.compare)(availableVersions.stable, readmeVersion, "<=")) {
+            else if (rcVersion !== null && (0, compare_versions_1.compare)(readmeVersion, rcVersion, "<")) {
                 (0, outdated_rc_1.outdatedRC)();
             }
+            else if (betaVersion !== null &&
+                (0, compare_versions_1.compare)(readmeVersion, betaVersion, "<")) {
+                (0, outdated_beta_1.outdatedBeta)();
+            }
             else {
-                yield (0, outdated_stable_1.outdatedStable)(config, readmeVersion, availableVersions.stable);
+                yield (0, up_to_date_1.upToDate)();
             }
         }
         catch (e) {
