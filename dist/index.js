@@ -10590,20 +10590,19 @@ function normalizeConfig(rawConfig) {
     }
     const config = {
         assignees: [],
-        readme: [],
+        readme: ["readme.txt", "plugin/readme.txt"],
     };
-    if (!("readme" in rawConfig)) {
-        throw new ConfigError_1.ConfigError('Invalid config file, the "readme" field is missing.');
-    }
-    if (typeof rawConfig.readme === "string") {
-        config.readme = [rawConfig.readme];
-    }
-    else if (Array.isArray(rawConfig.readme) &&
-        rawConfig.readme.every((item) => typeof item === "string")) {
-        config.readme = rawConfig.readme;
-    }
-    else {
-        throw new ConfigError_1.ConfigError('Invalid config file, the "readme" field should be a string or an array of strings.');
+    if ("readme" in rawConfig) {
+        if (typeof rawConfig.readme === "string") {
+            config.readme = [rawConfig.readme];
+        }
+        else if (Array.isArray(rawConfig.readme) &&
+            rawConfig.readme.every((item) => typeof item === "string")) {
+            config.readme = rawConfig.readme;
+        }
+        else {
+            throw new ConfigError_1.ConfigError('Invalid config file, the "readme" field should be a string or an array of strings.');
+        }
     }
     if ("assignees" in rawConfig) {
         if (!Array.isArray(rawConfig.assignees) ||
