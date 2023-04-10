@@ -40,7 +40,7 @@ function normalizeConfig(rawConfig: unknown): Config {
   return config;
 }
 
-export async function WPVCConfig(): Promise<Config | null> {
+export async function WPVCConfig(): Promise<Config> {
   const file = await octokit()
     .rest.repos.getContent({
       ...repo(),
@@ -54,7 +54,7 @@ export async function WPVCConfig(): Promise<Config | null> {
       }
     });
   if (file === null) {
-    return null;
+    return normalizeConfig({});
   }
   const encodedContent = (file.data as { content?: string }).content;
   if (encodedContent === undefined) {

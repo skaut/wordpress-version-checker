@@ -167,33 +167,28 @@ describe("[env variable mock]", () => {
     expect(scope.isDone()).toBe(true);
   });
 
-  test("createIssue works correctly with no config", async () => {
-    expect.assertions(2);
-    const scope = nock("https://api.github.com")
-      .post("/repos/OWNER/REPO/issues", {
-        title:
-          "The plugin hasn't been tested with the latest version of WordPress",
-        body: /.*/g,
-        labels: ["wpvc"],
-      })
-      .reply(201);
-
-    await expect(createIssue(null, "0.41", "0.42")).resolves.toBeUndefined();
-    expect(scope.isDone()).toBe(true);
-  });
-
   test("createIssue fails gracefully on connection issues", async () => {
     expect.assertions(1);
-    await expect(createIssue(null, "0.41", "0.42")).rejects.toThrow(
+    const config = {
+      readme: ["readme.txt"],
+      assignees: ["PERSON1", "PERSON2"],
+    };
+
+    await expect(createIssue(config, "0.41", "0.42")).rejects.toThrow(
       IssueCreationError
     );
   });
 
   test("createIssue fails gracefully on nonexistent repo", async () => {
     expect.assertions(1);
+    const config = {
+      readme: ["readme.txt"],
+      assignees: ["PERSON1", "PERSON2"],
+    };
+
     nock("https://api.github.com").post("/repos/OWNER/REPO/issues").reply(404);
 
-    await expect(createIssue(null, "0.41", "0.42")).rejects.toThrow(
+    await expect(createIssue(config, "0.41", "0.42")).rejects.toThrow(
       IssueCreationError
     );
   });

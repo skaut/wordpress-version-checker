@@ -75,13 +75,16 @@ describe("Mocked env variables", () => {
     await expect(WPVCConfig()).rejects.toThrow(ConfigError);
   });
 
-  test("WPVCConfig returns null on no config", async () => {
+  test("WPVCConfig returns defaults on no config", async () => {
     expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
       .reply(404);
 
-    await expect(WPVCConfig()).resolves.toBeNull();
+    await expect(WPVCConfig()).resolves.toStrictEqual({
+      readme: ["readme.txt", "plugin/readme.txt"],
+      assignees: [],
+    });
   });
 
   test("WPVCConfig fails gracefully on invalid response", async () => {

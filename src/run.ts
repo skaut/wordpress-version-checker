@@ -14,7 +14,7 @@ import { testedVersion } from "./tested-version";
 import { WPVCConfig } from "./wpvc-config";
 
 async function outdated(
-  config: Config | null,
+  config: Config,
   testedVersion: string,
   latestVersion: string
 ): Promise<void> {
