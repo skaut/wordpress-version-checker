@@ -10585,6 +10585,9 @@ const has_status_1 = __nccwpck_require__(9272);
 const octokit_1 = __nccwpck_require__(6161);
 const repo_1 = __nccwpck_require__(1413);
 function isConfig(config) {
+    if (typeof config !== "object" || config === null) {
+        return false;
+    }
     if (!("readme" in config)) {
         return false;
     }
@@ -10622,7 +10625,7 @@ function WPVCConfig() {
         if (encodedContent === undefined) {
             throw new ConfigError_1.ConfigError("Failed to decode the file.");
         }
-        let config = {};
+        let config;
         try {
             config = JSON.parse(Buffer.from(encodedContent, "base64").toString());
         }

@@ -4,9 +4,10 @@ import type { Config } from "./interfaces/Config";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
-function isConfig(
-  config: Record<string, unknown>
-): config is Config & Record<string, unknown> {
+function isConfig(config: unknown): config is Config {
+  if (typeof config !== "object" || config === null) {
+    return false;
+  }
   if (!("readme" in config)) {
     return false;
   }
@@ -46,11 +47,9 @@ export async function WPVCConfig(): Promise<Config | null> {
   if (encodedContent === undefined) {
     throw new ConfigError("Failed to decode the file.");
   }
-  let config: Record<string, unknown> = {};
+  let config: unknown;
   try {
-    config = JSON.parse(
-      Buffer.from(encodedContent, "base64").toString()
-    ) as Record<string, unknown>;
+    config = JSON.parse(Buffer.from(encodedContent, "base64").toString());
   } catch (e) {
     throw new ConfigError((e as SyntaxError).message);
   }
