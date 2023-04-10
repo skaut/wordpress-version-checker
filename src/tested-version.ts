@@ -7,7 +7,7 @@ import { repo } from "./repo";
 async function readme(config: Config | null): Promise<string> {
   let readmeLocations = ["readme.txt", "plugin/readme.txt"];
   if (config !== null) {
-    readmeLocations = [config.readme];
+    readmeLocations = config.readme;
   }
   for (const readmeLocation of readmeLocations) {
     const result = await octokit()

@@ -10520,7 +10520,7 @@ function readme(config) {
     return __awaiter(this, void 0, void 0, function* () {
         let readmeLocations = ["readme.txt", "plugin/readme.txt"];
         if (config !== null) {
-            readmeLocations = [config.readme];
+            readmeLocations = config.readme;
         }
         for (const readmeLocation of readmeLocations) {
             const result = yield (0, octokit_1.octokit)()
@@ -10584,27 +10584,35 @@ const ConfigError_1 = __nccwpck_require__(6038);
 const has_status_1 = __nccwpck_require__(9272);
 const octokit_1 = __nccwpck_require__(6161);
 const repo_1 = __nccwpck_require__(1413);
-function isConfig(config) {
-    if (typeof config !== "object" || config === null) {
-        return false;
+function normalizeConfig(rawConfig) {
+    if (typeof rawConfig !== "object" || rawConfig === null) {
+        throw new ConfigError_1.ConfigError("Invalid config file.");
     }
-    if (!("readme" in config)) {
-        return false;
+    const config = {
+        assignees: [],
+        readme: [],
+    };
+    if (!("readme" in rawConfig)) {
+        throw new ConfigError_1.ConfigError('Invalid config file, the "readme" field is missing.');
     }
-    if (typeof config.readme !== "string") {
-        return false;
+    if (typeof rawConfig.readme === "string") {
+        config.readme = [rawConfig.readme];
     }
-    if ("assignees" in config) {
-        if (!Array.isArray(config.assignees)) {
-            return false;
+    else if (Array.isArray(rawConfig.readme) &&
+        rawConfig.readme.every((item) => typeof item === "string")) {
+        config.readme = rawConfig.readme;
+    }
+    else {
+        throw new ConfigError_1.ConfigError('Invalid config file, the "readme" field should be a string or an array of strings.');
+    }
+    if ("assignees" in rawConfig) {
+        if (!Array.isArray(rawConfig.assignees) ||
+            !rawConfig.assignees.every((item) => typeof item === "string")) {
+            throw new ConfigError_1.ConfigError('Invalid config file, the "assignees" field should be an array of strings.');
         }
-        for (const assignee of config.assignees) {
-            if (typeof assignee !== "string") {
-                return false;
-            }
-        }
+        config.assignees = rawConfig.assignees;
     }
-    return true;
+    return config;
 }
 function WPVCConfig() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -10632,10 +10640,7 @@ function WPVCConfig() {
         catch (e) {
             throw new ConfigError_1.ConfigError(e.message);
         }
-        if (!isConfig(config)) {
-            throw new ConfigError_1.ConfigError("Invalid config file.");
-        }
-        return Object.assign({ assignees: [] }, config);
+        return normalizeConfig(config);
     });
 }
 exports.WPVCConfig = WPVCConfig;

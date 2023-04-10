@@ -128,7 +128,7 @@ describe("[env variable mock]", () => {
   test("createIssue works correctly", async () => {
     expect.assertions(2);
     const config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       assignees: [],
     };
 
@@ -149,7 +149,7 @@ describe("[env variable mock]", () => {
   test("createIssue works correctly with assignees", async () => {
     expect.assertions(2);
     const config = {
-      readme: "readme.txt",
+      readme: ["readme.txt"],
       assignees: ["PERSON1", "PERSON2"],
     };
 

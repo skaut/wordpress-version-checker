@@ -1,4 +1,4 @@
 export interface Config {
-  readme: string;
+  readme: Array<string>;
   assignees: Array<string>;
 }

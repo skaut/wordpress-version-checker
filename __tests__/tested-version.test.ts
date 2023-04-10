@@ -31,7 +31,7 @@ describe("[env variable mock]", () => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
-      readme: readmePath,
+      readme: [readmePath],
       assignees: [],
     };
 
@@ -78,7 +78,7 @@ describe("[env variable mock]", () => {
   test("testedVersion fails gracefully on connection issues", async () => {
     expect.assertions(1);
     const config = {
-      readme: "path/to/readme.txt",
+      readme: ["path/to/readme.txt"],
       assignees: [],
     };
 
@@ -89,7 +89,7 @@ describe("[env variable mock]", () => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
-      readme: readmePath,
+      readme: [readmePath],
       assignees: [],
     };
 
@@ -104,7 +104,7 @@ describe("[env variable mock]", () => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
-      readme: readmePath,
+      readme: [readmePath],
       assignees: [],
     };
 
@@ -119,7 +119,7 @@ describe("[env variable mock]", () => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
-      readme: readmePath,
+      readme: [readmePath],
       assignees: [],
     };
 
@@ -143,7 +143,7 @@ describe("[env variable mock]", () => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
-      readme: readmePath,
+      readme: [readmePath],
       assignees: [],
     };
 

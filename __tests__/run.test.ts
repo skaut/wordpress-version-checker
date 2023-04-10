@@ -27,7 +27,7 @@ describe("Succesful runs", () => {
 
   test("run works correctly with outdated version and no existing issue", async () => {
     expect.assertions(6);
-    const config = { readme: "readme.txt", assignees: [] };
+    const config = { readme: ["readme.txt"], assignees: [] };
     const testedVersionValue = "0.41";
     const latestVersionValue = "0.42";
 
@@ -48,7 +48,7 @@ describe("Succesful runs", () => {
 
   test("run works correctly with outdated version and an existing issue", async () => {
     expect.assertions(6);
-    const config = { readme: "readme.txt", assignees: [] };
+    const config = { readme: ["readme.txt"], assignees: [] };
     const testedVersionValue = "0.41";
     const latestVersionValue = "0.42";
     const existingIssue = 123;
@@ -70,7 +70,7 @@ describe("Succesful runs", () => {
 
   test("run works correctly with up-to-date version and no existing issue", async () => {
     expect.assertions(3);
-    const config = { readme: "readme.txt", assignees: [] };
+    const config = { readme: ["readme.txt"], assignees: [] };
     const testedVersionValue = "0.42";
     const latestVersionValue = "0.42";
 
@@ -88,7 +88,7 @@ describe("Succesful runs", () => {
 
   test("run works correctly with up-to-date version and an existing issue", async () => {
     expect.assertions(4);
-    const config = { readme: "readme.txt", assignees: [] };
+    const config = { readme: ["readme.txt"], assignees: [] };
     const testedVersionValue = "0.42";
     const latestVersionValue = "0.42";
     const existingIssue = 123;

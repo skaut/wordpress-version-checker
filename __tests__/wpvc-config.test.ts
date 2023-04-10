@@ -22,8 +22,8 @@ describe("Mocked env variables", () => {
   test("WPVCConfig works correctly", async () => {
     expect.assertions(1);
     const config = {
-      readme: "path/to/readme.txt",
-      assignees: [],
+      readme: ["path/to/readme.txt"],
+      assignees: ["PERSON1", "PERSON2"],
     };
 
     nock("https://api.github.com")
@@ -35,20 +35,43 @@ describe("Mocked env variables", () => {
     await expect(WPVCConfig()).resolves.toStrictEqual(config);
   });
 
-  test("WPVCConfig works correctly with assignees", async () => {
+  test("WPVCConfig works correctly with a single readme", async () => {
     expect.assertions(1);
-    const config = {
-      readme: "path/to/readme.txt",
-      assignees: ["PERSON1", "PERSON2"],
-    };
 
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
       .reply(200, {
-        content: Buffer.from(JSON.stringify(config)).toString("base64"),
+        content: Buffer.from(
+          JSON.stringify({
+            readme: "path/to/readme.txt",
+            assignees: [],
+          })
+        ).toString("base64"),
       });
 
-    await expect(WPVCConfig()).resolves.toStrictEqual(config);
+    await expect(WPVCConfig()).resolves.toStrictEqual({
+      readme: ["path/to/readme.txt"],
+      assignees: [],
+    });
+  });
+
+  test("WPVCConfig works correctly without assignees", async () => {
+    expect.assertions(1);
+
+    nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
+      .reply(200, {
+        content: Buffer.from(
+          JSON.stringify({
+            readme: ["path/to/readme.txt"],
+          })
+        ).toString("base64"),
+      });
+
+    await expect(WPVCConfig()).resolves.toStrictEqual({
+      readme: ["path/to/readme.txt"],
+      assignees: [],
+    });
   });
 
   test("WPVCConfig fails gracefully on connection issues", async () => {
@@ -87,6 +110,17 @@ describe("Mocked env variables", () => {
 
   test("WPVCConfig fails gracefully on invalid config", async () => {
     expect.assertions(1);
+    nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
+      .reply(200, {
+        content: Buffer.from(JSON.stringify(false)).toString("base64"),
+      });
+
+    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+  });
+
+  test("WPVCConfig fails gracefully on invalid config 2", async () => {
+    expect.assertions(1);
     const config = {
       readme_incorrect: "path/to/readme.txt",
     };
@@ -95,17 +129,6 @@ describe("Mocked env variables", () => {
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
       .reply(200, {
         content: Buffer.from(JSON.stringify(config)).toString("base64"),
-      });
-
-    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
-  });
-
-  test("WPVCConfig fails gracefully on invalid config 2", async () => {
-    expect.assertions(1);
-    nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
-      .reply(200, {
-        content: Buffer.from(JSON.stringify(false)).toString("base64"),
       });
 
     await expect(WPVCConfig()).rejects.toThrow(ConfigError);
@@ -129,8 +152,7 @@ describe("Mocked env variables", () => {
   test("WPVCConfig fails gracefully on invalid config 4", async () => {
     expect.assertions(1);
     const config = {
-      readme: "path/to/readme.txt",
-      assignees: false,
+      readme: ["readme.txt", false],
     };
 
     nock("https://api.github.com")
@@ -145,7 +167,23 @@ describe("Mocked env variables", () => {
   test("WPVCConfig fails gracefully on invalid config 5", async () => {
     expect.assertions(1);
     const config = {
-      readme: "path/to/readme.txt",
+      readme: ["path/to/readme.txt"],
+      assignees: false,
+    };
+
+    nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
+      .reply(200, {
+        content: Buffer.from(JSON.stringify(config)).toString("base64"),
+      });
+
+    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+  });
+
+  test("WPVCConfig fails gracefully on invalid config 6", async () => {
+    expect.assertions(1);
+    const config = {
+      readme: ["path/to/readme.txt"],
       assignees: ["user", false],
     };
 
