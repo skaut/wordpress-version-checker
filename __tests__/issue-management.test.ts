@@ -129,6 +129,7 @@ describe("[env variable mock]", () => {
     expect.assertions(2);
     const config = {
       readme: "readme.txt",
+      assignees: [],
     };
 
     const scope = nock("https://api.github.com")
@@ -137,6 +138,7 @@ describe("[env variable mock]", () => {
           "The plugin hasn't been tested with the latest version of WordPress",
         body: /.*/g,
         labels: ["wpvc"],
+        assignees: [],
       })
       .reply(201);
 

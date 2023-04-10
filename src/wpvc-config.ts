@@ -4,7 +4,9 @@ import type { Config } from "./interfaces/Config";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
-function isConfig(config: unknown): config is Config {
+function isConfig(
+  config: unknown
+): config is Partial<Config> & { readme: string } {
   if (typeof config !== "object" || config === null) {
     return false;
   }
@@ -56,5 +58,8 @@ export async function WPVCConfig(): Promise<Config | null> {
   if (!isConfig(config)) {
     throw new ConfigError("Invalid config file.");
   }
-  return config;
+  return {
+    assignees: [],
+    ...config,
+  };
 }

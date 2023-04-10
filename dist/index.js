@@ -10191,7 +10191,7 @@ exports.closeIssue = closeIssue;
 function createIssue(config, testedVersion, latestVersion) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
-            .rest.issues.create(Object.assign(Object.assign({}, (0, repo_1.repo)()), { title: "The plugin hasn't been tested with the latest version of WordPress", body: issueBody(testedVersion, latestVersion), labels: ["wpvc"], assignees: config !== null ? config.assignees : undefined }))
+            .rest.issues.create(Object.assign(Object.assign({}, (0, repo_1.repo)()), { title: "The plugin hasn't been tested with the latest version of WordPress", body: issueBody(testedVersion, latestVersion), labels: ["wpvc"], assignees: config === null || config === void 0 ? void 0 : config.assignees }))
             .catch(function (e) {
             throw new IssueCreationError_1.IssueCreationError(String(e));
         });
@@ -10635,7 +10635,7 @@ function WPVCConfig() {
         if (!isConfig(config)) {
             throw new ConfigError_1.ConfigError("Invalid config file.");
         }
-        return config;
+        return Object.assign({ assignees: [] }, config);
     });
 }
 exports.WPVCConfig = WPVCConfig;
