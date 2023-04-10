@@ -67,6 +67,7 @@ export async function WPVCConfig(): Promise<Config | null> {
     throw new ConfigError("Invalid config file.");
   }
   return {
+    channel: "stable",
     assignees: [],
     ...config,
   };

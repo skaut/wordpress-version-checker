@@ -1,5 +1,6 @@
 import { mocked } from "jest-mock";
 
+import type { Config } from "../src/interfaces/Config";
 import { createIssue, updateIssue } from "../src/issue-management";
 import { outdatedStable } from "../src/outdated-stable";
 
@@ -13,7 +14,11 @@ describe("Succesful runs", () => {
 
   test("run works correctly with outdated version and no existing issue", async () => {
     expect.assertions(5);
-    const config = { readme: "readme.txt", assignees: [] };
+    const config: Config = {
+      readme: "readme.txt",
+      channel: "stable",
+      assignees: [],
+    };
     const testedVersion = "0.41";
     const latestVersion = "0.42";
 
@@ -28,7 +33,11 @@ describe("Succesful runs", () => {
 
   test("run works correctly with outdated version and an existing issue", async () => {
     expect.assertions(5);
-    const config = { readme: "readme.txt", assignees: [] };
+    const config: Config = {
+      readme: "readme.txt",
+      channel: "stable",
+      assignees: [],
+    };
     const testedVersion = "0.41";
     const latestVersion = "0.42";
     const existingIssue = 123;

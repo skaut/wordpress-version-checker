@@ -10749,7 +10749,7 @@ function WPVCConfig() {
         if (!isConfig(config)) {
             throw new ConfigError_1.ConfigError("Invalid config file.");
         }
-        return Object.assign({ assignees: [] }, config);
+        return Object.assign({ channel: "stable", assignees: [] }, config);
     });
 }
 exports.WPVCConfig = WPVCConfig;

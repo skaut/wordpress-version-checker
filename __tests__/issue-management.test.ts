@@ -9,6 +9,7 @@ import { IssueCommentError } from "../src/exceptions/IssueCommentError";
 import { IssueCreationError } from "../src/exceptions/IssueCreationError";
 import { IssueListError } from "../src/exceptions/IssueListError";
 import { IssueUpdateError } from "../src/exceptions/IssueUpdateError";
+import type { Config } from "../src/interfaces/Config";
 import {
   closeIssue,
   createIssue,
@@ -127,8 +128,9 @@ describe("[env variable mock]", () => {
 
   test("createIssue works correctly", async () => {
     expect.assertions(2);
-    const config = {
+    const config: Config = {
       readme: "readme.txt",
+      channel: "stable",
       assignees: [],
     };
 
@@ -148,8 +150,9 @@ describe("[env variable mock]", () => {
 
   test("createIssue works correctly with assignees", async () => {
     expect.assertions(2);
-    const config = {
+    const config: Config = {
       readme: "readme.txt",
+      channel: "stable",
       assignees: ["PERSON1", "PERSON2"],
     };
 
