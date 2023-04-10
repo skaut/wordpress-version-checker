@@ -10191,7 +10191,7 @@ exports.closeIssue = closeIssue;
 function createIssue(config, testedVersion, latestVersion) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
-            .rest.issues.create(Object.assign(Object.assign({}, (0, repo_1.repo)()), { title: "The plugin hasn't been tested with the latest version of WordPress", body: issueBody(testedVersion, latestVersion), labels: ["wpvc"], assignees: config !== null ? config.assignees : undefined }))
+            .rest.issues.create(Object.assign(Object.assign({}, (0, repo_1.repo)()), { title: "The plugin hasn't been tested with the latest version of WordPress", body: issueBody(testedVersion, latestVersion), labels: ["wpvc"], assignees: config.assignees }))
             .catch(function (e) {
             throw new IssueCreationError_1.IssueCreationError(String(e));
         });
@@ -10518,11 +10518,7 @@ const octokit_1 = __nccwpck_require__(6161);
 const repo_1 = __nccwpck_require__(1413);
 function readme(config) {
     return __awaiter(this, void 0, void 0, function* () {
-        let readmeLocations = ["readme.txt", "plugin/readme.txt"];
-        if (config !== null) {
-            readmeLocations = [config.readme];
-        }
-        for (const readmeLocation of readmeLocations) {
+        for (const readmeLocation of config.readme) {
             const result = yield (0, octokit_1.octokit)()
                 .rest.repos.getContent(Object.assign(Object.assign({}, (0, repo_1.repo)()), { path: readmeLocation }))
                 .catch(function (e) {
@@ -10584,24 +10580,34 @@ const ConfigError_1 = __nccwpck_require__(6038);
 const has_status_1 = __nccwpck_require__(9272);
 const octokit_1 = __nccwpck_require__(6161);
 const repo_1 = __nccwpck_require__(1413);
-function isConfig(config) {
-    if (!("readme" in config)) {
-        return false;
+function normalizeConfig(rawConfig) {
+    if (typeof rawConfig !== "object" || rawConfig === null) {
+        throw new ConfigError_1.ConfigError("Invalid config file.");
     }
-    if (typeof config.readme !== "string") {
-        return false;
-    }
-    if ("assignees" in config) {
-        if (!Array.isArray(config.assignees)) {
-            return false;
+    const config = {
+        assignees: [],
+        readme: ["readme.txt", "plugin/readme.txt"],
+    };
+    if ("readme" in rawConfig) {
+        if (typeof rawConfig.readme === "string") {
+            config.readme = [rawConfig.readme];
         }
-        for (const assignee of config.assignees) {
-            if (typeof assignee !== "string") {
-                return false;
-            }
+        else if (Array.isArray(rawConfig.readme) &&
+            rawConfig.readme.every((item) => typeof item === "string")) {
+            config.readme = rawConfig.readme;
+        }
+        else {
+            throw new ConfigError_1.ConfigError('Invalid config file, the "readme" field should be a string or an array of strings.');
         }
     }
-    return true;
+    if ("assignees" in rawConfig) {
+        if (!Array.isArray(rawConfig.assignees) ||
+            !rawConfig.assignees.every((item) => typeof item === "string")) {
+            throw new ConfigError_1.ConfigError('Invalid config file, the "assignees" field should be an array of strings.');
+        }
+        config.assignees = rawConfig.assignees;
+    }
+    return config;
 }
 function WPVCConfig() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -10616,23 +10622,20 @@ function WPVCConfig() {
             }
         });
         if (file === null) {
-            return null;
+            return normalizeConfig({});
         }
         const encodedContent = file.data.content;
         if (encodedContent === undefined) {
             throw new ConfigError_1.ConfigError("Failed to decode the file.");
         }
-        let config = {};
+        let config;
         try {
             config = JSON.parse(Buffer.from(encodedContent, "base64").toString());
         }
         catch (e) {
             throw new ConfigError_1.ConfigError(e.message);
         }
-        if (!isConfig(config)) {
-            throw new ConfigError_1.ConfigError("Invalid config file.");
-        }
-        return config;
+        return normalizeConfig(config);
     });
 }
 exports.WPVCConfig = WPVCConfig;

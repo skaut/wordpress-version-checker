@@ -31,7 +31,8 @@ describe("[env variable mock]", () => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
-      readme: readmePath,
+      readme: [readmePath],
+      assignees: [],
     };
 
     nock("https://api.github.com")
@@ -43,41 +44,11 @@ describe("[env variable mock]", () => {
     await expect(testedVersion(config)).resolves.toBe("0.42");
   });
 
-  test("testedVersion works correctly with no config and readme.txt in repo root", async () => {
-    expect.assertions(1);
-    const readme = "Tested up to: 0.42";
-
-    nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/readme.txt")
-      .reply(200, {
-        content: Buffer.from(readme).toString("base64"),
-      });
-
-    await expect(testedVersion(null)).resolves.toBe("0.42");
-  });
-
-  test("testedVersion works correctly with no config and readme.txt in the plugin folder", async () => {
-    expect.assertions(1);
-    const readme = "Tested up to: 0.42";
-
-    nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/readme.txt")
-      .reply(404);
-    nock("https://api.github.com")
-      .get(
-        "/repos/OWNER/REPO/contents/" + encodeURIComponent("plugin/readme.txt")
-      )
-      .reply(200, {
-        content: Buffer.from(readme).toString("base64"),
-      });
-
-    await expect(testedVersion(null)).resolves.toBe("0.42");
-  });
-
   test("testedVersion fails gracefully on connection issues", async () => {
     expect.assertions(1);
     const config = {
-      readme: "path/to/readme.txt",
+      readme: ["path/to/readme.txt"],
+      assignees: [],
     };
 
     await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
@@ -87,7 +58,8 @@ describe("[env variable mock]", () => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
-      readme: readmePath,
+      readme: [readmePath],
+      assignees: [],
     };
 
     nock("https://api.github.com")
@@ -101,7 +73,8 @@ describe("[env variable mock]", () => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
-      readme: readmePath,
+      readme: [readmePath],
+      assignees: [],
     };
 
     nock("https://api.github.com")
@@ -115,7 +88,8 @@ describe("[env variable mock]", () => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
-      readme: readmePath,
+      readme: [readmePath],
+      assignees: [],
     };
 
     nock("https://api.github.com")
@@ -138,7 +112,8 @@ describe("[env variable mock]", () => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
     const config = {
-      readme: readmePath,
+      readme: [readmePath],
+      assignees: [],
     };
 
     nock("https://api.github.com")
