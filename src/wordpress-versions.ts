@@ -2,7 +2,7 @@ import * as https from "https";
 
 import { LatestVersionError } from "./exceptions/LatestVersionError";
 import type { VersionCheckResponse } from "./interfaces/VersionCheckResponse";
-import type { VersionOffers } from "./interfaces/VersionOffers";
+import type { WordpressVersions } from "./interfaces/WordpressVersions";
 
 async function httpsRequest(options: https.RequestOptions): Promise<string> {
   return new Promise(function (resolve, reject) {
@@ -31,7 +31,7 @@ function normalizeVersion(version: string): string {
   return version.split("-")[0].split(".").slice(0, 2).join("."); // Discard patch version and RC designations
 }
 
-export async function wordpressVersions(): Promise<VersionOffers> {
+export async function wordpressVersions(): Promise<WordpressVersions> {
   const rawData = await httpsRequest({
     host: "api.wordpress.org",
     path: "/core/version-check/1.7/?channel=beta",

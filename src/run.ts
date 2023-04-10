@@ -2,7 +2,7 @@ import * as core from "@actions/core";
 import { compare } from "compare-versions";
 
 import type { WPVCError } from "./exceptions/WPVCError";
-import type { VersionOffers } from "./interfaces/VersionOffers";
+import type { WordpressVersions } from "./interfaces/WordpressVersions";
 import { getIssue } from "./issue-management";
 import { outdatedBeta } from "./outdated-beta";
 import { outdatedRC } from "./outdated-rc";
@@ -14,7 +14,7 @@ import { WPVCConfig } from "./wpvc-config";
 
 function isUpToDate(
   channel: "beta" | "rc" | "stable",
-  availableVersions: VersionOffers,
+  availableVersions: WordpressVersions,
   readmeVersion: string
 ): boolean {
   const minVersion =
