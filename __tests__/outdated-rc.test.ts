@@ -16,7 +16,7 @@ describe("Succesful runs", () => {
     expect.assertions(7);
     const config: Config = {
       readme: ["readme.txt"],
-      channel: "stable",
+      channel: "rc",
       assignees: [],
     };
     const testedVersion = "0.41";
@@ -45,7 +45,7 @@ describe("Succesful runs", () => {
     expect.assertions(7);
     const config: Config = {
       readme: ["readme.txt"],
-      channel: "stable",
+      channel: "rc",
       assignees: [],
     };
     const testedVersion = "0.41";

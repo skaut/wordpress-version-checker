@@ -3,7 +3,7 @@ import { createIssue, getIssue, updateIssue } from "./issue-management";
 
 function issueBody(testedVersion: string, latestVersion: string): string {
   return (
-    'There is an upcoming WordPress version in the release candidate stage that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
+    'There is an upcoming WordPress version in the **release candidate** stage that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
     "\n" +
     "**Tested up to:** " +
     testedVersion +
