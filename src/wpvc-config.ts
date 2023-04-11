@@ -8,9 +8,10 @@ function normalizeConfig(rawConfig: unknown): Config {
   if (typeof rawConfig !== "object" || rawConfig === null) {
     throw new ConfigError("Invalid config file.");
   }
+  // Default values
   const config: Config = {
     assignees: [],
-    channel: "stable",
+    channel: "rc",
     readme: ["readme.txt", "plugin/readme.txt"],
   };
   if ("readme" in rawConfig) {

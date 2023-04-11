@@ -55,7 +55,7 @@ By default, the app checks for readme in `readme.txt` and `plugin/readme.txt`. I
 
 ### WordPress release channel
 
-By default, the app will only notify you once the new WordPress version is released (**This will change** - starting from version 2.0, the default value will be changed to `rc`). By setting the `channel` value to one of `stable` or `rc`, you can choose to be notified when the new version is fully release, is in the release candidate (RC) stage of development or when the first beta versions are released.
+By default, the app will notify you once the an upcoming WordPress version reaches the release candidate stage of development. By setting the `channel` value to one of `stable` or `rc`, you can choose to be notified when the new version is fully release, is in the release candidate (RC) stage of development or when the first beta versions are released.
 
 #### Example
 
