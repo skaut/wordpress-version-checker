@@ -9,7 +9,6 @@ import { IssueCommentError } from "../src/exceptions/IssueCommentError";
 import { IssueCreationError } from "../src/exceptions/IssueCreationError";
 import { IssueListError } from "../src/exceptions/IssueListError";
 import { IssueUpdateError } from "../src/exceptions/IssueUpdateError";
-import type { Config } from "../src/interfaces/Config";
 import {
   closeIssue,
   commentOnIssue,
@@ -135,72 +134,56 @@ describe("[env variable mock]", () => {
 
   test("createIssue works correctly", async () => {
     expect.assertions(2);
-    const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
-      assignees: [],
-    };
+    const title = "ISSUE_TITLE";
+    const body = "ISSUE_BODY";
+    const assignees: Array<string> = [];
 
     const scope = nock("https://api.github.com")
       .post("/repos/OWNER/REPO/issues", {
-        title:
-          "The plugin hasn't been tested with the latest version of WordPress",
-        body: /.*/g,
+        title,
+        body,
         labels: ["wpvc"],
-        assignees: [],
+        assignees,
       })
       .reply(201);
 
-    await expect(createIssue(config, "0.41", "0.42")).resolves.toBeUndefined();
+    await expect(createIssue(title, body, assignees)).resolves.toBeUndefined();
     expect(scope.isDone()).toBe(true);
   });
 
   test("createIssue works correctly with assignees", async () => {
     expect.assertions(2);
-    const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
-      assignees: ["PERSON1", "PERSON2"],
-    };
+    const title = "ISSUE_TITLE";
+    const body = "ISSUE_BODY";
+    const assignees = ["PERSON1", "PERSON2"];
 
     const scope = nock("https://api.github.com")
       .post("/repos/OWNER/REPO/issues", {
-        title:
-          "The plugin hasn't been tested with the latest version of WordPress",
-        body: /.*/g,
+        title,
+        body,
         labels: ["wpvc"],
-        assignees: ["PERSON1", "PERSON2"],
+        assignees,
       })
       .reply(201);
 
-    await expect(createIssue(config, "0.41", "0.42")).resolves.toBeUndefined();
+    await expect(createIssue(title, body, assignees)).resolves.toBeUndefined();
     expect(scope.isDone()).toBe(true);
   });
 
   test("createIssue fails gracefully on connection issues", async () => {
     expect.assertions(1);
-    const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
-      assignees: ["PERSON1", "PERSON2"],
-    };
 
-    await expect(createIssue(config, "0.41", "0.42")).rejects.toThrow(
+    await expect(createIssue("ISSUE_TITLE", "ISSUE_BODY", [])).rejects.toThrow(
       IssueCreationError
     );
   });
 
   test("createIssue fails gracefully on nonexistent repo", async () => {
     expect.assertions(1);
-    const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
-      assignees: ["PERSON1", "PERSON2"],
-    };
 
     nock("https://api.github.com").post("/repos/OWNER/REPO/issues").reply(404);
 
-    await expect(createIssue(config, "0.41", "0.42")).rejects.toThrow(
+    await expect(createIssue("ISSUE_TITLE", "ISSUE_BODY", [])).rejects.toThrow(
       IssueCreationError
     );
   });

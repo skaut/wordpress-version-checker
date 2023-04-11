@@ -10193,11 +10193,11 @@ function closeIssue(issue) {
     });
 }
 exports.closeIssue = closeIssue;
-// TODO
-function createIssue(config, testedVersion, latestVersion) {
+function createIssue(title, body, assignees) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
-            .rest.issues.create(Object.assign(Object.assign({}, (0, repo_1.repo)()), { title: "The plugin hasn't been tested with the latest version of WordPress", body: issueBody(testedVersion, latestVersion), labels: ["wpvc"], assignees: config.assignees }))
+            .rest.issues.create(Object.assign(Object.assign({}, (0, repo_1.repo)()), { title,
+            body, labels: ["wpvc"], assignees }))
             .catch(function (e) {
             throw new IssueCreationError_1.IssueCreationError(String(e));
         });
@@ -10327,6 +10327,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedStable = void 0;
 const issue_management_1 = __nccwpck_require__(3813);
+function issueBody(testedVersion, latestVersion) {
+    return ('There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
+        "\n" +
+        "**Tested up to:** " +
+        testedVersion +
+        "\n" +
+        "**Latest version:** " +
+        latestVersion +
+        "\n" +
+        "\n" +
+        "This issue will be closed automatically when the versions match.");
+}
 function outdatedStable(config, testedVersion, latestVersion) {
     return __awaiter(this, void 0, void 0, function* () {
         const existingIssue = yield (0, issue_management_1.getIssue)();
@@ -10334,7 +10346,7 @@ function outdatedStable(config, testedVersion, latestVersion) {
             yield (0, issue_management_1.updateIssue)(existingIssue, testedVersion, latestVersion);
         }
         else {
-            yield (0, issue_management_1.createIssue)(config, testedVersion, latestVersion);
+            yield (0, issue_management_1.createIssue)("The plugin hasn't been tested with the latest version of WordPress", issueBody(testedVersion, latestVersion), config.assignees);
         }
     });
 }

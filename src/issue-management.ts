@@ -6,7 +6,6 @@ import { IssueCommentError } from "./exceptions/IssueCommentError";
 import { IssueCreationError } from "./exceptions/IssueCreationError";
 import { IssueListError } from "./exceptions/IssueListError";
 import { IssueUpdateError } from "./exceptions/IssueUpdateError";
-import type { Config } from "./interfaces/Config";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
@@ -66,18 +65,17 @@ export async function closeIssue(issue: number): Promise<void> {
 }
 
 export async function createIssue(
-  config: Config,
-  testedVersion: string,
-  latestVersion: string
+  title: string,
+  body: string,
+  assignees: Array<string>
 ): Promise<void> {
   await octokit()
     .rest.issues.create({
       ...repo(),
-      title:
-        "The plugin hasn't been tested with the latest version of WordPress",
-      body: issueBody(testedVersion, latestVersion),
+      title,
+      body,
       labels: ["wpvc"],
-      assignees: config.assignees,
+      assignees,
     })
     .catch(function (e): never {
       throw new IssueCreationError(String(e));
