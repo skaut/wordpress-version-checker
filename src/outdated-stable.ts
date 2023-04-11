@@ -19,12 +19,12 @@ function issueBody(testedVersion: string, latestVersion: string): string {
 export async function outdatedStable(
   config: Config,
   testedVersion: string,
-  latestVersion: string
+  stableVersion: string
 ): Promise<void> {
   const existingIssue = await getIssue();
   const title =
     "The plugin hasn't been tested with the latest version of WordPress";
-  const body = issueBody(testedVersion, latestVersion);
+  const body = issueBody(testedVersion, stableVersion);
   if (existingIssue !== null) {
     await updateIssue(existingIssue, title, body);
   } else {

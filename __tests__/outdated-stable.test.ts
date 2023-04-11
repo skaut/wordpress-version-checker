@@ -12,7 +12,7 @@ describe("Succesful runs", () => {
     mocked(updateIssue).mockResolvedValue(undefined);
   });
 
-  test("run works correctly with outdated version and no existing issue", async () => {
+  test("outdatedStable works correctly with outdated version and no existing issue", async () => {
     expect.assertions(7);
     const config: Config = {
       readme: ["readme.txt"],
@@ -41,7 +41,7 @@ describe("Succesful runs", () => {
     expect(mocked(updateIssue).mock.calls).toHaveLength(0);
   });
 
-  test("run works correctly with outdated version and an existing issue", async () => {
+  test("outdatedStable works correctly with outdated version and an existing issue", async () => {
     expect.assertions(7);
     const config: Config = {
       readme: ["readme.txt"],
