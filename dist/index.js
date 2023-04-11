@@ -10238,14 +10238,46 @@ exports.octokit = octokit;
 /***/ }),
 
 /***/ 9762:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedBeta = void 0;
-function outdatedBeta() {
-    throw new Error("Not implemented outdatedBeta");
+const issue_management_1 = __nccwpck_require__(3813);
+function issueBody(testedVersion, latestVersion) {
+    return ("There is an upcoming WordPress version in the **beta** stage that the plugin hasn't been tested with.\n" +
+        "\n" +
+        "**Tested up to:** " +
+        testedVersion +
+        "\n" +
+        "**Beta version:** " +
+        latestVersion +
+        "\n" +
+        "\n" +
+        "This issue will be closed automatically when the versions match.");
+}
+function outdatedBeta(config, testedVersion, betaVersion) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const existingIssue = yield (0, issue_management_1.getIssue)();
+        const title = "The plugin hasn't been tested with a beta version of WordPress";
+        const body = issueBody(testedVersion, betaVersion);
+        if (existingIssue !== null) {
+            yield (0, issue_management_1.updateIssue)(existingIssue, title, body);
+        }
+        else {
+            yield (0, issue_management_1.createIssue)(title, body, config.assignees);
+        }
+    });
 }
 exports.outdatedBeta = outdatedBeta;
 
@@ -10270,7 +10302,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedRC = void 0;
 const issue_management_1 = __nccwpck_require__(3813);
 function issueBody(testedVersion, latestVersion) {
-    return ('There is an upcoming WordPress version in the release candidate stage that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
+    return ('There is an upcoming WordPress version in the **release candidate** stage that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
         "\n" +
         "**Tested up to:** " +
         testedVersion +
@@ -10455,7 +10487,7 @@ function run() {
             }
             else if (betaVersion !== null &&
                 (0, compare_versions_1.compare)(readmeVersion, betaVersion, "<")) {
-                (0, outdated_beta_1.outdatedBeta)();
+                yield (0, outdated_beta_1.outdatedBeta)(config, readmeVersion, betaVersion);
             }
             else {
                 yield (0, up_to_date_1.upToDate)();
