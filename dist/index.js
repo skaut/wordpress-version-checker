@@ -10253,14 +10253,46 @@ exports.outdatedBeta = outdatedBeta;
 /***/ }),
 
 /***/ 9153:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedRC = void 0;
-function outdatedRC() {
-    throw new Error("Not implemented outdatedRC");
+const issue_management_1 = __nccwpck_require__(3813);
+function issueBody(testedVersion, latestVersion) {
+    return ('There is an upcoming WordPress version in the release candidate stage that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
+        "\n" +
+        "**Tested up to:** " +
+        testedVersion +
+        "\n" +
+        "**Upcoming version:** " +
+        latestVersion +
+        "\n" +
+        "\n" +
+        "This issue will be closed automatically when the versions match.");
+}
+function outdatedRC(config, testedVersion, rcVersion) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const existingIssue = yield (0, issue_management_1.getIssue)();
+        const title = "The plugin hasn't been tested with an upcoming version of WordPress";
+        const body = issueBody(testedVersion, rcVersion);
+        if (existingIssue !== null) {
+            yield (0, issue_management_1.updateIssue)(existingIssue, title, body);
+        }
+        else {
+            yield (0, issue_management_1.createIssue)(title, body, config.assignees);
+        }
+    });
 }
 exports.outdatedRC = outdatedRC;
 
@@ -10296,11 +10328,11 @@ function issueBody(testedVersion, latestVersion) {
         "\n" +
         "This issue will be closed automatically when the versions match.");
 }
-function outdatedStable(config, testedVersion, latestVersion) {
+function outdatedStable(config, testedVersion, stableVersion) {
     return __awaiter(this, void 0, void 0, function* () {
         const existingIssue = yield (0, issue_management_1.getIssue)();
         const title = "The plugin hasn't been tested with the latest version of WordPress";
-        const body = issueBody(testedVersion, latestVersion);
+        const body = issueBody(testedVersion, stableVersion);
         if (existingIssue !== null) {
             yield (0, issue_management_1.updateIssue)(existingIssue, title, body);
         }
@@ -10419,7 +10451,7 @@ function run() {
                 yield (0, outdated_stable_1.outdatedStable)(config, readmeVersion, availableVersions.stable);
             }
             else if (rcVersion !== null && (0, compare_versions_1.compare)(readmeVersion, rcVersion, "<")) {
-                (0, outdated_rc_1.outdatedRC)();
+                yield (0, outdated_rc_1.outdatedRC)(config, readmeVersion, rcVersion);
             }
             else if (betaVersion !== null &&
                 (0, compare_versions_1.compare)(readmeVersion, betaVersion, "<")) {

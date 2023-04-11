@@ -23,7 +23,7 @@ export async function run(): Promise<void> {
     if (compare(readmeVersion, availableVersions.stable, "<")) {
       await outdatedStable(config, readmeVersion, availableVersions.stable);
     } else if (rcVersion !== null && compare(readmeVersion, rcVersion, "<")) {
-      outdatedRC();
+      await outdatedRC(config, readmeVersion, rcVersion);
     } else if (
       betaVersion !== null &&
       compare(readmeVersion, betaVersion, "<")
