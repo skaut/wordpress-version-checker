@@ -21,7 +21,7 @@ export async function run(): Promise<void> {
       ? availableVersions.rc
       : null;
     if (compare(readmeVersion, availableVersions.stable, "<")) {
-      await outdatedStable(config, readmeVersion, availableVersions);
+      await outdatedStable(config, readmeVersion, availableVersions.stable);
     } else if (rcVersion !== null && compare(readmeVersion, rcVersion, "<")) {
       outdatedRC();
     } else if (

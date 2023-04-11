@@ -1,5 +1,4 @@
 import type { Config } from "./interfaces/Config";
-import type { WordpressVersions } from "./interfaces/WordpressVersions";
 import { createIssue, getIssue, updateIssue } from "./issue-management";
 
 function issueBody(testedVersion: string, latestVersion: string): string {
@@ -20,12 +19,12 @@ function issueBody(testedVersion: string, latestVersion: string): string {
 export async function outdatedStable(
   config: Config,
   testedVersion: string,
-  availableVersions: WordpressVersions
+  latestVersion: string
 ): Promise<void> {
   const existingIssue = await getIssue();
   const title =
     "The plugin hasn't been tested with the latest version of WordPress";
-  const body = issueBody(testedVersion, availableVersions.stable);
+  const body = issueBody(testedVersion, latestVersion);
   if (existingIssue !== null) {
     await updateIssue(existingIssue, title, body);
   } else {

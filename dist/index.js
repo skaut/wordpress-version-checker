@@ -10296,11 +10296,11 @@ function issueBody(testedVersion, latestVersion) {
         "\n" +
         "This issue will be closed automatically when the versions match.");
 }
-function outdatedStable(config, testedVersion, availableVersions) {
+function outdatedStable(config, testedVersion, latestVersion) {
     return __awaiter(this, void 0, void 0, function* () {
         const existingIssue = yield (0, issue_management_1.getIssue)();
         const title = "The plugin hasn't been tested with the latest version of WordPress";
-        const body = issueBody(testedVersion, availableVersions.stable);
+        const body = issueBody(testedVersion, latestVersion);
         if (existingIssue !== null) {
             yield (0, issue_management_1.updateIssue)(existingIssue, title, body);
         }
@@ -10416,7 +10416,7 @@ function run() {
                 ? availableVersions.rc
                 : null;
             if ((0, compare_versions_1.compare)(readmeVersion, availableVersions.stable, "<")) {
-                yield (0, outdated_stable_1.outdatedStable)(config, readmeVersion, availableVersions);
+                yield (0, outdated_stable_1.outdatedStable)(config, readmeVersion, availableVersions.stable);
             }
             else if (rcVersion !== null && (0, compare_versions_1.compare)(readmeVersion, rcVersion, "<")) {
                 (0, outdated_rc_1.outdatedRC)();

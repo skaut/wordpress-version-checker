@@ -20,15 +20,11 @@ describe("Succesful runs", () => {
       assignees: [],
     };
     const testedVersion = "0.41";
-    const availableVersions = {
-      beta: null,
-      rc: null,
-      stable: "0.42",
-    };
+    const latestVersion = "0.42";
 
     mocked(getIssue).mockResolvedValue(null);
 
-    await outdatedStable(config, testedVersion, availableVersions);
+    await outdatedStable(config, testedVersion, latestVersion);
 
     expect(mocked(getIssue).mock.calls).toHaveLength(1);
     expect(mocked(createIssue).mock.calls).toHaveLength(1);
@@ -53,16 +49,12 @@ describe("Succesful runs", () => {
       assignees: [],
     };
     const testedVersion = "0.41";
-    const availableVersions = {
-      beta: null,
-      rc: null,
-      stable: "0.42",
-    };
+    const latestVersion = "0.42";
     const existingIssue = 123;
 
     mocked(getIssue).mockResolvedValue(existingIssue);
 
-    await outdatedStable(config, testedVersion, availableVersions);
+    await outdatedStable(config, testedVersion, latestVersion);
 
     expect(mocked(getIssue).mock.calls).toHaveLength(1);
     expect(mocked(createIssue).mock.calls).toHaveLength(0);

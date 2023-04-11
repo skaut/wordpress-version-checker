@@ -116,7 +116,7 @@ describe("runs succesfully", () => {
     expect(mocked(outdatedStable).mock.calls[0][0]).toStrictEqual(config);
     expect(mocked(outdatedStable).mock.calls[0][1]).toBe(testedVersionValue);
     expect(mocked(outdatedStable).mock.calls[0][2]).toBe(
-      wordpressVersionsValue
+      wordpressVersionsValue.stable
     );
     expect(mocked(upToDate).mock.calls).toHaveLength(0);
   });
@@ -209,7 +209,7 @@ describe("runs succesfully", () => {
     expect(mocked(outdatedStable).mock.calls[0][0]).toStrictEqual(config);
     expect(mocked(outdatedStable).mock.calls[0][1]).toBe(testedVersionValue);
     expect(mocked(outdatedStable).mock.calls[0][2]).toBe(
-      wordpressVersionsValue
+      wordpressVersionsValue.stable
     );
     expect(mocked(upToDate).mock.calls).toHaveLength(0);
   });
@@ -302,7 +302,7 @@ describe("runs succesfully", () => {
     expect(mocked(outdatedStable).mock.calls[0][0]).toStrictEqual(config);
     expect(mocked(outdatedStable).mock.calls[0][1]).toBe(testedVersionValue);
     expect(mocked(outdatedStable).mock.calls[0][2]).toBe(
-      wordpressVersionsValue
+      wordpressVersionsValue.stable
     );
     expect(mocked(upToDate).mock.calls).toHaveLength(0);
   });
