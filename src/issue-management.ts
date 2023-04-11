@@ -38,16 +38,22 @@ export async function getIssue(): Promise<number | null> {
   return issues.data.length > 0 ? issues.data[0].number : null;
 }
 
-export async function closeIssue(issue: number): Promise<void> {
+export async function commentOnIssue(
+  issue: number,
+  comment: string
+): Promise<void> {
   await octokit()
     .rest.issues.createComment({
       ...repo(),
       issue_number: issue,
-      body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.',
+      body: comment,
     })
     .catch(function (e): never {
       throw new IssueCommentError(issue, String(e));
     });
+}
+
+export async function closeIssue(issue: number): Promise<void> {
   await octokit()
     .rest.issues.update({
       ...repo(),

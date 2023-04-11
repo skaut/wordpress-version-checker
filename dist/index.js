@@ -10140,7 +10140,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.updateIssue = exports.createIssue = exports.closeIssue = exports.getIssue = void 0;
+exports.updateIssue = exports.createIssue = exports.closeIssue = exports.commentOnIssue = exports.getIssue = void 0;
 const compare_versions_1 = __nccwpck_require__(4773);
 const ExistingIssueFormatError_1 = __nccwpck_require__(259);
 const GetIssueError_1 = __nccwpck_require__(4418);
@@ -10173,13 +10173,18 @@ function getIssue() {
     });
 }
 exports.getIssue = getIssue;
-function closeIssue(issue) {
+function commentOnIssue(issue, comment) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
-            .rest.issues.createComment(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issue, body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.' }))
+            .rest.issues.createComment(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issue, body: comment }))
             .catch(function (e) {
             throw new IssueCommentError_1.IssueCommentError(issue, String(e));
         });
+    });
+}
+exports.commentOnIssue = commentOnIssue;
+function closeIssue(issue) {
+    return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
             .rest.issues.update(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issue, state: "closed" }))
             .catch(function (e) {
@@ -10188,6 +10193,7 @@ function closeIssue(issue) {
     });
 }
 exports.closeIssue = closeIssue;
+// TODO
 function createIssue(config, testedVersion, latestVersion) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
@@ -10198,6 +10204,7 @@ function createIssue(config, testedVersion, latestVersion) {
     });
 }
 exports.createIssue = createIssue;
+// TODO
 function updateIssue(issueNumber, testedVersion, latestVersion) {
     return __awaiter(this, void 0, void 0, function* () {
         const issue = yield (0, octokit_1.octokit)()
@@ -10546,6 +10553,7 @@ function upToDate() {
     return __awaiter(this, void 0, void 0, function* () {
         const existingIssue = yield (0, issue_management_1.getIssue)();
         if (existingIssue !== null) {
+            yield (0, issue_management_1.commentOnIssue)(existingIssue, 'The "Tested up to" version in the readme matches the latest version now, closing this issue.');
             yield (0, issue_management_1.closeIssue)(existingIssue);
         }
     });
