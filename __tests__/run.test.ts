@@ -22,7 +22,7 @@ jest.mock("../src/wpvc-config");
 
 describe("runs succesfully", () => {
   beforeEach(() => {
-    mocked(outdatedBeta).mockReturnValue();
+    mocked(outdatedBeta).mockResolvedValue();
     mocked(outdatedRC).mockResolvedValue();
     mocked(outdatedStable).mockResolvedValue();
     mocked(upToDate).mockResolvedValue();

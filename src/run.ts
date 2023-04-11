@@ -28,7 +28,7 @@ export async function run(): Promise<void> {
       betaVersion !== null &&
       compare(readmeVersion, betaVersion, "<")
     ) {
-      outdatedBeta();
+      await outdatedBeta(config, readmeVersion, betaVersion);
     } else {
       await upToDate();
     }
