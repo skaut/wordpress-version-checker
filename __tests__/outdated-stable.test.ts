@@ -42,7 +42,7 @@ describe("Succesful runs", () => {
   });
 
   test("run works correctly with outdated version and an existing issue", async () => {
-    expect.assertions(6);
+    expect.assertions(7);
     const config: Config = {
       readme: ["readme.txt"],
       channel: "stable",
@@ -60,7 +60,14 @@ describe("Succesful runs", () => {
     expect(mocked(createIssue).mock.calls).toHaveLength(0);
     expect(mocked(updateIssue).mock.calls).toHaveLength(1);
     expect(mocked(updateIssue).mock.calls[0][0]).toBe(existingIssue);
-    expect(mocked(updateIssue).mock.calls[0][1]).toBe(testedVersion);
-    expect(mocked(updateIssue).mock.calls[0][2]).toBe(latestVersion);
+    expect(mocked(updateIssue).mock.calls[0][1]).toBe(
+      "The plugin hasn't been tested with the latest version of WordPress"
+    );
+    expect(mocked(updateIssue).mock.calls[0][2]).toMatch(
+      /\*\*Tested up to:\*\* 0\.41/g
+    );
+    expect(mocked(updateIssue).mock.calls[0][2]).toMatch(
+      /\*\*Latest version:\*\* 0\.42/g
+    );
   });
 });

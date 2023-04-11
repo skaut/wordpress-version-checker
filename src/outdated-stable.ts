@@ -22,13 +22,12 @@ export async function outdatedStable(
   latestVersion: string
 ): Promise<void> {
   const existingIssue = await getIssue();
+  const title =
+    "The plugin hasn't been tested with the latest version of WordPress";
+  const body = issueBody(testedVersion, latestVersion);
   if (existingIssue !== null) {
-    await updateIssue(existingIssue, testedVersion, latestVersion);
+    await updateIssue(existingIssue, title, body);
   } else {
-    await createIssue(
-      "The plugin hasn't been tested with the latest version of WordPress",
-      issueBody(testedVersion, latestVersion),
-      config.assignees
-    );
+    await createIssue(title, body, config.assignees);
   }
 }

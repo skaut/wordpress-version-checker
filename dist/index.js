@@ -9932,26 +9932,6 @@ exports.ConfigError = ConfigError;
 
 /***/ }),
 
-/***/ 259:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ExistingIssueFormatError = void 0;
-const WPVCError_1 = __nccwpck_require__(2805);
-class ExistingIssueFormatError extends WPVCError_1.WPVCError {
-    constructor(issueNumber) {
-        super("The existing issue #" +
-            String(issueNumber) +
-            " doesn't have the correct format.");
-    }
-}
-exports.ExistingIssueFormatError = ExistingIssueFormatError;
-
-
-/***/ }),
-
 /***/ 4418:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -10141,8 +10121,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.updateIssue = exports.createIssue = exports.closeIssue = exports.commentOnIssue = exports.getIssue = void 0;
-const compare_versions_1 = __nccwpck_require__(4773);
-const ExistingIssueFormatError_1 = __nccwpck_require__(259);
 const GetIssueError_1 = __nccwpck_require__(4418);
 const IssueCommentError_1 = __nccwpck_require__(5809);
 const IssueCreationError_1 = __nccwpck_require__(2188);
@@ -10150,18 +10128,6 @@ const IssueListError_1 = __nccwpck_require__(2444);
 const IssueUpdateError_1 = __nccwpck_require__(9719);
 const octokit_1 = __nccwpck_require__(6161);
 const repo_1 = __nccwpck_require__(1413);
-function issueBody(testedVersion, latestVersion) {
-    return ('There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
-        "\n" +
-        "**Tested up to:** " +
-        testedVersion +
-        "\n" +
-        "**Latest version:** " +
-        latestVersion +
-        "\n" +
-        "\n" +
-        "This issue will be closed automatically when the versions match.");
-}
 function getIssue() {
     return __awaiter(this, void 0, void 0, function* () {
         const issues = yield (0, octokit_1.octokit)()
@@ -10204,31 +10170,22 @@ function createIssue(title, body, assignees) {
     });
 }
 exports.createIssue = createIssue;
-// TODO
-function updateIssue(issueNumber, testedVersion, latestVersion) {
+function updateIssue(issueNumber, title, body) {
     return __awaiter(this, void 0, void 0, function* () {
         const issue = yield (0, octokit_1.octokit)()
             .rest.issues.get(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issueNumber }))
             .catch(function (e) {
             throw new GetIssueError_1.GetIssueError(issueNumber, String(e));
         });
-        if (issue.data.body === undefined || issue.data.body === null) {
-            throw new ExistingIssueFormatError_1.ExistingIssueFormatError(issueNumber);
+        if (issue.data.title === title && issue.data.body === body) {
+            return;
         }
-        const matchingLine = issue.data.body.split("\r\n").find(function (line) {
-            return line.startsWith("**Latest version:**");
+        yield (0, octokit_1.octokit)()
+            .rest.issues.update(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issueNumber, title,
+            body }))
+            .catch(function (e) {
+            throw new IssueUpdateError_1.IssueUpdateError(issueNumber, String(e));
         });
-        if (matchingLine === undefined) {
-            throw new ExistingIssueFormatError_1.ExistingIssueFormatError(issueNumber);
-        }
-        const latestVersionInIssue = matchingLine.slice(20);
-        if ((0, compare_versions_1.compare)(latestVersionInIssue, latestVersion, "<")) {
-            yield (0, octokit_1.octokit)()
-                .rest.issues.update(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issueNumber, body: issueBody(testedVersion, latestVersion) }))
-                .catch(function (e) {
-                throw new IssueUpdateError_1.IssueUpdateError(issueNumber, String(e));
-            });
-        }
     });
 }
 exports.updateIssue = updateIssue;
@@ -10342,11 +10299,13 @@ function issueBody(testedVersion, latestVersion) {
 function outdatedStable(config, testedVersion, latestVersion) {
     return __awaiter(this, void 0, void 0, function* () {
         const existingIssue = yield (0, issue_management_1.getIssue)();
+        const title = "The plugin hasn't been tested with the latest version of WordPress";
+        const body = issueBody(testedVersion, latestVersion);
         if (existingIssue !== null) {
-            yield (0, issue_management_1.updateIssue)(existingIssue, testedVersion, latestVersion);
+            yield (0, issue_management_1.updateIssue)(existingIssue, title, body);
         }
         else {
-            yield (0, issue_management_1.createIssue)("The plugin hasn't been tested with the latest version of WordPress", issueBody(testedVersion, latestVersion), config.assignees);
+            yield (0, issue_management_1.createIssue)(title, body, config.assignees);
         }
     });
 }
