@@ -4,6 +4,7 @@ import mockedEnv from "mocked-env";
 import nock from "nock";
 
 import { InvalidReadmeError } from "../src/exceptions/InvalidReadmeError";
+import type { Config } from "../src/interfaces/Config";
 import { testedVersion } from "../src/tested-version";
 
 jest.mock("@actions/core");
@@ -30,8 +31,9 @@ describe("[env variable mock]", () => {
   ])("testedVersion works correctly", async (readme) => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
-    const config = {
+    const config: Config = {
       readme: [readmePath],
+      channel: "stable",
       assignees: [],
     };
 
@@ -46,8 +48,9 @@ describe("[env variable mock]", () => {
 
   test("testedVersion fails gracefully on connection issues", async () => {
     expect.assertions(1);
-    const config = {
+    const config: Config = {
       readme: ["path/to/readme.txt"],
+      channel: "stable",
       assignees: [],
     };
 
@@ -57,8 +60,9 @@ describe("[env variable mock]", () => {
   test("testedVersion fails gracefully on no readme", async () => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
-    const config = {
+    const config: Config = {
       readme: [readmePath],
+      channel: "stable",
       assignees: [],
     };
 
@@ -72,8 +76,9 @@ describe("[env variable mock]", () => {
   test("testedVersion fails gracefully on invalid response", async () => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
-    const config = {
+    const config: Config = {
       readme: [readmePath],
+      channel: "stable",
       assignees: [],
     };
 
@@ -87,8 +92,9 @@ describe("[env variable mock]", () => {
   test("testedVersion fails gracefully on invalid response 2", async () => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
-    const config = {
+    const config: Config = {
       readme: [readmePath],
+      channel: "stable",
       assignees: [],
     };
 
@@ -111,8 +117,9 @@ describe("[env variable mock]", () => {
   ])("testedVersion fails gracefully on invalid readme", async (readme) => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
-    const config = {
+    const config: Config = {
       readme: [readmePath],
+      channel: "stable",
       assignees: [],
     };
 

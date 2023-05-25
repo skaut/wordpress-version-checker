@@ -1,109 +1,310 @@
 import * as core from "@actions/core";
 import { mocked } from "jest-mock";
 
-import {
-  closeIssue,
-  createIssue,
-  getIssue,
-  updateIssue,
-} from "../src/issue-management";
-import { latestWordPressVersion } from "../src/latest-version";
+import type { Config } from "../src/interfaces/Config";
+import { outdatedBeta } from "../src/outdated-beta";
+import { outdatedRC } from "../src/outdated-rc";
+import { outdatedStable } from "../src/outdated-stable";
 import { run } from "../src/run";
 import { testedVersion } from "../src/tested-version";
+import { upToDate } from "../src/up-to-date";
+import { wordpressVersions } from "../src/wordpress-versions";
 import { WPVCConfig } from "../src/wpvc-config";
 
 jest.mock("@actions/core");
-jest.mock("../src/issue-management");
-jest.mock("../src/latest-version");
+jest.mock("../src/outdated-beta");
+jest.mock("../src/outdated-rc");
+jest.mock("../src/outdated-stable");
 jest.mock("../src/tested-version");
+jest.mock("../src/up-to-date");
+jest.mock("../src/wordpress-versions");
 jest.mock("../src/wpvc-config");
 
-describe("Succesful runs", () => {
+describe("runs succesfully", () => {
   beforeEach(() => {
-    mocked(closeIssue).mockResolvedValue(undefined);
-    mocked(createIssue).mockResolvedValue(undefined);
-    mocked(updateIssue).mockResolvedValue(undefined);
+    mocked(outdatedBeta).mockResolvedValue();
+    mocked(outdatedRC).mockResolvedValue();
+    mocked(outdatedStable).mockResolvedValue();
+    mocked(upToDate).mockResolvedValue();
   });
 
-  test("run works correctly with outdated version and no existing issue", async () => {
-    expect.assertions(6);
-    const config = { readme: ["readme.txt"], assignees: [] };
-    const testedVersionValue = "0.41";
-    const latestVersionValue = "0.42";
-
-    mocked(getIssue).mockResolvedValue(null);
-    mocked(latestWordPressVersion).mockResolvedValue(latestVersionValue);
-    mocked(testedVersion).mockResolvedValue(testedVersionValue);
-    mocked(WPVCConfig).mockResolvedValue(config);
-
-    await run();
-
-    expect(mocked(closeIssue).mock.calls).toHaveLength(0);
-    expect(mocked(createIssue).mock.calls).toHaveLength(1);
-    expect(mocked(createIssue).mock.calls[0][0]).toStrictEqual(config);
-    expect(mocked(createIssue).mock.calls[0][1]).toBe(testedVersionValue);
-    expect(mocked(createIssue).mock.calls[0][2]).toBe(latestVersionValue);
-    expect(mocked(updateIssue).mock.calls).toHaveLength(0);
-  });
-
-  test("run works correctly with outdated version and an existing issue", async () => {
-    expect.assertions(6);
-    const config = { readme: ["readme.txt"], assignees: [] };
-    const testedVersionValue = "0.41";
-    const latestVersionValue = "0.42";
-    const existingIssue = 123;
-
-    mocked(getIssue).mockResolvedValue(existingIssue);
-    mocked(latestWordPressVersion).mockResolvedValue(latestVersionValue);
-    mocked(testedVersion).mockResolvedValue(testedVersionValue);
-    mocked(WPVCConfig).mockResolvedValue(config);
-
-    await run();
-
-    expect(mocked(closeIssue).mock.calls).toHaveLength(0);
-    expect(mocked(createIssue).mock.calls).toHaveLength(0);
-    expect(mocked(updateIssue).mock.calls).toHaveLength(1);
-    expect(mocked(updateIssue).mock.calls[0][0]).toBe(existingIssue);
-    expect(mocked(updateIssue).mock.calls[0][1]).toBe(testedVersionValue);
-    expect(mocked(updateIssue).mock.calls[0][2]).toBe(latestVersionValue);
-  });
-
-  test("run works correctly with up-to-date version and no existing issue", async () => {
-    expect.assertions(3);
-    const config = { readme: ["readme.txt"], assignees: [] };
-    const testedVersionValue = "0.42";
-    const latestVersionValue = "0.42";
-
-    mocked(getIssue).mockResolvedValue(null);
-    mocked(latestWordPressVersion).mockResolvedValue(latestVersionValue);
-    mocked(testedVersion).mockResolvedValue(testedVersionValue);
-    mocked(WPVCConfig).mockResolvedValue(config);
-
-    await run();
-
-    expect(mocked(closeIssue).mock.calls).toHaveLength(0);
-    expect(mocked(createIssue).mock.calls).toHaveLength(0);
-    expect(mocked(updateIssue).mock.calls).toHaveLength(0);
-  });
-
-  test("run works correctly with up-to-date version and an existing issue", async () => {
+  test("works with stable channel and up-to-date version", async () => {
     expect.assertions(4);
-    const config = { readme: ["readme.txt"], assignees: [] };
+    const config: Config = {
+      readme: ["readme.txt"],
+      channel: "stable",
+      assignees: [],
+    };
     const testedVersionValue = "0.42";
-    const latestVersionValue = "0.42";
-    const existingIssue = 123;
+    const wordpressVersionsValue = { beta: "0.42", rc: "0.42", stable: "0.42" };
 
-    mocked(getIssue).mockResolvedValue(existingIssue);
-    mocked(latestWordPressVersion).mockResolvedValue(latestVersionValue);
-    mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(testedVersion).mockResolvedValue(testedVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
 
     await run();
 
-    expect(mocked(closeIssue).mock.calls).toHaveLength(1);
-    expect(mocked(closeIssue).mock.calls[0][0]).toBe(existingIssue);
-    expect(mocked(createIssue).mock.calls).toHaveLength(0);
-    expect(mocked(updateIssue).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
+    expect(mocked(upToDate).mock.calls).toHaveLength(1);
+  });
+
+  test("works with stable channel and newer beta version", async () => {
+    expect.assertions(4);
+    const config: Config = {
+      readme: ["readme.txt"],
+      channel: "stable",
+      assignees: [],
+    };
+    const testedVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: "0.43", rc: "0.42", stable: "0.42" };
+
+    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(testedVersion).mockResolvedValue(testedVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
+
+    await run();
+
+    expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
+    expect(mocked(upToDate).mock.calls).toHaveLength(1);
+  });
+
+  test("works with stable channel and newer RC version", async () => {
+    expect.assertions(4);
+    const config: Config = {
+      readme: ["readme.txt"],
+      channel: "stable",
+      assignees: [],
+    };
+    const testedVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.42" };
+
+    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(testedVersion).mockResolvedValue(testedVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
+
+    await run();
+
+    expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
+    expect(mocked(upToDate).mock.calls).toHaveLength(1);
+  });
+
+  test("works with stable channel and newer stable version", async () => {
+    expect.assertions(7);
+    const config: Config = {
+      readme: ["readme.txt"],
+      channel: "stable",
+      assignees: [],
+    };
+    const testedVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.43" };
+
+    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(testedVersion).mockResolvedValue(testedVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
+
+    await run();
+
+    expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedStable).mock.calls).toHaveLength(1);
+    expect(mocked(outdatedStable).mock.calls[0][0]).toStrictEqual(config);
+    expect(mocked(outdatedStable).mock.calls[0][1]).toBe(testedVersionValue);
+    expect(mocked(outdatedStable).mock.calls[0][2]).toBe(
+      wordpressVersionsValue.stable
+    );
+    expect(mocked(upToDate).mock.calls).toHaveLength(0);
+  });
+
+  test("works with RC channel and up-to-date version", async () => {
+    expect.assertions(4);
+    const config: Config = {
+      readme: ["readme.txt"],
+      channel: "rc",
+      assignees: [],
+    };
+    const testedVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: "0.42", rc: "0.42", stable: "0.42" };
+
+    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(testedVersion).mockResolvedValue(testedVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
+
+    await run();
+
+    expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
+    expect(mocked(upToDate).mock.calls).toHaveLength(1);
+  });
+
+  test("works with RC channel and newer beta version", async () => {
+    expect.assertions(4);
+    const config: Config = {
+      readme: ["readme.txt"],
+      channel: "rc",
+      assignees: [],
+    };
+    const testedVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: "0.43", rc: "0.42", stable: "0.42" };
+
+    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(testedVersion).mockResolvedValue(testedVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
+
+    await run();
+
+    expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
+    expect(mocked(upToDate).mock.calls).toHaveLength(1);
+  });
+
+  test("works with RC channel and newer RC version", async () => {
+    expect.assertions(4);
+    const config: Config = {
+      readme: ["readme.txt"],
+      channel: "rc",
+      assignees: [],
+    };
+    const testedVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.42" };
+
+    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(testedVersion).mockResolvedValue(testedVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
+
+    await run();
+
+    expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedRC).mock.calls).toHaveLength(1);
+    expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
+    expect(mocked(upToDate).mock.calls).toHaveLength(0);
+  });
+
+  test("works with RC channel and newer stable version", async () => {
+    expect.assertions(7);
+    const config: Config = {
+      readme: ["readme.txt"],
+      channel: "rc",
+      assignees: [],
+    };
+    const testedVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.43" };
+
+    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(testedVersion).mockResolvedValue(testedVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
+
+    await run();
+
+    expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedStable).mock.calls).toHaveLength(1);
+    expect(mocked(outdatedStable).mock.calls[0][0]).toStrictEqual(config);
+    expect(mocked(outdatedStable).mock.calls[0][1]).toBe(testedVersionValue);
+    expect(mocked(outdatedStable).mock.calls[0][2]).toBe(
+      wordpressVersionsValue.stable
+    );
+    expect(mocked(upToDate).mock.calls).toHaveLength(0);
+  });
+
+  test("works with beta channel and up-to-date version", async () => {
+    expect.assertions(4);
+    const config: Config = {
+      readme: ["readme.txt"],
+      channel: "beta",
+      assignees: [],
+    };
+    const testedVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: "0.42", rc: "0.42", stable: "0.42" };
+
+    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(testedVersion).mockResolvedValue(testedVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
+
+    await run();
+
+    expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
+    expect(mocked(upToDate).mock.calls).toHaveLength(1);
+  });
+
+  test("works with beta channel and newer beta version", async () => {
+    expect.assertions(4);
+    const config: Config = {
+      readme: ["readme.txt"],
+      channel: "beta",
+      assignees: [],
+    };
+    const testedVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: "0.43", rc: "0.42", stable: "0.42" };
+
+    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(testedVersion).mockResolvedValue(testedVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
+
+    await run();
+
+    expect(mocked(outdatedBeta).mock.calls).toHaveLength(1);
+    expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
+    expect(mocked(upToDate).mock.calls).toHaveLength(0);
+  });
+
+  test("works with beta channel and newer RC version", async () => {
+    expect.assertions(4);
+    const config: Config = {
+      readme: ["readme.txt"],
+      channel: "beta",
+      assignees: [],
+    };
+    const testedVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.42" };
+
+    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(testedVersion).mockResolvedValue(testedVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
+
+    await run();
+
+    expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedRC).mock.calls).toHaveLength(1);
+    expect(mocked(outdatedStable).mock.calls).toHaveLength(0);
+    expect(mocked(upToDate).mock.calls).toHaveLength(0);
+  });
+
+  test("works with beta channel and newer stable version", async () => {
+    expect.assertions(7);
+    const config: Config = {
+      readme: ["readme.txt"],
+      channel: "beta",
+      assignees: [],
+    };
+    const testedVersionValue = "0.42";
+    const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.43" };
+
+    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(testedVersion).mockResolvedValue(testedVersionValue);
+    mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
+
+    await run();
+
+    expect(mocked(outdatedBeta).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedRC).mock.calls).toHaveLength(0);
+    expect(mocked(outdatedStable).mock.calls).toHaveLength(1);
+    expect(mocked(outdatedStable).mock.calls[0][0]).toStrictEqual(config);
+    expect(mocked(outdatedStable).mock.calls[0][1]).toBe(testedVersionValue);
+    expect(mocked(outdatedStable).mock.calls[0][2]).toBe(
+      wordpressVersionsValue.stable
+    );
+    expect(mocked(upToDate).mock.calls).toHaveLength(0);
   });
 });
 

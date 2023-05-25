@@ -3,7 +3,6 @@ import { mocked } from "jest-mock";
 import mockedEnv from "mocked-env";
 import nock from "nock";
 
-import { ExistingIssueFormatError } from "../src/exceptions/ExistingIssueFormatError";
 import { GetIssueError } from "../src/exceptions/GetIssueError";
 import { IssueCommentError } from "../src/exceptions/IssueCommentError";
 import { IssueCreationError } from "../src/exceptions/IssueCreationError";
@@ -11,6 +10,7 @@ import { IssueListError } from "../src/exceptions/IssueListError";
 import { IssueUpdateError } from "../src/exceptions/IssueUpdateError";
 import {
   closeIssue,
+  commentOnIssue,
   createIssue,
   getIssue,
   updateIssue,
@@ -65,176 +65,198 @@ describe("[env variable mock]", () => {
     await expect(getIssue()).rejects.toThrow(IssueListError);
   });
 
-  test("closeIssue works correctly", async () => {
-    expect.assertions(1);
-    nock("https://api.github.com")
+  test("commentOnIssue works correctly", async () => {
+    expect.assertions(2);
+    const issueBody = "ISSUE_BODY";
+
+    const scope = nock("https://api.github.com")
       .post("/repos/OWNER/REPO/issues/123/comments", {
-        body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.',
+        body: issueBody,
       })
-      .reply(200)
+      .reply(200);
+
+    await expect(commentOnIssue(123, issueBody)).resolves.toBeUndefined();
+    expect(scope.isDone()).toBe(true);
+  });
+
+  test("commentOnIssue fails gracefully on connection issues", async () => {
+    expect.assertions(1);
+    await expect(commentOnIssue(123, "ISSUE_BODY")).rejects.toThrow(
+      IssueCommentError
+    );
+  });
+
+  test("commentOnIssue fails gracefully on nonexistent repo", async () => {
+    expect.assertions(2);
+    const issueBody = "ISSUE_BODY";
+
+    const scope = nock("https://api.github.com")
+      .post("/repos/OWNER/REPO/issues/123/comments", {
+        body: issueBody,
+      })
+      .reply(404);
+
+    await expect(commentOnIssue(123, issueBody)).rejects.toThrow(
+      IssueCommentError
+    );
+    expect(scope.isDone()).toBe(true);
+  });
+
+  test("closeIssue works correctly", async () => {
+    expect.assertions(2);
+    const scope = nock("https://api.github.com")
       .patch("/repos/OWNER/REPO/issues/123", {
         state: "closed",
       })
       .reply(200);
 
     await expect(closeIssue(123)).resolves.toBeUndefined();
+    expect(scope.isDone()).toBe(true);
   });
 
-  test("closeIssue fails gracefully on connection issues when commenting", async () => {
+  test("closeIssue fails gracefully on connection issues", async () => {
     expect.assertions(1);
-    await expect(closeIssue(123)).rejects.toThrow(IssueCommentError);
-  });
-
-  test("closeIssue fails gracefully on nonexistent repo when commenting", async () => {
-    expect.assertions(1);
-    nock("https://api.github.com")
-      .post("/repos/OWNER/REPO/issues/123/comments", {
-        body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.',
-      })
-      .reply(404)
-      .patch("/repos/OWNER/REPO/issues/123", {
-        state: "closed",
-      })
-      .reply(404);
-
-    await expect(closeIssue(123)).rejects.toThrow(IssueCommentError);
-  });
-
-  test("closeIssue fails gracefully on connection issues when closing", async () => {
-    expect.assertions(1);
-    nock("https://api.github.com")
-      .post("/repos/OWNER/REPO/issues/123/comments", {
-        body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.',
-      })
-      .reply(200);
     await expect(closeIssue(123)).rejects.toThrow(IssueUpdateError);
   });
 
-  test("closeIssue fails gracefully on nonexistent repo when closing", async () => {
-    expect.assertions(1);
-    nock("https://api.github.com")
-      .post("/repos/OWNER/REPO/issues/123/comments", {
-        body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.',
-      })
-      .reply(200)
+  test("closeIssue fails gracefully on nonexistent repo", async () => {
+    expect.assertions(2);
+    const scope = nock("https://api.github.com")
       .patch("/repos/OWNER/REPO/issues/123", {
         state: "closed",
       })
       .reply(404);
 
     await expect(closeIssue(123)).rejects.toThrow(IssueUpdateError);
+    expect(scope.isDone()).toBe(true);
   });
 
   test("createIssue works correctly", async () => {
     expect.assertions(2);
-    const config = {
-      readme: ["readme.txt"],
-      assignees: [],
-    };
+    const title = "ISSUE_TITLE";
+    const body = "ISSUE_BODY";
+    const assignees: Array<string> = [];
 
     const scope = nock("https://api.github.com")
       .post("/repos/OWNER/REPO/issues", {
-        title:
-          "The plugin hasn't been tested with the latest version of WordPress",
-        body: /.*/g,
+        title,
+        body,
         labels: ["wpvc"],
-        assignees: [],
+        assignees,
       })
       .reply(201);
 
-    await expect(createIssue(config, "0.41", "0.42")).resolves.toBeUndefined();
+    await expect(createIssue(title, body, assignees)).resolves.toBeUndefined();
     expect(scope.isDone()).toBe(true);
   });
 
   test("createIssue works correctly with assignees", async () => {
     expect.assertions(2);
-    const config = {
-      readme: ["readme.txt"],
-      assignees: ["PERSON1", "PERSON2"],
-    };
+    const title = "ISSUE_TITLE";
+    const body = "ISSUE_BODY";
+    const assignees = ["PERSON1", "PERSON2"];
 
     const scope = nock("https://api.github.com")
       .post("/repos/OWNER/REPO/issues", {
-        title:
-          "The plugin hasn't been tested with the latest version of WordPress",
-        body: /.*/g,
+        title,
+        body,
         labels: ["wpvc"],
-        assignees: ["PERSON1", "PERSON2"],
+        assignees,
       })
       .reply(201);
 
-    await expect(createIssue(config, "0.41", "0.42")).resolves.toBeUndefined();
+    await expect(createIssue(title, body, assignees)).resolves.toBeUndefined();
     expect(scope.isDone()).toBe(true);
   });
 
   test("createIssue fails gracefully on connection issues", async () => {
     expect.assertions(1);
-    const config = {
-      readme: ["readme.txt"],
-      assignees: ["PERSON1", "PERSON2"],
-    };
 
-    await expect(createIssue(config, "0.41", "0.42")).rejects.toThrow(
+    await expect(createIssue("ISSUE_TITLE", "ISSUE_BODY", [])).rejects.toThrow(
       IssueCreationError
     );
   });
 
   test("createIssue fails gracefully on nonexistent repo", async () => {
     expect.assertions(1);
-    const config = {
-      readme: ["readme.txt"],
-      assignees: ["PERSON1", "PERSON2"],
-    };
 
     nock("https://api.github.com").post("/repos/OWNER/REPO/issues").reply(404);
 
-    await expect(createIssue(config, "0.41", "0.42")).rejects.toThrow(
+    await expect(createIssue("ISSUE_TITLE", "ISSUE_BODY", [])).rejects.toThrow(
       IssueCreationError
     );
   });
 
-  test("updateIssue works correctly", async () => {
+  test("updateIssue works correctly with an up-to-date-issue", async () => {
     expect.assertions(2);
+    const title = "ISSUE_TITLE";
+    const body = "ISSUE_BODY";
+
     const scope = nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues/123")
-      .reply(200, { body: "**Latest version:** 0.42" })
-      .patch("/repos/OWNER/REPO/issues/123")
-      .reply(200);
+      .reply(200, { title, body });
+    //.patch("/repos/OWNER/REPO/issues/123")
+    //.reply(200);
 
-    await expect(updateIssue(123, "0.41", "0.43")).resolves.toBeUndefined();
+    await expect(updateIssue(123, title, body)).resolves.toBeUndefined();
     expect(scope.isDone()).toBe(true);
   });
 
-  test("updateIssue correctly does not update the issue if it isn't needed", async () => {
+  test("updateIssue works correctly with an issue with outdated title", async () => {
     expect.assertions(2);
+    const title = "ISSUE_TITLE";
+    const body = "ISSUE_BODY";
+
     const scope = nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues/123")
-      .reply(200, { body: "**Latest version:** 0.42" });
+      .reply(200, { title: "WRONG_TITLE", body })
+      .patch("/repos/OWNER/REPO/issues/123", { title, body })
+      .reply(200);
 
-    await expect(updateIssue(123, "0.41", "0.42")).resolves.toBeUndefined();
+    await expect(updateIssue(123, title, body)).resolves.toBeUndefined();
+    expect(scope.isDone()).toBe(true);
+  });
+
+  test("updateIssue works correctly with an issue with outdated body", async () => {
+    expect.assertions(2);
+    const title = "ISSUE_TITLE";
+    const body = "ISSUE_BODY";
+
+    const scope = nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/issues/123")
+      .reply(200, { title, body: "WRONG_BODY" })
+      .patch("/repos/OWNER/REPO/issues/123", { title, body })
+      .reply(200);
+
+    await expect(updateIssue(123, title, body)).resolves.toBeUndefined();
     expect(scope.isDone()).toBe(true);
   });
 
   test("updateIssue fails gracefully on connection issues on getting the existing issue", async () => {
     expect.assertions(1);
+    const title = "ISSUE_TITLE";
+    const body = "ISSUE_BODY";
+
     nock("https://api.github.com")
-      .patch("/repos/OWNER/REPO/issues/123")
+      .patch("/repos/OWNER/REPO/issues/123", { title, body })
       .reply(200);
 
-    await expect(updateIssue(123, "0.41", "0.43")).rejects.toThrow(
-      GetIssueError
-    );
+    await expect(updateIssue(123, title, body)).rejects.toThrow(GetIssueError);
   });
 
   test("updateIssue fails gracefully on connection issues on updating the existing issue", async () => {
-    expect.assertions(1);
-    nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/issues/123")
-      .reply(200, { body: "**Latest version:** 0.42" });
+    expect.assertions(2);
+    const title = "ISSUE_TITLE";
+    const body = "ISSUE_BODY";
 
-    await expect(updateIssue(123, "0.41", "0.43")).rejects.toThrow(
+    const scope = nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/issues/123")
+      .reply(200, { title: "WRONG_TITLE", body });
+
+    await expect(updateIssue(123, title, body)).rejects.toThrow(
       IssueUpdateError
     );
+    expect(scope.isDone()).toBe(true);
   });
 
   test("updateIssue fails gracefully on nonexistent repo", async () => {
@@ -245,30 +267,8 @@ describe("[env variable mock]", () => {
       .patch("/repos/OWNER/REPO/issues/123")
       .reply(404);
 
-    await expect(updateIssue(123, "0.41", "0.43")).rejects.toThrow(
+    await expect(updateIssue(123, "ISSUE_TITLE", "ISSUE_BODY")).rejects.toThrow(
       GetIssueError
-    );
-  });
-
-  test("updateIssue fails gracefully on malformed issue 1", async () => {
-    expect.assertions(1);
-    nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/issues/123")
-      .reply(200, {});
-
-    await expect(updateIssue(123, "0.41", "0.43")).rejects.toThrow(
-      ExistingIssueFormatError
-    );
-  });
-
-  test("updateIssue fails gracefully on malformed issue 2", async () => {
-    expect.assertions(1);
-    nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/issues/123")
-      .reply(200, { body: "**Latest NOT version:** 0.42" });
-
-    await expect(updateIssue(123, "0.41", "0.43")).rejects.toThrow(
-      ExistingIssueFormatError
     );
   });
 });

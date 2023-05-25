@@ -23,6 +23,7 @@ describe("Mocked env variables", () => {
     expect.assertions(1);
     const config = {
       readme: ["path/to/readme.txt"],
+      channel: "rc",
       assignees: ["PERSON1", "PERSON2"],
     };
 
@@ -44,6 +45,7 @@ describe("Mocked env variables", () => {
         content: Buffer.from(
           JSON.stringify({
             readme: "path/to/readme.txt",
+            channel: "rc",
             assignees: [],
           })
         ).toString("base64"),
@@ -51,6 +53,7 @@ describe("Mocked env variables", () => {
 
     await expect(WPVCConfig()).resolves.toStrictEqual({
       readme: ["path/to/readme.txt"],
+      channel: "rc",
       assignees: [],
     });
   });
@@ -66,6 +69,7 @@ describe("Mocked env variables", () => {
 
     await expect(WPVCConfig()).resolves.toStrictEqual({
       readme: ["readme.txt", "plugin/readme.txt"],
+      channel: "stable",
       assignees: [],
     });
   });
@@ -83,6 +87,7 @@ describe("Mocked env variables", () => {
 
     await expect(WPVCConfig()).resolves.toStrictEqual({
       readme: ["readme.txt", "plugin/readme.txt"],
+      channel: "stable",
       assignees: [],
     });
   });
@@ -151,7 +156,6 @@ describe("Mocked env variables", () => {
   test("WPVCConfig fails gracefully on invalid config 4", async () => {
     expect.assertions(1);
     const config = {
-      readme: ["path/to/readme.txt"],
       assignees: false,
     };
 
@@ -167,8 +171,37 @@ describe("Mocked env variables", () => {
   test("WPVCConfig fails gracefully on invalid config 5", async () => {
     expect.assertions(1);
     const config = {
-      readme: ["path/to/readme.txt"],
       assignees: ["user", false],
+    };
+
+    nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
+      .reply(200, {
+        content: Buffer.from(JSON.stringify(config)).toString("base64"),
+      });
+
+    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+  });
+
+  test("WPVCConfig fails gracefully on invalid config 6", async () => {
+    expect.assertions(1);
+    const config = {
+      channel: false,
+    };
+
+    nock("https://api.github.com")
+      .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
+      .reply(200, {
+        content: Buffer.from(JSON.stringify(config)).toString("base64"),
+      });
+
+    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+  });
+
+  test("WPVCConfig fails gracefully on invalid config 7", async () => {
+    expect.assertions(1);
+    const config = {
+      channel: "not-stable",
     };
 
     nock("https://api.github.com")

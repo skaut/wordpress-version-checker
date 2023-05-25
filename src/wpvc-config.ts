@@ -10,6 +10,7 @@ function normalizeConfig(rawConfig: unknown): Config {
   }
   const config: Config = {
     assignees: [],
+    channel: "stable",
     readme: ["readme.txt", "plugin/readme.txt"],
   };
   if ("readme" in rawConfig) {
@@ -36,6 +37,17 @@ function normalizeConfig(rawConfig: unknown): Config {
       );
     }
     config.assignees = rawConfig.assignees as Array<string>;
+  }
+  if ("channel" in rawConfig) {
+    if (
+      typeof rawConfig.channel !== "string" ||
+      !["rc", "stable"].includes(rawConfig.channel)
+    ) {
+      throw new ConfigError(
+        'Invalid config file, the "channel" field should be one of "rc", "stable".'
+      );
+    }
+    config.channel = rawConfig.channel as "beta" | "rc" | "stable";
   }
   return config;
 }

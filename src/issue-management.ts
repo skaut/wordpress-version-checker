@@ -1,29 +1,10 @@
-import { compare } from "compare-versions";
-
-import { ExistingIssueFormatError } from "./exceptions/ExistingIssueFormatError";
 import { GetIssueError } from "./exceptions/GetIssueError";
 import { IssueCommentError } from "./exceptions/IssueCommentError";
 import { IssueCreationError } from "./exceptions/IssueCreationError";
 import { IssueListError } from "./exceptions/IssueListError";
 import { IssueUpdateError } from "./exceptions/IssueUpdateError";
-import type { Config } from "./interfaces/Config";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
-
-function issueBody(testedVersion: string, latestVersion: string): string {
-  return (
-    'There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
-    "\n" +
-    "**Tested up to:** " +
-    testedVersion +
-    "\n" +
-    "**Latest version:** " +
-    latestVersion +
-    "\n" +
-    "\n" +
-    "This issue will be closed automatically when the versions match."
-  );
-}
 
 export async function getIssue(): Promise<number | null> {
   const issues = await octokit()
@@ -38,16 +19,22 @@ export async function getIssue(): Promise<number | null> {
   return issues.data.length > 0 ? issues.data[0].number : null;
 }
 
-export async function closeIssue(issue: number): Promise<void> {
+export async function commentOnIssue(
+  issue: number,
+  comment: string
+): Promise<void> {
   await octokit()
     .rest.issues.createComment({
       ...repo(),
       issue_number: issue,
-      body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.',
+      body: comment,
     })
     .catch(function (e): never {
       throw new IssueCommentError(issue, String(e));
     });
+}
+
+export async function closeIssue(issue: number): Promise<void> {
   await octokit()
     .rest.issues.update({
       ...repo(),
@@ -60,18 +47,17 @@ export async function closeIssue(issue: number): Promise<void> {
 }
 
 export async function createIssue(
-  config: Config,
-  testedVersion: string,
-  latestVersion: string
+  title: string,
+  body: string,
+  assignees: Array<string>
 ): Promise<void> {
   await octokit()
     .rest.issues.create({
       ...repo(),
-      title:
-        "The plugin hasn't been tested with the latest version of WordPress",
-      body: issueBody(testedVersion, latestVersion),
+      title,
+      body,
       labels: ["wpvc"],
-      assignees: config.assignees,
+      assignees,
     })
     .catch(function (e): never {
       throw new IssueCreationError(String(e));
@@ -80,33 +66,25 @@ export async function createIssue(
 
 export async function updateIssue(
   issueNumber: number,
-  testedVersion: string,
-  latestVersion: string
+  title: string,
+  body: string
 ): Promise<void> {
   const issue = await octokit()
     .rest.issues.get({ ...repo(), issue_number: issueNumber })
     .catch(function (e): never {
       throw new GetIssueError(issueNumber, String(e));
     });
-  if (issue.data.body === undefined || issue.data.body === null) {
-    throw new ExistingIssueFormatError(issueNumber);
+  if (issue.data.title === title && issue.data.body === body) {
+    return;
   }
-  const matchingLine = issue.data.body.split("\r\n").find(function (line) {
-    return line.startsWith("**Latest version:**");
-  });
-  if (matchingLine === undefined) {
-    throw new ExistingIssueFormatError(issueNumber);
-  }
-  const latestVersionInIssue = matchingLine.slice(20);
-  if (compare(latestVersionInIssue, latestVersion, "<")) {
-    await octokit()
-      .rest.issues.update({
-        ...repo(),
-        issue_number: issueNumber,
-        body: issueBody(testedVersion, latestVersion),
-      })
-      .catch(function (e): never {
-        throw new IssueUpdateError(issueNumber, String(e));
-      });
-  }
+  await octokit()
+    .rest.issues.update({
+      ...repo(),
+      issue_number: issueNumber,
+      title,
+      body,
+    })
+    .catch(function (e): never {
+      throw new IssueUpdateError(issueNumber, String(e));
+    });
 }

@@ -9932,26 +9932,6 @@ exports.ConfigError = ConfigError;
 
 /***/ }),
 
-/***/ 259:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ExistingIssueFormatError = void 0;
-const WPVCError_1 = __nccwpck_require__(2805);
-class ExistingIssueFormatError extends WPVCError_1.WPVCError {
-    constructor(issueNumber) {
-        super("The existing issue #" +
-            String(issueNumber) +
-            " doesn't have the correct format.");
-    }
-}
-exports.ExistingIssueFormatError = ExistingIssueFormatError;
-
-
-/***/ }),
-
 /***/ 4418:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -10140,9 +10120,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.updateIssue = exports.createIssue = exports.closeIssue = exports.getIssue = void 0;
-const compare_versions_1 = __nccwpck_require__(4773);
-const ExistingIssueFormatError_1 = __nccwpck_require__(259);
+exports.updateIssue = exports.createIssue = exports.closeIssue = exports.commentOnIssue = exports.getIssue = void 0;
 const GetIssueError_1 = __nccwpck_require__(4418);
 const IssueCommentError_1 = __nccwpck_require__(5809);
 const IssueCreationError_1 = __nccwpck_require__(2188);
@@ -10150,18 +10128,6 @@ const IssueListError_1 = __nccwpck_require__(2444);
 const IssueUpdateError_1 = __nccwpck_require__(9719);
 const octokit_1 = __nccwpck_require__(6161);
 const repo_1 = __nccwpck_require__(1413);
-function issueBody(testedVersion, latestVersion) {
-    return ('There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
-        "\n" +
-        "**Tested up to:** " +
-        testedVersion +
-        "\n" +
-        "**Latest version:** " +
-        latestVersion +
-        "\n" +
-        "\n" +
-        "This issue will be closed automatically when the versions match.");
-}
 function getIssue() {
     return __awaiter(this, void 0, void 0, function* () {
         const issues = yield (0, octokit_1.octokit)()
@@ -10173,13 +10139,18 @@ function getIssue() {
     });
 }
 exports.getIssue = getIssue;
-function closeIssue(issue) {
+function commentOnIssue(issue, comment) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
-            .rest.issues.createComment(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issue, body: 'The "Tested up to" version in the readme matches the latest version now, closing this issue.' }))
+            .rest.issues.createComment(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issue, body: comment }))
             .catch(function (e) {
             throw new IssueCommentError_1.IssueCommentError(issue, String(e));
         });
+    });
+}
+exports.commentOnIssue = commentOnIssue;
+function closeIssue(issue) {
+    return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
             .rest.issues.update(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issue, state: "closed" }))
             .catch(function (e) {
@@ -10188,136 +10159,36 @@ function closeIssue(issue) {
     });
 }
 exports.closeIssue = closeIssue;
-function createIssue(config, testedVersion, latestVersion) {
+function createIssue(title, body, assignees) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
-            .rest.issues.create(Object.assign(Object.assign({}, (0, repo_1.repo)()), { title: "The plugin hasn't been tested with the latest version of WordPress", body: issueBody(testedVersion, latestVersion), labels: ["wpvc"], assignees: config.assignees }))
+            .rest.issues.create(Object.assign(Object.assign({}, (0, repo_1.repo)()), { title,
+            body, labels: ["wpvc"], assignees }))
             .catch(function (e) {
             throw new IssueCreationError_1.IssueCreationError(String(e));
         });
     });
 }
 exports.createIssue = createIssue;
-function updateIssue(issueNumber, testedVersion, latestVersion) {
+function updateIssue(issueNumber, title, body) {
     return __awaiter(this, void 0, void 0, function* () {
         const issue = yield (0, octokit_1.octokit)()
             .rest.issues.get(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issueNumber }))
             .catch(function (e) {
             throw new GetIssueError_1.GetIssueError(issueNumber, String(e));
         });
-        if (issue.data.body === undefined || issue.data.body === null) {
-            throw new ExistingIssueFormatError_1.ExistingIssueFormatError(issueNumber);
+        if (issue.data.title === title && issue.data.body === body) {
+            return;
         }
-        const matchingLine = issue.data.body.split("\r\n").find(function (line) {
-            return line.startsWith("**Latest version:**");
+        yield (0, octokit_1.octokit)()
+            .rest.issues.update(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issueNumber, title,
+            body }))
+            .catch(function (e) {
+            throw new IssueUpdateError_1.IssueUpdateError(issueNumber, String(e));
         });
-        if (matchingLine === undefined) {
-            throw new ExistingIssueFormatError_1.ExistingIssueFormatError(issueNumber);
-        }
-        const latestVersionInIssue = matchingLine.slice(20);
-        if ((0, compare_versions_1.compare)(latestVersionInIssue, latestVersion, "<")) {
-            yield (0, octokit_1.octokit)()
-                .rest.issues.update(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issueNumber, body: issueBody(testedVersion, latestVersion) }))
-                .catch(function (e) {
-                throw new IssueUpdateError_1.IssueUpdateError(issueNumber, String(e));
-            });
-        }
     });
 }
 exports.updateIssue = updateIssue;
-
-
-/***/ }),
-
-/***/ 6598:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.latestWordPressVersion = void 0;
-const https = __importStar(__nccwpck_require__(5687));
-const LatestVersionError_1 = __nccwpck_require__(4241);
-function httpsRequest(options) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return new Promise(function (resolve, reject) {
-            https
-                .get(options, function (response) {
-                let data = "";
-                response.setEncoding("utf8");
-                response.on("data", (chunk) => {
-                    data += chunk;
-                });
-                response.on("end", function () {
-                    if (response.statusCode === 200) {
-                        resolve(data);
-                    }
-                    else {
-                        reject();
-                    }
-                });
-            })
-                .on("error", (e) => {
-                reject(e);
-            });
-        });
-    });
-}
-function latestWordPressVersion() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const rawData = yield httpsRequest({
-            host: "api.wordpress.org",
-            path: "/core/stable-check/1.0/",
-        }).catch(function (e) {
-            throw new LatestVersionError_1.LatestVersionError(e);
-        });
-        let list = {};
-        try {
-            list = JSON.parse(rawData);
-        }
-        catch (e) {
-            throw new LatestVersionError_1.LatestVersionError(e.message);
-        }
-        const latest = Object.keys(list).find((key) => list[key] === "latest");
-        if (latest === undefined) {
-            throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
-        }
-        return latest.split(".").slice(0, 2).join("."); // Discard patch version
-    });
-}
-exports.latestWordPressVersion = latestWordPressVersion;
 
 
 /***/ }),
@@ -10362,6 +10233,147 @@ function octokit() {
     return octokitInstance;
 }
 exports.octokit = octokit;
+
+
+/***/ }),
+
+/***/ 9762:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.outdatedBeta = void 0;
+const issue_management_1 = __nccwpck_require__(3813);
+function issueBody(testedVersion, latestVersion) {
+    return ("There is an upcoming WordPress version in the **beta** stage that the plugin hasn't been tested with.\n" +
+        "\n" +
+        "**Tested up to:** " +
+        testedVersion +
+        "\n" +
+        "**Beta version:** " +
+        latestVersion +
+        "\n" +
+        "\n" +
+        "This issue will be closed automatically when the versions match.");
+}
+function outdatedBeta(config, testedVersion, betaVersion) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const existingIssue = yield (0, issue_management_1.getIssue)();
+        const title = "The plugin hasn't been tested with a beta version of WordPress";
+        const body = issueBody(testedVersion, betaVersion);
+        if (existingIssue !== null) {
+            yield (0, issue_management_1.updateIssue)(existingIssue, title, body);
+        }
+        else {
+            yield (0, issue_management_1.createIssue)(title, body, config.assignees);
+        }
+    });
+}
+exports.outdatedBeta = outdatedBeta;
+
+
+/***/ }),
+
+/***/ 9153:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.outdatedRC = void 0;
+const issue_management_1 = __nccwpck_require__(3813);
+function issueBody(testedVersion, latestVersion) {
+    return ('There is an upcoming WordPress version in the **release candidate** stage that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
+        "\n" +
+        "**Tested up to:** " +
+        testedVersion +
+        "\n" +
+        "**Upcoming version:** " +
+        latestVersion +
+        "\n" +
+        "\n" +
+        "This issue will be closed automatically when the versions match.");
+}
+function outdatedRC(config, testedVersion, rcVersion) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const existingIssue = yield (0, issue_management_1.getIssue)();
+        const title = "The plugin hasn't been tested with an upcoming version of WordPress";
+        const body = issueBody(testedVersion, rcVersion);
+        if (existingIssue !== null) {
+            yield (0, issue_management_1.updateIssue)(existingIssue, title, body);
+        }
+        else {
+            yield (0, issue_management_1.createIssue)(title, body, config.assignees);
+        }
+    });
+}
+exports.outdatedRC = outdatedRC;
+
+
+/***/ }),
+
+/***/ 1666:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.outdatedStable = void 0;
+const issue_management_1 = __nccwpck_require__(3813);
+function issueBody(testedVersion, latestVersion) {
+    return ('There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
+        "\n" +
+        "**Tested up to:** " +
+        testedVersion +
+        "\n" +
+        "**Latest version:** " +
+        latestVersion +
+        "\n" +
+        "\n" +
+        "This issue will be closed automatically when the versions match.");
+}
+function outdatedStable(config, testedVersion, stableVersion) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const existingIssue = yield (0, issue_management_1.getIssue)();
+        const title = "The plugin hasn't been tested with the latest version of WordPress";
+        const body = issueBody(testedVersion, stableVersion);
+        if (existingIssue !== null) {
+            yield (0, issue_management_1.updateIssue)(existingIssue, title, body);
+        }
+        else {
+            yield (0, issue_management_1.createIssue)(title, body, config.assignees);
+        }
+    });
+}
+exports.outdatedStable = outdatedStable;
 
 
 /***/ }),
@@ -10450,40 +10462,35 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const compare_versions_1 = __nccwpck_require__(4773);
-const issue_management_1 = __nccwpck_require__(3813);
-const latest_version_1 = __nccwpck_require__(6598);
+const outdated_beta_1 = __nccwpck_require__(9762);
+const outdated_rc_1 = __nccwpck_require__(9153);
+const outdated_stable_1 = __nccwpck_require__(1666);
 const tested_version_1 = __nccwpck_require__(5198);
+const up_to_date_1 = __nccwpck_require__(7771);
+const wordpress_versions_1 = __nccwpck_require__(6725);
 const wpvc_config_1 = __nccwpck_require__(1086);
-function outdated(config, testedVersion, latestVersion) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const existingIssue = yield (0, issue_management_1.getIssue)();
-        if (existingIssue !== null) {
-            yield (0, issue_management_1.updateIssue)(existingIssue, testedVersion, latestVersion);
-        }
-        else {
-            yield (0, issue_management_1.createIssue)(config, testedVersion, latestVersion);
-        }
-    });
-}
-function upToDate() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const existingIssue = yield (0, issue_management_1.getIssue)();
-        if (existingIssue !== null) {
-            yield (0, issue_management_1.closeIssue)(existingIssue);
-        }
-    });
-}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const config = yield (0, wpvc_config_1.WPVCConfig)();
             const readmeVersion = yield (0, tested_version_1.testedVersion)(config);
-            const latestVersion = yield (0, latest_version_1.latestWordPressVersion)();
-            if ((0, compare_versions_1.compare)(readmeVersion, latestVersion, "<")) {
-                yield outdated(config, readmeVersion, latestVersion);
+            const availableVersions = yield (0, wordpress_versions_1.wordpressVersions)();
+            const betaVersion = config.channel === "beta" ? availableVersions.beta : null;
+            const rcVersion = ["beta", "rc"].includes(config.channel)
+                ? availableVersions.rc
+                : null;
+            if ((0, compare_versions_1.compare)(readmeVersion, availableVersions.stable, "<")) {
+                yield (0, outdated_stable_1.outdatedStable)(config, readmeVersion, availableVersions.stable);
+            }
+            else if (rcVersion !== null && (0, compare_versions_1.compare)(readmeVersion, rcVersion, "<")) {
+                yield (0, outdated_rc_1.outdatedRC)(config, readmeVersion, rcVersion);
+            }
+            else if (betaVersion !== null &&
+                (0, compare_versions_1.compare)(readmeVersion, betaVersion, "<")) {
+                yield (0, outdated_beta_1.outdatedBeta)(config, readmeVersion, betaVersion);
             }
             else {
-                yield upToDate();
+                yield (0, up_to_date_1.upToDate)();
             }
         }
         catch (e) {
@@ -10560,6 +10567,141 @@ exports.testedVersion = testedVersion;
 
 /***/ }),
 
+/***/ 7771:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.upToDate = void 0;
+const issue_management_1 = __nccwpck_require__(3813);
+function upToDate() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const existingIssue = yield (0, issue_management_1.getIssue)();
+        if (existingIssue !== null) {
+            yield (0, issue_management_1.commentOnIssue)(existingIssue, 'The "Tested up to" version in the readme matches the latest version now, closing this issue.');
+            yield (0, issue_management_1.closeIssue)(existingIssue);
+        }
+    });
+}
+exports.upToDate = upToDate;
+
+
+/***/ }),
+
+/***/ 6725:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.wordpressVersions = void 0;
+const https = __importStar(__nccwpck_require__(5687));
+const LatestVersionError_1 = __nccwpck_require__(4241);
+function httpsRequest(options) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise(function (resolve, reject) {
+            https
+                .get(options, function (response) {
+                let data = "";
+                response.setEncoding("utf8");
+                response.on("data", (chunk) => {
+                    data += chunk;
+                });
+                response.on("end", function () {
+                    if (response.statusCode === 200) {
+                        resolve(data);
+                    }
+                    else {
+                        reject();
+                    }
+                });
+            })
+                .on("error", (e) => {
+                reject(e);
+            });
+        });
+    });
+}
+function normalizeVersion(version) {
+    return version.split("-")[0].split(".").slice(0, 2).join("."); // Discard patch version and RC designations
+}
+function wordpressVersions() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const rawData = yield httpsRequest({
+            host: "api.wordpress.org",
+            path: "/core/version-check/1.7/?channel=beta",
+        }).catch(function (e) {
+            throw new LatestVersionError_1.LatestVersionError(e);
+        });
+        let response = {};
+        try {
+            response = JSON.parse(rawData);
+        }
+        catch (e) {
+            throw new LatestVersionError_1.LatestVersionError(e.message);
+        }
+        if (response.offers === undefined) {
+            throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
+        }
+        const latest = response.offers.find((record) => record["response"] === "latest");
+        if ((latest === null || latest === void 0 ? void 0 : latest.current) === undefined) {
+            throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
+        }
+        const rc = response.offers.find((record) => record["response"] === "development");
+        return {
+            beta: null,
+            rc: (rc === null || rc === void 0 ? void 0 : rc.current) !== undefined ? normalizeVersion(rc.current) : null,
+            stable: normalizeVersion(latest.current),
+        };
+    });
+}
+exports.wordpressVersions = wordpressVersions;
+
+
+/***/ }),
+
 /***/ 1086:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -10586,6 +10728,7 @@ function normalizeConfig(rawConfig) {
     }
     const config = {
         assignees: [],
+        channel: "stable",
         readme: ["readme.txt", "plugin/readme.txt"],
     };
     if ("readme" in rawConfig) {
@@ -10606,6 +10749,13 @@ function normalizeConfig(rawConfig) {
             throw new ConfigError_1.ConfigError('Invalid config file, the "assignees" field should be an array of strings.');
         }
         config.assignees = rawConfig.assignees;
+    }
+    if ("channel" in rawConfig) {
+        if (typeof rawConfig.channel !== "string" ||
+            !["rc", "stable"].includes(rawConfig.channel)) {
+            throw new ConfigError_1.ConfigError('Invalid config file, the "channel" field should be one of "rc", "stable".');
+        }
+        config.channel = rawConfig.channel;
     }
     return config;
 }
