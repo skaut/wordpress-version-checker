@@ -69,7 +69,7 @@ describe("Mocked env variables", () => {
 
     await expect(WPVCConfig()).resolves.toStrictEqual({
       readme: ["readme.txt", "plugin/readme.txt"],
-      channel: "stable",
+      channel: "rc",
       assignees: [],
     });
   });
@@ -87,7 +87,7 @@ describe("Mocked env variables", () => {
 
     await expect(WPVCConfig()).resolves.toStrictEqual({
       readme: ["readme.txt", "plugin/readme.txt"],
-      channel: "stable",
+      channel: "rc",
       assignees: [],
     });
   });
