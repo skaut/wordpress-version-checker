@@ -10726,9 +10726,10 @@ function normalizeConfig(rawConfig) {
     if (typeof rawConfig !== "object" || rawConfig === null) {
         throw new ConfigError_1.ConfigError("Invalid config file.");
     }
+    // Default values
     const config = {
         assignees: [],
-        channel: "stable",
+        channel: "rc",
         readme: ["readme.txt", "plugin/readme.txt"],
     };
     if ("readme" in rawConfig) {
