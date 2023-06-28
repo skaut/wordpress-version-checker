@@ -35,7 +35,7 @@ jobs:
 
 The app doesn't stricly require any configuration, however you can configure some aspects of its function by placing a file named `.wordpress-version-checker.json` in the root of your repository. The file may contain any of the following configuration options:
 
-### Plugin readme location.
+### Plugin readme location
 
 By default, the app checks for readme in `readme.txt` and `plugin/readme.txt`. If the readme of your plugin is not in one of these locations, you can configure the app to look somewhere else with the `readme` value in the configuration. The value can be either a single location or an array of locations to check - if multiple locations are provided, they will be checked in the given order until the first match.
 
