@@ -10553,7 +10553,7 @@ function testedVersion(config) {
     return __awaiter(this, void 0, void 0, function* () {
         const readmeContents = yield readme(config);
         for (const line of readmeContents.split("\n")) {
-            const matches = [...line.matchAll(/^[\s]*Tested up to: ?([.\d]+)$/g)];
+            const matches = [...line.matchAll(/^[\s]*Tested up to:[\s]*([.\d]+)$/g)];
             if (matches.length !== 1) {
                 continue;
             }
