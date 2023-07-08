@@ -26,8 +26,20 @@ test("wordpressVersions works correctly when only stable version is available", 
   });
 });
 
+test("wordpressVersions works correctly when both stable and beta versions are available", async () => {
+  expect.assertions(1);
+  nock("https://api.wordpress.org")
+    .get("/core/version-check/1.7/?channel=beta")
+    .reply(200, beta as Record<string, unknown>);
+  await expect(wordpressVersions()).resolves.toStrictEqual({
+    beta: "6.3",
+    rc: null,
+    stable: "6.2",
+  });
+});
+
 // TODO: Modify to use actual response like the beta test
-test("wordpressVersions works correctly when both stable and RC versions are available", async () => {
+test("wordpressVersions works correctly when stable, RC, and beta versions are available", async () => {
   expect.assertions(1);
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
@@ -48,18 +60,6 @@ test("wordpressVersions works correctly when both stable and RC versions are ava
     beta: "0.43",
     rc: "0.43",
     stable: "0.42",
-  });
-});
-
-test("wordpressVersions works correctly when both stable and beta versions are available", async () => {
-  expect.assertions(1);
-  nock("https://api.wordpress.org")
-    .get("/core/version-check/1.7/?channel=beta")
-    .reply(200, beta as Record<string, unknown>);
-  await expect(wordpressVersions()).resolves.toStrictEqual({
-    beta: "6.3",
-    rc: null,
-    stable: "6.2",
   });
 });
 
