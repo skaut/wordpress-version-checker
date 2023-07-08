@@ -2,7 +2,6 @@ import nock from "nock";
 
 import { LatestVersionError } from "../src/exceptions/LatestVersionError";
 import { wordpressVersions } from "../src/wordpress-versions";
-
 import beta from "./version-check-responses/beta.json";
 
 // TODO: Modify to use actual response like the beta test
