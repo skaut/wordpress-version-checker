@@ -27,6 +27,16 @@ async function httpsRequest(options: https.RequestOptions): Promise<string> {
   });
 }
 
+function isBetaVersion(version: string): boolean {
+  const splitVersion = version.split("-");
+  return splitVersion.length >= 2 && splitVersion[1].startsWith("beta");
+}
+
+function isRCVersion(version: string): boolean {
+  const splitVersion = version.split("-");
+  return splitVersion.length >= 2 && splitVersion[1].startsWith("RC");
+}
+
 function normalizeVersion(version: string): string {
   return version.split("-")[0].split(".").slice(0, 2).join("."); // Discard patch version and RC designations
 }
@@ -48,17 +58,20 @@ export async function wordpressVersions(): Promise<WordpressVersions> {
     throw new LatestVersionError("Couldn't find the latest version");
   }
   const latest = response.offers.find(
-    (record): boolean => record["response"] === "latest"
+    (record): boolean => record["response"] === "upgrade"
   );
   if (latest?.current === undefined) {
     throw new LatestVersionError("Couldn't find the latest version");
   }
-  const rc = response.offers.find(
+  const development = response.offers.find(
     (record): boolean => record["response"] === "development"
   );
   return {
     beta: null,
-    rc: rc?.current !== undefined ? normalizeVersion(rc.current) : null,
+    rc:
+      development?.current !== undefined && isRCVersion(development.current)
+        ? normalizeVersion(development.current)
+        : null,
     stable: normalizeVersion(latest.current),
   };
 }
