@@ -67,7 +67,11 @@ export async function wordpressVersions(): Promise<WordpressVersions> {
     (record): boolean => record["response"] === "development"
   );
   return {
-    beta: null,
+    beta:
+      development?.current !== undefined &&
+      (isBetaVersion(development.current) || isRCVersion(development.current))
+        ? normalizeVersion(development.current)
+        : null,
     rc:
       development?.current !== undefined && isRCVersion(development.current)
         ? normalizeVersion(development.current)
