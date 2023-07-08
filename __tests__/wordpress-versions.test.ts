@@ -53,9 +53,9 @@ test.only("wordpressVersions works correctly when both stable and beta versions 
   expect.assertions(1);
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
-    .reply(200, beta);
+    .reply(200, beta as Record<string, unknown>);
   await expect(wordpressVersions()).resolves.toStrictEqual({
-    beta: null,
+    beta: "6.3",
     rc: null,
     stable: "6.2",
   });
