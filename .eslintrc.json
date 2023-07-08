@@ -69,7 +69,7 @@
     {
       "files": ["__tests__/**/*.json", "__tests__/**/*.test.ts"],
       "parserOptions": {
-	"extraFileExtensions": [".json"]
+        "extraFileExtensions": [".json"]
       },
       "extends": [
 	"plugin:jest/recommended",
