@@ -3,6 +3,8 @@ import nock from "nock";
 import { LatestVersionError } from "../src/exceptions/LatestVersionError";
 import { wordpressVersions } from "../src/wordpress-versions";
 
+import beta from "./version-check-responses/beta.json";
+
 test("wordpressVersions works correctly when only stable version is available", async () => {
   expect.assertions(1);
   nock("https://api.wordpress.org")
@@ -44,6 +46,18 @@ test("wordpressVersions works correctly when both stable and RC versions are ava
     beta: null,
     rc: "0.43",
     stable: "0.42",
+  });
+});
+
+test.only("wordpressVersions works correctly when both stable and beta versions are available", async () => {
+  expect.assertions(1);
+  nock("https://api.wordpress.org")
+    .get("/core/version-check/1.7/?channel=beta")
+    .reply(200, beta);
+  await expect(wordpressVersions()).resolves.toStrictEqual({
+    beta: null,
+    rc: null,
+    stable: "6.2",
   });
 });
 
