@@ -10664,6 +10664,14 @@ function httpsRequest(options) {
         });
     });
 }
+function isBetaVersion(version) {
+    const splitVersion = version.split("-");
+    return splitVersion.length >= 2 && splitVersion[1].startsWith("beta");
+}
+function isRCVersion(version) {
+    const splitVersion = version.split("-");
+    return splitVersion.length >= 2 && splitVersion[1].startsWith("RC");
+}
 function normalizeVersion(version) {
     return version.split("-")[0].split(".").slice(0, 2).join("."); // Discard patch version and RC designations
 }
@@ -10685,14 +10693,19 @@ function wordpressVersions() {
         if (response.offers === undefined) {
             throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
         }
-        const latest = response.offers.find((record) => record["response"] === "latest");
+        const latest = response.offers.find((record) => record["response"] === "upgrade");
         if ((latest === null || latest === void 0 ? void 0 : latest.current) === undefined) {
             throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
         }
-        const rc = response.offers.find((record) => record["response"] === "development");
+        const development = response.offers.find((record) => record["response"] === "development");
         return {
-            beta: null,
-            rc: (rc === null || rc === void 0 ? void 0 : rc.current) !== undefined ? normalizeVersion(rc.current) : null,
+            beta: (development === null || development === void 0 ? void 0 : development.current) !== undefined &&
+                (isBetaVersion(development.current) || isRCVersion(development.current))
+                ? normalizeVersion(development.current)
+                : null,
+            rc: (development === null || development === void 0 ? void 0 : development.current) !== undefined && isRCVersion(development.current)
+                ? normalizeVersion(development.current)
+                : null,
             stable: normalizeVersion(latest.current),
         };
     });
