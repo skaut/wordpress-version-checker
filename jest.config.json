@@ -7,14 +7,7 @@
 	"coverageDirectory": "coverage",
 	"coverageProvider": "babel",
 	"setupFiles": ["<rootDir>/__tests__/setup.ts"],
-	"transform": {
-		"^.+\\.ts$": [
-			"ts-jest",
-			{
-				"tsconfig": "test.tsconfig.json"
-			}
-		]
-	},
+	"preset": "ts-jest/presets/default",
 	"resetMocks": true,
 	"testMatch": ["<rootDir>/__tests__/**/*.test.ts"]
 }

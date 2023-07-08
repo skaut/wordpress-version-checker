@@ -69,7 +69,6 @@
     {
       "files": ["__tests__/**/*.json", "__tests__/**/*.test.ts"],
       "parserOptions": {
-	"project": "./test.tsconfig.json",
 	"extraFileExtensions": [".json"]
       },
       "extends": [
