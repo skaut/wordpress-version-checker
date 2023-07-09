@@ -1,15 +1,11 @@
 import { InvalidReadmeError } from "./exceptions/InvalidReadmeError";
 import { hasStatus } from "./has-status";
-import type { Config } from "./interfaces/Config"; // eslint-disable-line @typescript-eslint/no-unused-vars
+import type { Config } from "./interfaces/Config";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
-async function readme(config: Config | null): Promise<string> {
-  let readmeLocations = ["readme.txt", "plugin/readme.txt"];
-  if (config !== null) {
-    readmeLocations = [config.readme];
-  }
-  for (const readmeLocation of readmeLocations) {
+async function readme(config: Config): Promise<string> {
+  for (const readmeLocation of config.readme) {
     const result = await octokit()
       .rest.repos.getContent({ ...repo(), path: readmeLocation })
       .catch((e: unknown): never | null => {
@@ -38,10 +34,10 @@ async function readme(config: Config | null): Promise<string> {
   );
 }
 
-export async function testedVersion(config: Config | null): Promise<string> {
+export async function testedVersion(config: Config): Promise<string> {
   const readmeContents = await readme(config);
   for (const line of readmeContents.split("\n")) {
-    const matches = [...line.matchAll(/^[\s]*Tested up to: ?([.\d]+)$/g)];
+    const matches = [...line.matchAll(/^[\s]*Tested up to:[\s]*([.\d]+)$/g)];
     if (matches.length !== 1) {
       continue;
     }

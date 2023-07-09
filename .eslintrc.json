@@ -70,7 +70,10 @@
   },
   "overrides": [
     {
-      "files": ["__tests__/**/*.test.ts"],
+      "files": ["__tests__/**/*.json", "__tests__/**/*.test.ts"],
+      "parserOptions": {
+        "extraFileExtensions": [".json"]
+      },
       "extends": [
 	"plugin:jest/recommended",
 	"plugin:jest/style"
