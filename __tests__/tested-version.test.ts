@@ -28,6 +28,7 @@ describe("[env variable mock]", () => {
     "    Tested up to: 0.42",
     "\tTested up to: 0.42",
     "\nTested up to: 0.42\n",
+    "Tested up to:      0.42",
   ])("testedVersion works correctly", async (readme) => {
     expect.assertions(1);
     const readmePath = "path/to/readme.txt";
