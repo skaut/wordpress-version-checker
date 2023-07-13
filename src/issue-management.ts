@@ -21,7 +21,7 @@ export async function getIssue(): Promise<number | null> {
 
 export async function commentOnIssue(
   issue: number,
-  comment: string
+  comment: string,
 ): Promise<void> {
   await octokit()
     .rest.issues.createComment({
@@ -49,7 +49,7 @@ export async function closeIssue(issue: number): Promise<void> {
 export async function createIssue(
   title: string,
   body: string,
-  assignees: Array<string>
+  assignees: Array<string>,
 ): Promise<void> {
   await octokit()
     .rest.issues.create({
@@ -67,7 +67,7 @@ export async function createIssue(
 export async function updateIssue(
   issueNumber: number,
   title: string,
-  body: string
+  body: string,
 ): Promise<void> {
   const issue = await octokit()
     .rest.issues.get({ ...repo(), issue_number: issueNumber })
