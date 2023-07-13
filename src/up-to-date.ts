@@ -5,7 +5,7 @@ export async function upToDate(): Promise<void> {
   if (existingIssue !== null) {
     await commentOnIssue(
       existingIssue,
-      'The "Tested up to" version in the readme matches the latest version now, closing this issue.'
+      'The "Tested up to" version in the readme matches the latest version now, closing this issue.',
     );
     await closeIssue(existingIssue);
   }

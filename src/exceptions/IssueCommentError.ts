@@ -6,7 +6,7 @@ export class IssueCommentError extends WPVCError {
       "Couldn't add a comment to issue #" +
         String(issueNumber) +
         ". Error message: " +
-        e
+        e,
     );
   }
 }

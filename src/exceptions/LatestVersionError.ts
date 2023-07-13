@@ -6,7 +6,7 @@ export class LatestVersionError extends WPVCError {
       super("Failed to fetch the latest WordPress version.");
     } else {
       super(
-        "Failed to fetch the latest WordPress version. Error message: " + e
+        "Failed to fetch the latest WordPress version. Error message: " + e,
       );
     }
   }
