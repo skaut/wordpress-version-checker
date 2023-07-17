@@ -58,13 +58,13 @@ export async function wordpressVersions(): Promise<WordpressVersions> {
     throw new LatestVersionError("Couldn't find the latest version");
   }
   const latest = response.offers.find(
-    (record): boolean => record["response"] === "upgrade",
+    (record): boolean => record.response === "upgrade",
   );
   if (latest?.current === undefined) {
     throw new LatestVersionError("Couldn't find the latest version");
   }
   const development = response.offers.find(
-    (record): boolean => record["response"] === "development",
+    (record): boolean => record.response === "development",
   );
   return {
     beta:
