@@ -10718,11 +10718,11 @@ function wordpressVersions() {
         if (response.offers === undefined) {
             throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
         }
-        const latest = response.offers.find((record) => record["response"] === "upgrade");
+        const latest = response.offers.find((record) => record.response === "upgrade");
         if ((latest === null || latest === void 0 ? void 0 : latest.current) === undefined) {
             throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
         }
-        const development = response.offers.find((record) => record["response"] === "development");
+        const development = response.offers.find((record) => record.response === "development");
         return {
             beta: (development === null || development === void 0 ? void 0 : development.current) !== undefined &&
                 (isBetaVersion(development.current) || isRCVersion(development.current))
