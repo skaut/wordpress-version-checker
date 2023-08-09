@@ -41,10 +41,10 @@ function normalizeConfig(rawConfig: unknown): Config {
   if ("channel" in rawConfig) {
     if (
       typeof rawConfig.channel !== "string" ||
-      !["rc", "stable"].includes(rawConfig.channel)
+      !["beta", "rc", "stable"].includes(rawConfig.channel)
     ) {
       throw new ConfigError(
-        'Invalid config file, the "channel" field should be one of "rc", "stable".',
+        'Invalid config file, the "channel" field should be one of "beta", "rc" or "stable".',
       );
     }
     config.channel = rawConfig.channel as "beta" | "rc" | "stable";
