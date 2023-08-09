@@ -23,7 +23,7 @@ function normalizeConfig(rawConfig: unknown): Config {
       config.readme = rawConfig.readme as Array<string>;
     } else {
       throw new ConfigError(
-        'Invalid config file, the "readme" field should be a string or an array of strings.'
+        'Invalid config file, the "readme" field should be a string or an array of strings.',
       );
     }
   }
@@ -33,7 +33,7 @@ function normalizeConfig(rawConfig: unknown): Config {
       !rawConfig.assignees.every((item) => typeof item === "string")
     ) {
       throw new ConfigError(
-        'Invalid config file, the "assignees" field should be an array of strings.'
+        'Invalid config file, the "assignees" field should be an array of strings.',
       );
     }
     config.assignees = rawConfig.assignees as Array<string>;
@@ -41,10 +41,10 @@ function normalizeConfig(rawConfig: unknown): Config {
   if ("channel" in rawConfig) {
     if (
       typeof rawConfig.channel !== "string" ||
-      !["rc", "stable"].includes(rawConfig.channel)
+      !["beta", "rc", "stable"].includes(rawConfig.channel)
     ) {
       throw new ConfigError(
-        'Invalid config file, the "channel" field should be one of "rc", "stable".'
+        'Invalid config file, the "channel" field should be one of "beta", "rc" or "stable".',
       );
     }
     config.channel = rawConfig.channel as "beta" | "rc" | "stable";

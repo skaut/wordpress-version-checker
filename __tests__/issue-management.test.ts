@@ -82,7 +82,7 @@ describe("[env variable mock]", () => {
   test("commentOnIssue fails gracefully on connection issues", async () => {
     expect.assertions(1);
     await expect(commentOnIssue(123, "ISSUE_BODY")).rejects.toThrow(
-      IssueCommentError
+      IssueCommentError,
     );
   });
 
@@ -97,7 +97,7 @@ describe("[env variable mock]", () => {
       .reply(404);
 
     await expect(commentOnIssue(123, issueBody)).rejects.toThrow(
-      IssueCommentError
+      IssueCommentError,
     );
     expect(scope.isDone()).toBe(true);
   });
@@ -173,7 +173,7 @@ describe("[env variable mock]", () => {
     expect.assertions(1);
 
     await expect(createIssue("ISSUE_TITLE", "ISSUE_BODY", [])).rejects.toThrow(
-      IssueCreationError
+      IssueCreationError,
     );
   });
 
@@ -183,7 +183,7 @@ describe("[env variable mock]", () => {
     nock("https://api.github.com").post("/repos/OWNER/REPO/issues").reply(404);
 
     await expect(createIssue("ISSUE_TITLE", "ISSUE_BODY", [])).rejects.toThrow(
-      IssueCreationError
+      IssueCreationError,
     );
   });
 
@@ -254,7 +254,7 @@ describe("[env variable mock]", () => {
       .reply(200, { title: "WRONG_TITLE", body });
 
     await expect(updateIssue(123, title, body)).rejects.toThrow(
-      IssueUpdateError
+      IssueUpdateError,
     );
     expect(scope.isDone()).toBe(true);
   });
@@ -268,7 +268,7 @@ describe("[env variable mock]", () => {
       .reply(404);
 
     await expect(updateIssue(123, "ISSUE_TITLE", "ISSUE_BODY")).rejects.toThrow(
-      GetIssueError
+      GetIssueError,
     );
   });
 });

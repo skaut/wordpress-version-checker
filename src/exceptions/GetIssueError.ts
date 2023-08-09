@@ -6,7 +6,7 @@ export class GetIssueError extends WPVCError {
       "Couldn't get the already existing issue #" +
         String(issueNumber) +
         ". Error message: " +
-        e
+        e,
     );
   }
 }
