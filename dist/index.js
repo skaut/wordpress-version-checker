@@ -1427,6 +1427,19 @@ class HttpClientResponse {
             }));
         });
     }
+    readBodyBuffer() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
+                const chunks = [];
+                this.message.on('data', (chunk) => {
+                    chunks.push(chunk);
+                });
+                this.message.on('end', () => {
+                    resolve(Buffer.concat(chunks));
+                });
+            }));
+        });
+    }
 }
 exports.HttpClientResponse = HttpClientResponse;
 function isHttps(requestUrl) {
@@ -1931,7 +1944,13 @@ function getProxyUrl(reqUrl) {
         }
     })();
     if (proxyVar) {
-        return new URL(proxyVar);
+        try {
+            return new URL(proxyVar);
+        }
+        catch (_a) {
+            if (!proxyVar.startsWith('http://') && !proxyVar.startsWith('https://'))
+                return new URL(`http://${proxyVar}`);
+        }
     }
     else {
         return undefined;
@@ -4734,11 +4753,27 @@ function removeHook(state, name, method) {
      * ```
      */
     const validate = (version) => typeof version === 'string' && /^[v\d]/.test(version) && semver.test(version);
+    /**
+     * Validate [semver](https://semver.org/) version strings strictly. Will not accept wildcards and version ranges.
+     *
+     * @param version Version number to validate
+     * @returns `true` if the version number is a valid semver version number `false` otherwise
+     *
+     * @example
+     * ```
+     * validate('1.0.0-rc.1'); // return true
+     * validate('1.0-rc.1'); // return false
+     * validate('foo'); // return false
+     * ```
+     */
+    const validateStrict = (version) => typeof version === 'string' &&
+        /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/.test(version);
 
     exports.compare = compare;
     exports.compareVersions = compareVersions;
     exports.satisfies = satisfies;
     exports.validate = validate;
+    exports.validateStrict = validateStrict;
 
 }));
 //# sourceMappingURL=index.js.map
