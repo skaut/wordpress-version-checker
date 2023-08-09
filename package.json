@@ -1,6 +1,6 @@
 {
   "name": "wordpress-version-checker",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "description": "A GitHub app to automatically create issues when a plugin \"tested up to\" version doesn't match the latest WordPress version.",
   "keywords": [
     "wordpress",
