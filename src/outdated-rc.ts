@@ -19,7 +19,7 @@ function issueBody(testedVersion: string, latestVersion: string): string {
 export async function outdatedRC(
   config: Config,
   testedVersion: string,
-  rcVersion: string
+  rcVersion: string,
 ): Promise<void> {
   const existingIssue = await getIssue();
   const title =

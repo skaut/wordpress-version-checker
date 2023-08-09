@@ -19,7 +19,7 @@ function issueBody(testedVersion: string, latestVersion: string): string {
 export async function outdatedBeta(
   config: Config,
   testedVersion: string,
-  betaVersion: string
+  betaVersion: string,
 ): Promise<void> {
   const existingIssue = await getIssue();
   const title =
