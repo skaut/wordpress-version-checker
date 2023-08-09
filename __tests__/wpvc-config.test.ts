@@ -47,7 +47,7 @@ describe("Mocked env variables", () => {
             readme: "path/to/readme.txt",
             channel: "rc",
             assignees: [],
-          })
+          }),
         ).toString("base64"),
       });
 

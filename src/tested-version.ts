@@ -14,7 +14,7 @@ async function readme(config: Config): Promise<string> {
         } else {
           throw new InvalidReadmeError(
             "No readme file was found in repo and all usual locations were exhausted. Error message: " +
-              String(e)
+              String(e),
           );
         }
       });
@@ -24,13 +24,13 @@ async function readme(config: Config): Promise<string> {
     const encodedContent = (result.data as { content?: string }).content;
     if (encodedContent === undefined) {
       throw new InvalidReadmeError(
-        "No readme file was found in repo and all usual locations were exhausted."
+        "No readme file was found in repo and all usual locations were exhausted.",
       );
     }
     return Buffer.from(encodedContent, "base64").toString();
   }
   throw new InvalidReadmeError(
-    "No readme file was found in repo and all usual locations were exhausted."
+    "No readme file was found in repo and all usual locations were exhausted.",
   );
 }
 

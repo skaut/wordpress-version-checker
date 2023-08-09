@@ -6,7 +6,7 @@ export class IssueUpdateError extends WPVCError {
       "Couldn't update the existing issue #" +
         String(issueNumber) +
         ". Error message: " +
-        e
+        e,
     );
   }
 }

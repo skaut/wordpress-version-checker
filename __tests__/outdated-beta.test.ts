@@ -29,13 +29,13 @@ describe("Succesful runs", () => {
     expect(mocked(getIssue).mock.calls).toHaveLength(1);
     expect(mocked(createIssue).mock.calls).toHaveLength(1);
     expect(mocked(createIssue).mock.calls[0][0]).toBe(
-      "The plugin hasn't been tested with a beta version of WordPress"
+      "The plugin hasn't been tested with a beta version of WordPress",
     );
     expect(mocked(createIssue).mock.calls[0][1]).toMatch(
-      /\*\*Tested up to:\*\* 0\.41/g
+      /\*\*Tested up to:\*\* 0\.41/g,
     );
     expect(mocked(createIssue).mock.calls[0][1]).toMatch(
-      /\*\*Beta version:\*\* 0\.42/g
+      /\*\*Beta version:\*\* 0\.42/g,
     );
     expect(mocked(createIssue).mock.calls[0][2]).toStrictEqual([]);
     expect(mocked(updateIssue).mock.calls).toHaveLength(0);
@@ -61,13 +61,13 @@ describe("Succesful runs", () => {
     expect(mocked(updateIssue).mock.calls).toHaveLength(1);
     expect(mocked(updateIssue).mock.calls[0][0]).toBe(existingIssue);
     expect(mocked(updateIssue).mock.calls[0][1]).toBe(
-      "The plugin hasn't been tested with a beta version of WordPress"
+      "The plugin hasn't been tested with a beta version of WordPress",
     );
     expect(mocked(updateIssue).mock.calls[0][2]).toMatch(
-      /\*\*Tested up to:\*\* 0\.41/g
+      /\*\*Tested up to:\*\* 0\.41/g,
     );
     expect(mocked(updateIssue).mock.calls[0][2]).toMatch(
-      /\*\*Beta version:\*\* 0\.42/g
+      /\*\*Beta version:\*\* 0\.42/g,
     );
   });
 });
