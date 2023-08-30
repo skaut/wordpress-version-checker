@@ -24,10 +24,12 @@ describe("[env variable mock]", () => {
     "Tested up to: 0.42",
     "Tested up to:0.42",
     "LINE1\nNot Tested up to: 0.41\nTested up to: 0.42\nLINE2",
+    "LINE1\r\nNot Tested up to: 0.41\r\nTested up to: 0.42\r\nLINE2",
     " Tested up to: 0.42",
     "    Tested up to: 0.42",
     "\tTested up to: 0.42",
     "\nTested up to: 0.42\n",
+    "\r\nTested up to: 0.42\r\n",
     "Tested up to:      0.42",
   ])("testedVersion works correctly", async (readme) => {
     expect.assertions(1);
