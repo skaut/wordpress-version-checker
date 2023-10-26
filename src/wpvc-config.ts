@@ -59,7 +59,7 @@ export async function WPVCConfig(): Promise<Config> {
       ...repo(),
       path: ".wordpress-version-checker.json",
     })
-    .catch(function (e: unknown): never | null {
+    .catch((e: unknown): never | null => {
       if (hasStatus(e) && e.status === 404) {
         return null;
       } else {
