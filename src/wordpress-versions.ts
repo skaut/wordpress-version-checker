@@ -5,15 +5,15 @@ import type { VersionCheckResponse } from "./interfaces/VersionCheckResponse";
 import type { WordpressVersions } from "./interfaces/WordpressVersions";
 
 async function httpsRequest(options: https.RequestOptions): Promise<string> {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     https
-      .get(options, function (response) {
+      .get(options, (response) => {
         let data = "";
         response.setEncoding("utf8");
         response.on("data", (chunk): void => {
           data += chunk;
         });
-        response.on("end", function (): void {
+        response.on("end", (): void => {
           if (response.statusCode === 200) {
             resolve(data);
           } else {
@@ -45,7 +45,7 @@ export async function wordpressVersions(): Promise<WordpressVersions> {
   const rawData = await httpsRequest({
     host: "api.wordpress.org",
     path: "/core/version-check/1.7/?channel=beta",
-  }).catch(function (e: string): never {
+  }).catch((e: string): never => {
     throw new LatestVersionError(e);
   });
   let response: VersionCheckResponse = {};

@@ -8,7 +8,7 @@ async function readme(config: Config): Promise<string> {
   for (const readmeLocation of config.readme) {
     const result = await octokit()
       .rest.repos.getContent({ ...repo(), path: readmeLocation })
-      .catch(function (e: unknown): never | null {
+      .catch((e: unknown): never | null => {
         if (hasStatus(e) && e.status === 404) {
           return null;
         } else {

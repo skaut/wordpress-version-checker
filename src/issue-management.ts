@@ -13,7 +13,7 @@ export async function getIssue(): Promise<number | null> {
       creator: "github-actions[bot]",
       labels: "wpvc",
     })
-    .catch(function (e): never {
+    .catch((e): never => {
       throw new IssueListError(String(e));
     });
   return issues.data.length > 0 ? issues.data[0].number : null;
@@ -29,7 +29,7 @@ export async function commentOnIssue(
       issue_number: issue,
       body: comment,
     })
-    .catch(function (e): never {
+    .catch((e): never => {
       throw new IssueCommentError(issue, String(e));
     });
 }
@@ -41,7 +41,7 @@ export async function closeIssue(issue: number): Promise<void> {
       issue_number: issue,
       state: "closed",
     })
-    .catch(function (e): never {
+    .catch((e): never => {
       throw new IssueUpdateError(issue, String(e));
     });
 }
@@ -59,7 +59,7 @@ export async function createIssue(
       labels: ["wpvc"],
       assignees,
     })
-    .catch(function (e): never {
+    .catch((e): never => {
       throw new IssueCreationError(String(e));
     });
 }
@@ -71,7 +71,7 @@ export async function updateIssue(
 ): Promise<void> {
   const issue = await octokit()
     .rest.issues.get({ ...repo(), issue_number: issueNumber })
-    .catch(function (e): never {
+    .catch((e): never => {
       throw new GetIssueError(issueNumber, String(e));
     });
   if (issue.data.title === title && issue.data.body === body) {
@@ -84,7 +84,7 @@ export async function updateIssue(
       title,
       body,
     })
-    .catch(function (e): never {
+    .catch((e): never => {
       throw new IssueUpdateError(issueNumber, String(e));
     });
 }
