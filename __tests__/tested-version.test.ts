@@ -1,5 +1,3 @@
-import * as core from "@actions/core";
-import { mocked } from "jest-mock";
 import mockedEnv from "mocked-env";
 import nock from "nock";
 
@@ -14,7 +12,6 @@ describe("[env variable mock]", () => {
 
   beforeEach(() => {
     restore = mockedEnv({ GITHUB_REPOSITORY: "OWNER/REPO" });
-    mocked(core).getInput.mockReturnValue("GH_TOKEN");
   });
   afterEach(() => {
     restore();

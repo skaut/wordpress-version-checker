@@ -1,4 +1,3 @@
-import core from "@actions/core";
 import github from "@actions/github";
 import type { Octokit } from "@octokit/core";
 import type { PaginateInterface } from "@octokit/plugin-paginate-rest";
@@ -12,7 +11,7 @@ type GitHub = Api & Octokit & { paginate: PaginateInterface };
 
 jest.mock("../src/octokit", () => ({
   octokit: (): GitHub =>
-    github.getOctokit(core.getInput("repo-token"), {
+    github.getOctokit("GH_TOKEN", {
       request: {
         fetch: nodeFetch,
       },
