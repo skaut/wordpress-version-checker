@@ -10711,7 +10711,7 @@ function httpsRequest(options) {
                         resolve(data);
                     }
                     else {
-                        reject();
+                        reject(new Error("A request returned error " + response.statusCode + "."));
                     }
                 });
             })

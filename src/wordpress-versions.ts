@@ -17,7 +17,11 @@ async function httpsRequest(options: https.RequestOptions): Promise<string> {
           if (response.statusCode === 200) {
             resolve(data);
           } else {
-            reject();
+            reject(
+              new Error(
+                "A request returned error " + response.statusCode + ".",
+              ),
+            );
           }
         });
       })
