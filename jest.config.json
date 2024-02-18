@@ -1,11 +1,4 @@
 {
-	"collectCoverage": true,
-	"collectCoverageFrom": [
-		"src/**/*",
-		"!src/index.ts"
-	],
-	"coverageDirectory": "coverage",
-	"coverageProvider": "babel",
 	"transform": {
 		"^.+\\.[jt]s$": [
 			"ts-jest",
@@ -15,6 +8,5 @@
 		]
 	},
 	"transformIgnorePatterns": ["node_modules/(?!node-fetch)/"],
-	"resetMocks": true,
 	"testMatch": ["<rootDir>/__tests__/**/*.test.ts"]
 }
