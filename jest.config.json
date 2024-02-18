@@ -6,7 +6,6 @@
 	],
 	"coverageDirectory": "coverage",
 	"coverageProvider": "babel",
-	"setupFiles": ["<rootDir>/__tests__/setup.ts"],
 	"transform": {
 		"^.+\\.[jt]s$": [
 			"ts-jest",
