@@ -1,10 +1,7 @@
 {
 	"transform": {
 		"^.+\\.[jt]s$": [
-			"ts-jest",
-			{
-				"tsconfig": "<rootDir>/test.tsconfig.json"
-			}
+			"ts-jest"
 		]
 	},
 	"transformIgnorePatterns": ["node_modules/(?!node-fetch)/"],
