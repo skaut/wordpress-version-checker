@@ -47,7 +47,36 @@
     "@typescript-eslint/init-declarations": "error",
     "@typescript-eslint/member-ordering": "error",
     "@typescript-eslint/method-signature-style": ["error", "method"],
-    "@typescript-eslint/naming-convention": "error",
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+	"selector": "default",
+	"format": ["camelCase"],
+	"leadingUnderscore": "allow",
+	"trailingUnderscore": "allow",
+        "filter": {
+          "regex": "^(GITHUB_REPOSITORY|issue_number)$",
+          "match": false
+        }
+      },
+
+      {
+	"selector": "import",
+	"format": ["camelCase", "PascalCase"]
+      },
+
+      {
+	"selector": "variable",
+	"format": ["camelCase", "UPPER_CASE"],
+	"leadingUnderscore": "allow",
+	"trailingUnderscore": "allow"
+      },
+
+      {
+	"selector": "typeLike",
+	"format": ["PascalCase"]
+      }
+    ],
     "@typescript-eslint/no-base-to-string": "error",
     "@typescript-eslint/no-import-type-side-effects": "error",
     "@typescript-eslint/no-loop-func": "error",

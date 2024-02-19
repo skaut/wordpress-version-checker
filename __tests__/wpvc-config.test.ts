@@ -4,7 +4,7 @@ import mockedEnv from "mocked-env";
 import nock from "nock";
 
 import { ConfigError } from "../src/exceptions/ConfigError";
-import { WPVCConfig } from "../src/wpvc-config";
+import { getWPVCConfig } from "../src/wpvc-config";
 
 jest.mock("@actions/core");
 
@@ -20,7 +20,7 @@ describe("Mocked env variables", () => {
     restore();
   });
 
-  test("WPVCConfig works correctly", async () => {
+  test("getWPVCConfig works correctly", async () => {
     expect.assertions(1);
     const config = {
       readme: ["path/to/readme.txt"],
@@ -34,10 +34,10 @@ describe("Mocked env variables", () => {
         content: Buffer.from(JSON.stringify(config)).toString("base64"),
       });
 
-    await expect(WPVCConfig()).resolves.toStrictEqual(config);
+    await expect(getWPVCConfig()).resolves.toStrictEqual(config);
   });
 
-  test("WPVCConfig works correctly with a single readme", async () => {
+  test("getWPVCConfig works correctly with a single readme", async () => {
     expect.assertions(1);
 
     nock("https://api.github.com")
@@ -52,14 +52,14 @@ describe("Mocked env variables", () => {
         ).toString("base64"),
       });
 
-    await expect(WPVCConfig()).resolves.toStrictEqual({
+    await expect(getWPVCConfig()).resolves.toStrictEqual({
       readme: ["path/to/readme.txt"],
       channel: "rc",
       assignees: [],
     });
   });
 
-  test("WPVCConfig works correctly with empty config", async () => {
+  test("getWPVCConfig works correctly with empty config", async () => {
     expect.assertions(1);
 
     nock("https://api.github.com")
@@ -68,41 +68,41 @@ describe("Mocked env variables", () => {
         content: Buffer.from(JSON.stringify({})).toString("base64"),
       });
 
-    await expect(WPVCConfig()).resolves.toStrictEqual({
+    await expect(getWPVCConfig()).resolves.toStrictEqual({
       readme: ["readme.txt", "plugin/readme.txt"],
       channel: "rc",
       assignees: [],
     });
   });
 
-  test("WPVCConfig fails gracefully on connection issues", async () => {
+  test("getWPVCConfig fails gracefully on connection issues", async () => {
     expect.assertions(1);
-    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+    await expect(getWPVCConfig()).rejects.toThrow(ConfigError);
   });
 
-  test("WPVCConfig returns defaults on no config", async () => {
+  test("getWPVCConfig returns defaults on no config", async () => {
     expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
       .reply(404);
 
-    await expect(WPVCConfig()).resolves.toStrictEqual({
+    await expect(getWPVCConfig()).resolves.toStrictEqual({
       readme: ["readme.txt", "plugin/readme.txt"],
       channel: "rc",
       assignees: [],
     });
   });
 
-  test("WPVCConfig fails gracefully on invalid response", async () => {
+  test("getWPVCConfig fails gracefully on invalid response", async () => {
     expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
       .reply(200);
 
-    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+    await expect(getWPVCConfig()).rejects.toThrow(ConfigError);
   });
 
-  test("WPVCConfig fails gracefully on invalid response 2", async () => {
+  test("getWPVCConfig fails gracefully on invalid response 2", async () => {
     expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
@@ -110,10 +110,10 @@ describe("Mocked env variables", () => {
         content: "OOPS",
       });
 
-    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+    await expect(getWPVCConfig()).rejects.toThrow(ConfigError);
   });
 
-  test("WPVCConfig fails gracefully on invalid config", async () => {
+  test("getWPVCConfig fails gracefully on invalid config", async () => {
     expect.assertions(1);
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
@@ -121,10 +121,10 @@ describe("Mocked env variables", () => {
         content: Buffer.from(JSON.stringify(false)).toString("base64"),
       });
 
-    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+    await expect(getWPVCConfig()).rejects.toThrow(ConfigError);
   });
 
-  test("WPVCConfig fails gracefully on invalid config 2", async () => {
+  test("getWPVCConfig fails gracefully on invalid config 2", async () => {
     expect.assertions(1);
     const config = {
       readme: false,
@@ -136,10 +136,10 @@ describe("Mocked env variables", () => {
         content: Buffer.from(JSON.stringify(config)).toString("base64"),
       });
 
-    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+    await expect(getWPVCConfig()).rejects.toThrow(ConfigError);
   });
 
-  test("WPVCConfig fails gracefully on invalid config 3", async () => {
+  test("getWPVCConfig fails gracefully on invalid config 3", async () => {
     expect.assertions(1);
     const config = {
       readme: ["readme.txt", false],
@@ -151,10 +151,10 @@ describe("Mocked env variables", () => {
         content: Buffer.from(JSON.stringify(config)).toString("base64"),
       });
 
-    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+    await expect(getWPVCConfig()).rejects.toThrow(ConfigError);
   });
 
-  test("WPVCConfig fails gracefully on invalid config 4", async () => {
+  test("getWPVCConfig fails gracefully on invalid config 4", async () => {
     expect.assertions(1);
     const config = {
       assignees: false,
@@ -166,10 +166,10 @@ describe("Mocked env variables", () => {
         content: Buffer.from(JSON.stringify(config)).toString("base64"),
       });
 
-    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+    await expect(getWPVCConfig()).rejects.toThrow(ConfigError);
   });
 
-  test("WPVCConfig fails gracefully on invalid config 5", async () => {
+  test("getWPVCConfig fails gracefully on invalid config 5", async () => {
     expect.assertions(1);
     const config = {
       assignees: ["user", false],
@@ -181,10 +181,10 @@ describe("Mocked env variables", () => {
         content: Buffer.from(JSON.stringify(config)).toString("base64"),
       });
 
-    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+    await expect(getWPVCConfig()).rejects.toThrow(ConfigError);
   });
 
-  test("WPVCConfig fails gracefully on invalid config 6", async () => {
+  test("getWPVCConfig fails gracefully on invalid config 6", async () => {
     expect.assertions(1);
     const config = {
       channel: false,
@@ -196,10 +196,10 @@ describe("Mocked env variables", () => {
         content: Buffer.from(JSON.stringify(config)).toString("base64"),
       });
 
-    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+    await expect(getWPVCConfig()).rejects.toThrow(ConfigError);
   });
 
-  test("WPVCConfig fails gracefully on invalid config 7", async () => {
+  test("getWPVCConfig fails gracefully on invalid config 7", async () => {
     expect.assertions(1);
     const config = {
       channel: "not-stable",
@@ -211,6 +211,6 @@ describe("Mocked env variables", () => {
         content: Buffer.from(JSON.stringify(config)).toString("base64"),
       });
 
-    await expect(WPVCConfig()).rejects.toThrow(ConfigError);
+    await expect(getWPVCConfig()).rejects.toThrow(ConfigError);
   });
 });

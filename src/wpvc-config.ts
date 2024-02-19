@@ -53,7 +53,7 @@ function normalizeConfig(rawConfig: unknown): Config {
   return config;
 }
 
-export async function WPVCConfig(): Promise<Config> {
+export async function getWPVCConfig(): Promise<Config> {
   const file = await octokit()
     .rest.repos.getContent({
       ...repo(),
