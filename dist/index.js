@@ -10529,7 +10529,7 @@ const wpvc_config_1 = __nccwpck_require__(1086);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const config = yield (0, wpvc_config_1.WPVCConfig)();
+            const config = yield (0, wpvc_config_1.getWPVCConfig)();
             const readmeVersion = yield (0, tested_version_1.testedVersion)(config);
             const availableVersions = yield (0, wordpress_versions_1.wordpressVersions)();
             const betaVersion = config.channel === "beta" ? availableVersions.beta : null;
@@ -10787,7 +10787,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.WPVCConfig = void 0;
+exports.getWPVCConfig = void 0;
 const ConfigError_1 = __nccwpck_require__(6038);
 const has_status_1 = __nccwpck_require__(9272);
 const octokit_1 = __nccwpck_require__(6161);
@@ -10830,7 +10830,7 @@ function normalizeConfig(rawConfig) {
     }
     return config;
 }
-function WPVCConfig() {
+function getWPVCConfig() {
     return __awaiter(this, void 0, void 0, function* () {
         const file = yield (0, octokit_1.octokit)()
             .rest.repos.getContent(Object.assign(Object.assign({}, (0, repo_1.repo)()), { path: ".wordpress-version-checker.json" }))
@@ -10849,7 +10849,7 @@ function WPVCConfig() {
         if (encodedContent === undefined) {
             throw new ConfigError_1.ConfigError("Failed to decode the file.");
         }
-        let config;
+        let config = undefined;
         try {
             config = JSON.parse(Buffer.from(encodedContent, "base64").toString());
         }
@@ -10859,7 +10859,7 @@ function WPVCConfig() {
         return normalizeConfig(config);
     });
 }
-exports.WPVCConfig = WPVCConfig;
+exports.getWPVCConfig = getWPVCConfig;
 
 
 /***/ }),
