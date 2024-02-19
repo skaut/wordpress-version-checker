@@ -8,11 +8,11 @@ import { outdatedStable } from "./outdated-stable";
 import { testedVersion } from "./tested-version";
 import { upToDate } from "./up-to-date";
 import { wordpressVersions } from "./wordpress-versions";
-import { WPVCConfig } from "./wpvc-config";
+import { getWPVCConfig } from "./wpvc-config";
 
 export async function run(): Promise<void> {
   try {
-    const config = await WPVCConfig();
+    const config = await getWPVCConfig();
     const readmeVersion = await testedVersion(config);
     const availableVersions = await wordpressVersions();
     const betaVersion =

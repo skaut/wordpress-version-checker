@@ -53,7 +53,7 @@ function normalizeConfig(rawConfig: unknown): Config {
   return config;
 }
 
-export async function WPVCConfig(): Promise<Config> {
+export async function getWPVCConfig(): Promise<Config> {
   const file = await octokit()
     .rest.repos.getContent({
       ...repo(),
@@ -73,7 +73,7 @@ export async function WPVCConfig(): Promise<Config> {
   if (encodedContent === undefined) {
     throw new ConfigError("Failed to decode the file.");
   }
-  let config: unknown;
+  let config: unknown = undefined;
   try {
     config = JSON.parse(Buffer.from(encodedContent, "base64").toString());
   } catch (e) {

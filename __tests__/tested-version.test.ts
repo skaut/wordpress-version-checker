@@ -10,6 +10,7 @@ import { testedVersion } from "../src/tested-version";
 jest.mock("@actions/core");
 
 describe("[env variable mock]", () => {
+  // eslint-disable-next-line @typescript-eslint/init-declarations -- Shouldn't assign outside of hooks
   let restore: () => void;
 
   beforeEach(() => {

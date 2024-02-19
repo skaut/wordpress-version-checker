@@ -9,7 +9,7 @@ import { run } from "../src/run";
 import { testedVersion } from "../src/tested-version";
 import { upToDate } from "../src/up-to-date";
 import { wordpressVersions } from "../src/wordpress-versions";
-import { WPVCConfig } from "../src/wpvc-config";
+import { getWPVCConfig } from "../src/wpvc-config";
 
 jest.mock("@actions/core");
 jest.mock("../src/outdated-beta");
@@ -38,7 +38,7 @@ describe("runs succesfully", () => {
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.42", rc: "0.42", stable: "0.42" };
 
-    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(getWPVCConfig).mockResolvedValue(config);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
 
@@ -60,7 +60,7 @@ describe("runs succesfully", () => {
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.42", stable: "0.42" };
 
-    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(getWPVCConfig).mockResolvedValue(config);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
 
@@ -82,7 +82,7 @@ describe("runs succesfully", () => {
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.42" };
 
-    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(getWPVCConfig).mockResolvedValue(config);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
 
@@ -104,7 +104,7 @@ describe("runs succesfully", () => {
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.43" };
 
-    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(getWPVCConfig).mockResolvedValue(config);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
 
@@ -131,7 +131,7 @@ describe("runs succesfully", () => {
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.42", rc: "0.42", stable: "0.42" };
 
-    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(getWPVCConfig).mockResolvedValue(config);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
 
@@ -153,7 +153,7 @@ describe("runs succesfully", () => {
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.42", stable: "0.42" };
 
-    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(getWPVCConfig).mockResolvedValue(config);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
 
@@ -175,7 +175,7 @@ describe("runs succesfully", () => {
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.42" };
 
-    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(getWPVCConfig).mockResolvedValue(config);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
 
@@ -197,7 +197,7 @@ describe("runs succesfully", () => {
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.43" };
 
-    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(getWPVCConfig).mockResolvedValue(config);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
 
@@ -224,7 +224,7 @@ describe("runs succesfully", () => {
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.42", rc: "0.42", stable: "0.42" };
 
-    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(getWPVCConfig).mockResolvedValue(config);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
 
@@ -246,7 +246,7 @@ describe("runs succesfully", () => {
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.42", stable: "0.42" };
 
-    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(getWPVCConfig).mockResolvedValue(config);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
 
@@ -268,7 +268,7 @@ describe("runs succesfully", () => {
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.42" };
 
-    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(getWPVCConfig).mockResolvedValue(config);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
 
@@ -290,7 +290,7 @@ describe("runs succesfully", () => {
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.43" };
 
-    mocked(WPVCConfig).mockResolvedValue(config);
+    mocked(getWPVCConfig).mockResolvedValue(config);
     mocked(testedVersion).mockResolvedValue(testedVersionValue);
     mocked(wordpressVersions).mockResolvedValue(wordpressVersionsValue);
 
@@ -310,7 +310,7 @@ describe("runs succesfully", () => {
 
 test("run fails gracefully on error", async () => {
   expect.assertions(1);
-  mocked(WPVCConfig).mockImplementationOnce(() => {
+  mocked(getWPVCConfig).mockImplementationOnce(() => {
     throw new Error();
   });
 
