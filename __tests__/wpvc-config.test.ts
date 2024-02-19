@@ -9,6 +9,7 @@ import { WPVCConfig } from "../src/wpvc-config";
 jest.mock("@actions/core");
 
 describe("Mocked env variables", () => {
+  // eslint-disable-next-line @typescript-eslint/init-declarations -- Shouldn't assign outside of hooks
   let restore: () => void;
 
   beforeEach(() => {

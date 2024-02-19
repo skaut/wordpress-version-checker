@@ -73,7 +73,7 @@ export async function WPVCConfig(): Promise<Config> {
   if (encodedContent === undefined) {
     throw new ConfigError("Failed to decode the file.");
   }
-  let config: unknown;
+  let config: unknown = undefined;
   try {
     config = JSON.parse(Buffer.from(encodedContent, "base64").toString());
   } catch (e) {
