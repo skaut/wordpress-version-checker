@@ -10741,7 +10741,7 @@ function wordpressVersions() {
             host: "api.wordpress.org",
             path: "/core/version-check/1.7/?channel=beta",
         }).catch((e) => {
-            throw new LatestVersionError_1.LatestVersionError(e);
+            throw new LatestVersionError_1.LatestVersionError(typeof e === "string" ? e : undefined);
         });
         let response = {};
         try {

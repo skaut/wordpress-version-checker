@@ -51,8 +51,8 @@ export async function wordpressVersions(): Promise<WordpressVersions> {
   const rawData = await httpsRequest({
     host: "api.wordpress.org",
     path: "/core/version-check/1.7/?channel=beta",
-  }).catch((e: string): never => {
-    throw new LatestVersionError(e);
+  }).catch((e: unknown): never => {
+    throw new LatestVersionError(typeof e === "string" ? e : undefined);
   });
   let response: VersionCheckResponse = {};
   try {
