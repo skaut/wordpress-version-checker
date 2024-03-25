@@ -10707,11 +10707,14 @@ function httpsRequest(options) {
                     data += chunk;
                 });
                 response.on("end", () => {
+                    var _a;
                     if (response.statusCode === 200) {
                         resolve(data);
                     }
                     else {
-                        reject(new Error("A request returned error " + response.statusCode + "."));
+                        reject(new Error("A request returned error " +
+                            ((_a = response.statusCode) !== null && _a !== void 0 ? _a : 0).toString() +
+                            "."));
                     }
                 });
             })
@@ -10738,7 +10741,7 @@ function wordpressVersions() {
             host: "api.wordpress.org",
             path: "/core/version-check/1.7/?channel=beta",
         }).catch((e) => {
-            throw new LatestVersionError_1.LatestVersionError(e);
+            throw new LatestVersionError_1.LatestVersionError(typeof e === "string" ? e : undefined);
         });
         let response = {};
         try {

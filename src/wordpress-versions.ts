@@ -11,7 +11,7 @@ async function httpsRequest(options: https.RequestOptions): Promise<string> {
         let data = "";
         response.setEncoding("utf8");
         response.on("data", (chunk): void => {
-          data += chunk;
+          data += chunk as string;
         });
         response.on("end", (): void => {
           if (response.statusCode === 200) {
@@ -19,7 +19,9 @@ async function httpsRequest(options: https.RequestOptions): Promise<string> {
           } else {
             reject(
               new Error(
-                "A request returned error " + response.statusCode + ".",
+                "A request returned error " +
+                  (response.statusCode ?? 0).toString() +
+                  ".",
               ),
             );
           }
@@ -49,8 +51,8 @@ export async function wordpressVersions(): Promise<WordpressVersions> {
   const rawData = await httpsRequest({
     host: "api.wordpress.org",
     path: "/core/version-check/1.7/?channel=beta",
-  }).catch((e: string): never => {
-    throw new LatestVersionError(e);
+  }).catch((e: unknown): never => {
+    throw new LatestVersionError(typeof e === "string" ? e : undefined);
   });
   let response: VersionCheckResponse = {};
   try {
