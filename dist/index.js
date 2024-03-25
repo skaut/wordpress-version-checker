@@ -10707,11 +10707,14 @@ function httpsRequest(options) {
                     data += chunk;
                 });
                 response.on("end", () => {
+                    var _a;
                     if (response.statusCode === 200) {
                         resolve(data);
                     }
                     else {
-                        reject(new Error("A request returned error " + response.statusCode + "."));
+                        reject(new Error("A request returned error " +
+                            ((_a = response.statusCode) !== null && _a !== void 0 ? _a : 0).toString() +
+                            "."));
                     }
                 });
             })
