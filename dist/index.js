@@ -10735,7 +10735,14 @@ function normalizeConfig(rawConfig) {
     const config = {
         assignees: [],
         channel: "rc",
-        readme: ["readme.txt", "plugin/readme.txt"],
+        readme: [
+            "readme.txt",
+            "src/readme.txt",
+            "plugin/readme.txt",
+            "readme.md",
+            "src/readme.md",
+            "plugin/readme.md",
+        ],
     };
     if ("readme" in rawConfig) {
         if (typeof rawConfig.readme === "string") {
