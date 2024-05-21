@@ -37,7 +37,9 @@ async function readme(config: Config): Promise<string> {
 export async function testedVersion(config: Config): Promise<string> {
   const readmeContents = await readme(config);
   for (const line of readmeContents.split(/\r?\n/)) {
-    const matches = [...line.matchAll(/^[\s]*Tested up to:[\s]*([.\d]+)$/g)];
+    const matches = [
+      ...line.matchAll(/^[\s]*Tested up to:[\s]*([.\d]+)[\s]*$/g),
+    ];
     if (matches.length !== 1) {
       continue;
     }
