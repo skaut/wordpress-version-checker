@@ -28,7 +28,7 @@ function normalizeConfig(rawConfig: unknown): Config {
       Array.isArray(rawConfig.readme) &&
       rawConfig.readme.every((item) => typeof item === "string")
     ) {
-      config.readme = rawConfig.readme as Array<string>;
+      config.readme = rawConfig.readme;
     } else {
       throw new ConfigError(
         'Invalid config file, the "readme" field should be a string or an array of strings.',
@@ -44,7 +44,7 @@ function normalizeConfig(rawConfig: unknown): Config {
         'Invalid config file, the "assignees" field should be an array of strings.',
       );
     }
-    config.assignees = rawConfig.assignees as Array<string>;
+    config.assignees = rawConfig.assignees;
   }
   if ("channel" in rawConfig) {
     if (
