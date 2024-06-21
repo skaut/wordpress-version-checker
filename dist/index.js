@@ -32216,11 +32216,10 @@ exports.WPVCError = WPVCError;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.hasStatus = void 0;
+exports.hasStatus = hasStatus;
 function hasStatus(obj) {
     return Object.prototype.hasOwnProperty.call(obj, "status");
 }
-exports.hasStatus = hasStatus;
 
 
 /***/ }),
@@ -32239,7 +32238,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.updateIssue = exports.createIssue = exports.closeIssue = exports.commentOnIssue = exports.getIssue = void 0;
+exports.getIssue = getIssue;
+exports.commentOnIssue = commentOnIssue;
+exports.closeIssue = closeIssue;
+exports.createIssue = createIssue;
+exports.updateIssue = updateIssue;
 const GetIssueError_1 = __nccwpck_require__(4418);
 const IssueCommentError_1 = __nccwpck_require__(5809);
 const IssueCreationError_1 = __nccwpck_require__(2188);
@@ -32257,7 +32260,6 @@ function getIssue() {
         return issues.data.length > 0 ? issues.data[0].number : null;
     });
 }
-exports.getIssue = getIssue;
 function commentOnIssue(issue, comment) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
@@ -32267,7 +32269,6 @@ function commentOnIssue(issue, comment) {
         });
     });
 }
-exports.commentOnIssue = commentOnIssue;
 function closeIssue(issue) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
@@ -32277,7 +32278,6 @@ function closeIssue(issue) {
         });
     });
 }
-exports.closeIssue = closeIssue;
 function createIssue(title, body, assignees) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
@@ -32288,7 +32288,6 @@ function createIssue(title, body, assignees) {
         });
     });
 }
-exports.createIssue = createIssue;
 function updateIssue(issueNumber, title, body) {
     return __awaiter(this, void 0, void 0, function* () {
         const issue = yield (0, octokit_1.octokit)()
@@ -32307,7 +32306,6 @@ function updateIssue(issueNumber, title, body) {
         });
     });
 }
-exports.updateIssue = updateIssue;
 
 
 /***/ }),
@@ -32340,7 +32338,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.octokit = void 0;
+exports.octokit = octokit;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 let octokitInstance = undefined;
@@ -32350,7 +32348,6 @@ function octokit() {
     }
     return octokitInstance;
 }
-exports.octokit = octokit;
 
 
 /***/ }),
@@ -32369,7 +32366,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.outdatedBeta = void 0;
+exports.outdatedBeta = outdatedBeta;
 const issue_management_1 = __nccwpck_require__(3813);
 function issueBody(testedVersion, latestVersion) {
     return ("There is an upcoming WordPress version in the **beta** stage that the plugin hasn't been tested with.\n" +
@@ -32396,7 +32393,6 @@ function outdatedBeta(config, testedVersion, betaVersion) {
         }
     });
 }
-exports.outdatedBeta = outdatedBeta;
 
 
 /***/ }),
@@ -32415,7 +32411,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.outdatedRC = void 0;
+exports.outdatedRC = outdatedRC;
 const issue_management_1 = __nccwpck_require__(3813);
 function issueBody(testedVersion, latestVersion) {
     return ('There is an upcoming WordPress version in the **release candidate** stage that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
@@ -32442,7 +32438,6 @@ function outdatedRC(config, testedVersion, rcVersion) {
         }
     });
 }
-exports.outdatedRC = outdatedRC;
 
 
 /***/ }),
@@ -32461,7 +32456,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.outdatedStable = void 0;
+exports.outdatedStable = outdatedStable;
 const issue_management_1 = __nccwpck_require__(3813);
 function issueBody(testedVersion, latestVersion) {
     return ('There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
@@ -32488,7 +32483,6 @@ function outdatedStable(config, testedVersion, stableVersion) {
         }
     });
 }
-exports.outdatedStable = outdatedStable;
 
 
 /***/ }),
@@ -32521,7 +32515,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.repo = void 0;
+exports.repo = repo;
 const github = __importStar(__nccwpck_require__(5438));
 let repoInstance = undefined;
 function repo() {
@@ -32530,7 +32524,6 @@ function repo() {
     }
     return repoInstance;
 }
-exports.repo = repo;
 
 
 /***/ }),
@@ -32572,7 +32565,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = void 0;
+exports.run = run;
 const core = __importStar(__nccwpck_require__(2186));
 const compare_versions_1 = __nccwpck_require__(4773);
 const outdated_beta_1 = __nccwpck_require__(9762);
@@ -32611,7 +32604,6 @@ function run() {
         }
     });
 }
-exports.run = run;
 
 
 /***/ }),
@@ -32630,7 +32622,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.testedVersion = void 0;
+exports.testedVersion = testedVersion;
 const InvalidReadmeError_1 = __nccwpck_require__(8040);
 const has_status_1 = __nccwpck_require__(9272);
 const octokit_1 = __nccwpck_require__(6161);
@@ -32676,7 +32668,6 @@ function testedVersion(config) {
         throw new InvalidReadmeError_1.InvalidReadmeError('No "Tested up to:" line found');
     });
 }
-exports.testedVersion = testedVersion;
 
 
 /***/ }),
@@ -32695,7 +32686,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.upToDate = void 0;
+exports.upToDate = upToDate;
 const issue_management_1 = __nccwpck_require__(3813);
 function upToDate() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -32706,7 +32697,6 @@ function upToDate() {
         }
     });
 }
-exports.upToDate = upToDate;
 
 
 /***/ }),
@@ -32748,7 +32738,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.wordpressVersions = void 0;
+exports.wordpressVersions = wordpressVersions;
 const https = __importStar(__nccwpck_require__(5687));
 const LatestVersionError_1 = __nccwpck_require__(4241);
 function httpsRequest(options) {
@@ -32825,7 +32815,6 @@ function wordpressVersions() {
         };
     });
 }
-exports.wordpressVersions = wordpressVersions;
 
 
 /***/ }),
@@ -32844,7 +32833,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getWPVCConfig = void 0;
+exports.getWPVCConfig = getWPVCConfig;
 const ConfigError_1 = __nccwpck_require__(6038);
 const has_status_1 = __nccwpck_require__(9272);
 const octokit_1 = __nccwpck_require__(6161);
@@ -32923,7 +32912,6 @@ function getWPVCConfig() {
         return normalizeConfig(config);
     });
 }
-exports.getWPVCConfig = getWPVCConfig;
 
 
 /***/ }),
