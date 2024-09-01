@@ -7,6 +7,7 @@ import { repo } from "./repo";
 
 async function readme(config: Config): Promise<string> {
   for (const readmeLocation of config.readme) {
+    // eslint-disable-next-line no-await-in-loop -- Intended sequential loading, see #1270
     const result = await octokit()
       .rest.repos.getContent({ ...repo(), path: readmeLocation })
       .catch((e: unknown): never | null => {

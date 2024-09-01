@@ -29992,6 +29992,7 @@ const repo_1 = __nccwpck_require__(1413);
 function readme(config) {
     return __awaiter(this, void 0, void 0, function* () {
         for (const readmeLocation of config.readme) {
+            // eslint-disable-next-line no-await-in-loop -- Intended sequential loading, see #1270
             const result = yield (0, octokit_1.octokit)()
                 .rest.repos.getContent(Object.assign(Object.assign({}, (0, repo_1.repo)()), { path: readmeLocation }))
                 .catch((e) => {
