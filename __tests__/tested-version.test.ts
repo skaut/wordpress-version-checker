@@ -14,6 +14,7 @@ describe("[env variable mock]", () => {
   beforeEach(() => {
     restore = mockedEnv({ GITHUB_REPOSITORY: "OWNER/REPO" });
   });
+
   afterEach(() => {
     restore();
   });
@@ -34,6 +35,7 @@ describe("[env variable mock]", () => {
     "Tested up to: 0.42\t",
   ])("testedVersion works correctly", async (readme) => {
     expect.assertions(1);
+
     const readmePath = "path/to/readme.txt";
     const config: Config = {
       readme: [readmePath],
@@ -52,6 +54,7 @@ describe("[env variable mock]", () => {
 
   test("testedVersion fails gracefully on connection issues", async () => {
     expect.assertions(1);
+
     const config: Config = {
       readme: ["path/to/readme.txt"],
       channel: "stable",
@@ -63,6 +66,7 @@ describe("[env variable mock]", () => {
 
   test("testedVersion fails gracefully on no readme", async () => {
     expect.assertions(1);
+
     const readmePath = "path/to/readme.txt";
     const config: Config = {
       readme: [readmePath],
@@ -79,6 +83,7 @@ describe("[env variable mock]", () => {
 
   test("testedVersion fails gracefully on invalid response", async () => {
     expect.assertions(1);
+
     const readmePath = "path/to/readme.txt";
     const config: Config = {
       readme: [readmePath],
@@ -95,6 +100,7 @@ describe("[env variable mock]", () => {
 
   test("testedVersion fails gracefully on invalid response 2", async () => {
     expect.assertions(1);
+
     const readmePath = "path/to/readme.txt";
     const config: Config = {
       readme: [readmePath],
@@ -120,6 +126,7 @@ describe("[env variable mock]", () => {
     "Tested up to: 0.41: 0.42",
   ])("testedVersion fails gracefully on invalid readme", async (readme) => {
     expect.assertions(1);
+
     const readmePath = "path/to/readme.txt";
     const config: Config = {
       readme: [readmePath],

@@ -13,12 +13,14 @@ describe("Mocked env variables", () => {
   beforeEach(() => {
     restore = mockedEnv({ GITHUB_REPOSITORY: "OWNER/REPO" });
   });
+
   afterEach(() => {
     restore();
   });
 
   test("getWPVCConfig works correctly", async () => {
     expect.assertions(1);
+
     const config = {
       readme: ["path/to/readme.txt"],
       channel: "rc",
@@ -86,6 +88,7 @@ describe("Mocked env variables", () => {
 
   test("getWPVCConfig returns defaults on no config", async () => {
     expect.assertions(1);
+
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
       .reply(404);
@@ -106,6 +109,7 @@ describe("Mocked env variables", () => {
 
   test("getWPVCConfig fails gracefully on invalid response", async () => {
     expect.assertions(1);
+
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
       .reply(200);
@@ -115,6 +119,7 @@ describe("Mocked env variables", () => {
 
   test("getWPVCConfig fails gracefully on invalid response 2", async () => {
     expect.assertions(1);
+
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
       .reply(200, {
@@ -126,6 +131,7 @@ describe("Mocked env variables", () => {
 
   test("getWPVCConfig fails gracefully on invalid config", async () => {
     expect.assertions(1);
+
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/contents/.wordpress-version-checker.json")
       .reply(200, {
@@ -137,6 +143,7 @@ describe("Mocked env variables", () => {
 
   test("getWPVCConfig fails gracefully on invalid config 2", async () => {
     expect.assertions(1);
+
     const config = {
       readme: false,
     };
@@ -152,6 +159,7 @@ describe("Mocked env variables", () => {
 
   test("getWPVCConfig fails gracefully on invalid config 3", async () => {
     expect.assertions(1);
+
     const config = {
       readme: ["readme.txt", false],
     };
@@ -167,6 +175,7 @@ describe("Mocked env variables", () => {
 
   test("getWPVCConfig fails gracefully on invalid config 4", async () => {
     expect.assertions(1);
+
     const config = {
       assignees: false,
     };
@@ -182,6 +191,7 @@ describe("Mocked env variables", () => {
 
   test("getWPVCConfig fails gracefully on invalid config 5", async () => {
     expect.assertions(1);
+
     const config = {
       assignees: ["user", false],
     };
@@ -197,6 +207,7 @@ describe("Mocked env variables", () => {
 
   test("getWPVCConfig fails gracefully on invalid config 6", async () => {
     expect.assertions(1);
+
     const config = {
       channel: false,
     };
@@ -212,6 +223,7 @@ describe("Mocked env variables", () => {
 
   test("getWPVCConfig fails gracefully on invalid config 7", async () => {
     expect.assertions(1);
+
     const config = {
       channel: "not-stable",
     };

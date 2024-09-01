@@ -30,6 +30,7 @@ describe("runs succesfully", () => {
 
   test("works with stable channel and up-to-date version", async () => {
     expect.assertions(4);
+
     const config: Config = {
       readme: ["readme.txt"],
       channel: "stable",
@@ -52,6 +53,7 @@ describe("runs succesfully", () => {
 
   test("works with stable channel and newer beta version", async () => {
     expect.assertions(4);
+
     const config: Config = {
       readme: ["readme.txt"],
       channel: "stable",
@@ -74,6 +76,7 @@ describe("runs succesfully", () => {
 
   test("works with stable channel and newer RC version", async () => {
     expect.assertions(4);
+
     const config: Config = {
       readme: ["readme.txt"],
       channel: "stable",
@@ -96,6 +99,7 @@ describe("runs succesfully", () => {
 
   test("works with stable channel and newer stable version", async () => {
     expect.assertions(7);
+
     const config: Config = {
       readme: ["readme.txt"],
       channel: "stable",
@@ -123,6 +127,7 @@ describe("runs succesfully", () => {
 
   test("works with RC channel and up-to-date version", async () => {
     expect.assertions(4);
+
     const config: Config = {
       readme: ["readme.txt"],
       channel: "rc",
@@ -145,6 +150,7 @@ describe("runs succesfully", () => {
 
   test("works with RC channel and newer beta version", async () => {
     expect.assertions(4);
+
     const config: Config = {
       readme: ["readme.txt"],
       channel: "rc",
@@ -167,6 +173,7 @@ describe("runs succesfully", () => {
 
   test("works with RC channel and newer RC version", async () => {
     expect.assertions(4);
+
     const config: Config = {
       readme: ["readme.txt"],
       channel: "rc",
@@ -189,6 +196,7 @@ describe("runs succesfully", () => {
 
   test("works with RC channel and newer stable version", async () => {
     expect.assertions(7);
+
     const config: Config = {
       readme: ["readme.txt"],
       channel: "rc",
@@ -216,6 +224,7 @@ describe("runs succesfully", () => {
 
   test("works with beta channel and up-to-date version", async () => {
     expect.assertions(4);
+
     const config: Config = {
       readme: ["readme.txt"],
       channel: "beta",
@@ -238,6 +247,7 @@ describe("runs succesfully", () => {
 
   test("works with beta channel and newer beta version", async () => {
     expect.assertions(4);
+
     const config: Config = {
       readme: ["readme.txt"],
       channel: "beta",
@@ -260,6 +270,7 @@ describe("runs succesfully", () => {
 
   test("works with beta channel and newer RC version", async () => {
     expect.assertions(4);
+
     const config: Config = {
       readme: ["readme.txt"],
       channel: "beta",
@@ -282,6 +293,7 @@ describe("runs succesfully", () => {
 
   test("works with beta channel and newer stable version", async () => {
     expect.assertions(7);
+
     const config: Config = {
       readme: ["readme.txt"],
       channel: "beta",
@@ -310,6 +322,7 @@ describe("runs succesfully", () => {
 
 test("run fails gracefully on error", async () => {
   expect.assertions(1);
+
   mocked(getWPVCConfig).mockImplementationOnce(() => {
     throw new Error();
   });

@@ -23,6 +23,7 @@ describe("[env variable mock]", () => {
   beforeEach(() => {
     restore = mockedEnv({ GITHUB_REPOSITORY: "OWNER/REPO" });
   });
+
   afterEach(() => {
     restore();
     nock.cleanAll();
@@ -30,6 +31,7 @@ describe("[env variable mock]", () => {
 
   test("getIssue works correctly", async () => {
     expect.assertions(1);
+
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues")
       .query({ creator: "github-actions[bot]", labels: "wpvc" })
@@ -40,6 +42,7 @@ describe("[env variable mock]", () => {
 
   test("getIssue works correctly when the issue doesn't exist", async () => {
     expect.assertions(1);
+
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues")
       .query({ creator: "github-actions[bot]", labels: "wpvc" })
@@ -55,6 +58,7 @@ describe("[env variable mock]", () => {
 
   test("getIssue fails gracefully on nonexistent repo", async () => {
     expect.assertions(1);
+
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues")
       .query({ creator: "github-actions[bot]", labels: "wpvc" })
@@ -65,6 +69,7 @@ describe("[env variable mock]", () => {
 
   test("commentOnIssue works correctly", async () => {
     expect.assertions(2);
+
     const issueBody = "ISSUE_BODY";
 
     const scope = nock("https://api.github.com")
@@ -86,6 +91,7 @@ describe("[env variable mock]", () => {
 
   test("commentOnIssue fails gracefully on nonexistent repo", async () => {
     expect.assertions(2);
+
     const issueBody = "ISSUE_BODY";
 
     const scope = nock("https://api.github.com")
@@ -102,6 +108,7 @@ describe("[env variable mock]", () => {
 
   test("closeIssue works correctly", async () => {
     expect.assertions(2);
+
     const scope = nock("https://api.github.com")
       .patch("/repos/OWNER/REPO/issues/123", {
         state: "closed",
@@ -119,6 +126,7 @@ describe("[env variable mock]", () => {
 
   test("closeIssue fails gracefully on nonexistent repo", async () => {
     expect.assertions(2);
+
     const scope = nock("https://api.github.com")
       .patch("/repos/OWNER/REPO/issues/123", {
         state: "closed",
@@ -131,6 +139,7 @@ describe("[env variable mock]", () => {
 
   test("createIssue works correctly", async () => {
     expect.assertions(2);
+
     const title = "ISSUE_TITLE";
     const body = "ISSUE_BODY";
     const assignees: Array<string> = [];
@@ -150,6 +159,7 @@ describe("[env variable mock]", () => {
 
   test("createIssue works correctly with assignees", async () => {
     expect.assertions(2);
+
     const title = "ISSUE_TITLE";
     const body = "ISSUE_BODY";
     const assignees = ["PERSON1", "PERSON2"];
@@ -187,6 +197,7 @@ describe("[env variable mock]", () => {
 
   test("updateIssue works correctly with an up-to-date-issue", async () => {
     expect.assertions(2);
+
     const title = "ISSUE_TITLE";
     const body = "ISSUE_BODY";
 
@@ -202,6 +213,7 @@ describe("[env variable mock]", () => {
 
   test("updateIssue works correctly with an issue with outdated title", async () => {
     expect.assertions(2);
+
     const title = "ISSUE_TITLE";
     const body = "ISSUE_BODY";
 
@@ -217,6 +229,7 @@ describe("[env variable mock]", () => {
 
   test("updateIssue works correctly with an issue with outdated body", async () => {
     expect.assertions(2);
+
     const title = "ISSUE_TITLE";
     const body = "ISSUE_BODY";
 
@@ -232,6 +245,7 @@ describe("[env variable mock]", () => {
 
   test("updateIssue fails gracefully on connection issues on getting the existing issue", async () => {
     expect.assertions(1);
+
     const title = "ISSUE_TITLE";
     const body = "ISSUE_BODY";
 
@@ -244,6 +258,7 @@ describe("[env variable mock]", () => {
 
   test("updateIssue fails gracefully on connection issues on updating the existing issue", async () => {
     expect.assertions(2);
+
     const title = "ISSUE_TITLE";
     const body = "ISSUE_BODY";
 
@@ -259,6 +274,7 @@ describe("[env variable mock]", () => {
 
   test("updateIssue fails gracefully on nonexistent repo", async () => {
     expect.assertions(1);
+
     nock("https://api.github.com")
       .get("/repos/OWNER/REPO/issues/123")
       .reply(404)
