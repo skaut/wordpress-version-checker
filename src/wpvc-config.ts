@@ -1,6 +1,7 @@
+import type { Config } from "./interfaces/Config";
+
 import { ConfigError } from "./exceptions/ConfigError";
 import { hasStatus } from "./has-status";
-import type { Config } from "./interfaces/Config";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 

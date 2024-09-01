@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import { compare } from "compare-versions";
 
 import type { WPVCError } from "./exceptions/WPVCError";
+
 import { outdatedBeta } from "./outdated-beta";
 import { outdatedRC } from "./outdated-rc";
 import { outdatedStable } from "./outdated-stable";

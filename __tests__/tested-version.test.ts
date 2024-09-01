@@ -1,8 +1,9 @@
 import mockedEnv from "mocked-env";
 import nock from "nock";
 
-import { InvalidReadmeError } from "../src/exceptions/InvalidReadmeError";
 import type { Config } from "../src/interfaces/Config";
+
+import { InvalidReadmeError } from "../src/exceptions/InvalidReadmeError";
 import { testedVersion } from "../src/tested-version";
 
 jest.mock("@actions/core");

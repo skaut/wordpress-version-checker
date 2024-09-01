@@ -1,6 +1,7 @@
 import { mocked } from "jest-mock";
 
 import type { Config } from "../src/interfaces/Config";
+
 import { createIssue, getIssue, updateIssue } from "../src/issue-management";
 import { outdatedRC } from "../src/outdated-rc";
 

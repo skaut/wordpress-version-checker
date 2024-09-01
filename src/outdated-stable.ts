@@ -1,4 +1,5 @@
 import type { Config } from "./interfaces/Config";
+
 import { createIssue, getIssue, updateIssue } from "./issue-management";
 
 function issueBody(testedVersion: string, latestVersion: string): string {

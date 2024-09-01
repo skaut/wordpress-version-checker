@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import { mocked } from "jest-mock";
 
 import type { Config } from "../src/interfaces/Config";
+
 import { outdatedBeta } from "../src/outdated-beta";
 import { outdatedRC } from "../src/outdated-rc";
 import { outdatedStable } from "../src/outdated-stable";
