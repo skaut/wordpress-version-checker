@@ -33,9 +33,9 @@ describe("runs succesfully", () => {
     expect.assertions(4);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.42", rc: "0.42", stable: "0.42" };
@@ -56,9 +56,9 @@ describe("runs succesfully", () => {
     expect.assertions(4);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.42", stable: "0.42" };
@@ -79,9 +79,9 @@ describe("runs succesfully", () => {
     expect.assertions(4);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.42" };
@@ -102,9 +102,9 @@ describe("runs succesfully", () => {
     expect.assertions(7);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.43" };
@@ -130,9 +130,9 @@ describe("runs succesfully", () => {
     expect.assertions(4);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "rc",
       assignees: [],
+      channel: "rc",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.42", rc: "0.42", stable: "0.42" };
@@ -153,9 +153,9 @@ describe("runs succesfully", () => {
     expect.assertions(4);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "rc",
       assignees: [],
+      channel: "rc",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.42", stable: "0.42" };
@@ -176,9 +176,9 @@ describe("runs succesfully", () => {
     expect.assertions(4);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "rc",
       assignees: [],
+      channel: "rc",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.42" };
@@ -199,9 +199,9 @@ describe("runs succesfully", () => {
     expect.assertions(7);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "rc",
       assignees: [],
+      channel: "rc",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.43" };
@@ -227,9 +227,9 @@ describe("runs succesfully", () => {
     expect.assertions(4);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "beta",
       assignees: [],
+      channel: "beta",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.42", rc: "0.42", stable: "0.42" };
@@ -250,9 +250,9 @@ describe("runs succesfully", () => {
     expect.assertions(4);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "beta",
       assignees: [],
+      channel: "beta",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.42", stable: "0.42" };
@@ -273,9 +273,9 @@ describe("runs succesfully", () => {
     expect.assertions(4);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "beta",
       assignees: [],
+      channel: "beta",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.42" };
@@ -296,9 +296,9 @@ describe("runs succesfully", () => {
     expect.assertions(7);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "beta",
       assignees: [],
+      channel: "beta",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.43" };

@@ -22,9 +22,9 @@ describe("Mocked env variables", () => {
     expect.assertions(1);
 
     const config = {
-      readme: ["path/to/readme.txt"],
-      channel: "rc",
       assignees: ["PERSON1", "PERSON2"],
+      channel: "rc",
+      readme: ["path/to/readme.txt"],
     };
 
     nock("https://api.github.com")
@@ -44,17 +44,17 @@ describe("Mocked env variables", () => {
       .reply(200, {
         content: Buffer.from(
           JSON.stringify({
-            readme: "path/to/readme.txt",
-            channel: "rc",
             assignees: [],
+            channel: "rc",
+            readme: "path/to/readme.txt",
           }),
         ).toString("base64"),
       });
 
     await expect(getWPVCConfig()).resolves.toStrictEqual({
-      readme: ["path/to/readme.txt"],
-      channel: "rc",
       assignees: [],
+      channel: "rc",
+      readme: ["path/to/readme.txt"],
     });
   });
 
@@ -68,6 +68,8 @@ describe("Mocked env variables", () => {
       });
 
     await expect(getWPVCConfig()).resolves.toStrictEqual({
+      assignees: [],
+      channel: "rc",
       readme: [
         "readme.txt",
         "src/readme.txt",
@@ -76,8 +78,6 @@ describe("Mocked env variables", () => {
         "src/readme.md",
         "plugin/readme.md",
       ],
-      channel: "rc",
-      assignees: [],
     });
   });
 
@@ -94,6 +94,8 @@ describe("Mocked env variables", () => {
       .reply(404);
 
     await expect(getWPVCConfig()).resolves.toStrictEqual({
+      assignees: [],
+      channel: "rc",
       readme: [
         "readme.txt",
         "src/readme.txt",
@@ -102,8 +104,6 @@ describe("Mocked env variables", () => {
         "src/readme.md",
         "plugin/readme.md",
       ],
-      channel: "rc",
-      assignees: [],
     });
   });
 

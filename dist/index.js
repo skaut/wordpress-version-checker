@@ -29638,7 +29638,7 @@ function getIssue() {
 function commentOnIssue(issue, comment) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
-            .rest.issues.createComment(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issue, body: comment }))
+            .rest.issues.createComment(Object.assign(Object.assign({}, (0, repo_1.repo)()), { body: comment, issue_number: issue }))
             .catch((e) => {
             throw new IssueCommentError_1.IssueCommentError(issue, String(e));
         });
@@ -29656,8 +29656,8 @@ function closeIssue(issue) {
 function createIssue(title, body, assignees) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
-            .rest.issues.create(Object.assign(Object.assign({}, (0, repo_1.repo)()), { title,
-            body, labels: ["wpvc"], assignees }))
+            .rest.issues.create(Object.assign(Object.assign({}, (0, repo_1.repo)()), { assignees,
+            body, labels: ["wpvc"], title }))
             .catch((e) => {
             throw new IssueCreationError_1.IssueCreationError(String(e));
         });
@@ -29674,8 +29674,7 @@ function updateIssue(issueNumber, title, body) {
             return;
         }
         yield (0, octokit_1.octokit)()
-            .rest.issues.update(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issueNumber, title,
-            body }))
+            .rest.issues.update(Object.assign(Object.assign({}, (0, repo_1.repo)()), { body, issue_number: issueNumber, title }))
             .catch((e) => {
             throw new IssueUpdateError_1.IssueUpdateError(issueNumber, String(e));
         });

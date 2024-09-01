@@ -39,9 +39,9 @@ describe("[env variable mock]", () => {
 
     const readmePath = "path/to/readme.txt";
     const config: Config = {
-      readme: [readmePath],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: [readmePath],
     };
 
     nock("https://api.github.com")
@@ -57,9 +57,9 @@ describe("[env variable mock]", () => {
     expect.assertions(1);
 
     const config: Config = {
-      readme: ["path/to/readme.txt"],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: ["path/to/readme.txt"],
     };
 
     await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
@@ -70,9 +70,9 @@ describe("[env variable mock]", () => {
 
     const readmePath = "path/to/readme.txt";
     const config: Config = {
-      readme: [readmePath],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: [readmePath],
     };
 
     nock("https://api.github.com")
@@ -87,9 +87,9 @@ describe("[env variable mock]", () => {
 
     const readmePath = "path/to/readme.txt";
     const config: Config = {
-      readme: [readmePath],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: [readmePath],
     };
 
     nock("https://api.github.com")
@@ -104,9 +104,9 @@ describe("[env variable mock]", () => {
 
     const readmePath = "path/to/readme.txt";
     const config: Config = {
-      readme: [readmePath],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: [readmePath],
     };
 
     nock("https://api.github.com")
@@ -130,9 +130,9 @@ describe("[env variable mock]", () => {
 
     const readmePath = "path/to/readme.txt";
     const config: Config = {
-      readme: [readmePath],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: [readmePath],
     };
 
     nock("https://api.github.com")

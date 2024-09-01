@@ -17,9 +17,9 @@ describe("Succesful runs", () => {
     expect.assertions(7);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: ["readme.txt"],
     };
     const testedVersion = "0.41";
     const latestVersion = "0.42";
@@ -47,9 +47,9 @@ describe("Succesful runs", () => {
     expect.assertions(7);
 
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: ["readme.txt"],
     };
     const testedVersion = "0.41";
     const latestVersion = "0.42";
