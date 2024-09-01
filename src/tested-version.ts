@@ -13,8 +13,7 @@ async function readme(config: Config): Promise<string> {
           return null;
         } else {
           throw new InvalidReadmeError(
-            "No readme file was found in repo and all usual locations were exhausted. Error message: " +
-              String(e),
+            `No readme file was found in repo and all usual locations were exhausted. Error message: ${String(e)}`,
           );
         }
       });

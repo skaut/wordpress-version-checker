@@ -44,7 +44,7 @@ describe("[env variable mock]", () => {
     };
 
     nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/" + encodeURIComponent(readmePath))
+      .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath)}`)
       .reply(200, {
         content: Buffer.from(readme).toString("base64"),
       });
@@ -75,7 +75,7 @@ describe("[env variable mock]", () => {
     };
 
     nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/" + encodeURIComponent(readmePath))
+      .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath)}`)
       .reply(404);
 
     await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
@@ -92,7 +92,7 @@ describe("[env variable mock]", () => {
     };
 
     nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/" + encodeURIComponent(readmePath))
+      .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath)}`)
       .reply(200);
 
     await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
@@ -109,7 +109,7 @@ describe("[env variable mock]", () => {
     };
 
     nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/" + encodeURIComponent(readmePath))
+      .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath)}`)
       .reply(200, {
         content: "OOPS",
       });
@@ -135,7 +135,7 @@ describe("[env variable mock]", () => {
     };
 
     nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/" + encodeURIComponent(readmePath))
+      .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath)}`)
       .reply(200, {
         content: Buffer.from(readme).toString("base64"),
       });

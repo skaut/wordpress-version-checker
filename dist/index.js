@@ -29437,8 +29437,7 @@ exports.ConfigError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class ConfigError extends WPVCError_1.WPVCError {
     constructor(e) {
-        super("Couldn't get the wordpress-version-checker config file. Error message: " +
-            e);
+        super(`Couldn't get the wordpress-version-checker config file. Error message: ${e}`);
     }
 }
 exports.ConfigError = ConfigError;
@@ -29455,10 +29454,7 @@ exports.GetIssueError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class GetIssueError extends WPVCError_1.WPVCError {
     constructor(issueNumber, e) {
-        super("Couldn't get the already existing issue #" +
-            String(issueNumber) +
-            ". Error message: " +
-            e);
+        super(`Couldn't get the already existing issue #${String(issueNumber)}. Error message: ${e}`);
     }
 }
 exports.GetIssueError = GetIssueError;
@@ -29475,7 +29471,7 @@ exports.InvalidReadmeError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class InvalidReadmeError extends WPVCError_1.WPVCError {
     constructor(e) {
-        super("Couldn't get the repository readme. Error message: " + e);
+        super(`Couldn't get the repository readme. Error message: ${e}`);
     }
 }
 exports.InvalidReadmeError = InvalidReadmeError;
@@ -29492,10 +29488,7 @@ exports.IssueCommentError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class IssueCommentError extends WPVCError_1.WPVCError {
     constructor(issueNumber, e) {
-        super("Couldn't add a comment to issue #" +
-            String(issueNumber) +
-            ". Error message: " +
-            e);
+        super(`Couldn't add a comment to issue #${String(issueNumber)}. Error message: ${e}`);
     }
 }
 exports.IssueCommentError = IssueCommentError;
@@ -29512,7 +29505,7 @@ exports.IssueCreationError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class IssueCreationError extends WPVCError_1.WPVCError {
     constructor(e) {
-        super("Couldn't create an issue. Error message: " + e);
+        super(`Couldn't create an issue. Error message: ${e}`);
     }
 }
 exports.IssueCreationError = IssueCreationError;
@@ -29529,7 +29522,7 @@ exports.IssueListError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class IssueListError extends WPVCError_1.WPVCError {
     constructor(e) {
-        super("Couldn't list issues. Error message: " + e);
+        super(`Couldn't list issues. Error message: ${e}`);
     }
 }
 exports.IssueListError = IssueListError;
@@ -29546,10 +29539,7 @@ exports.IssueUpdateError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class IssueUpdateError extends WPVCError_1.WPVCError {
     constructor(issueNumber, e) {
-        super("Couldn't update the existing issue #" +
-            String(issueNumber) +
-            ". Error message: " +
-            e);
+        super(`Couldn't update the existing issue #${String(issueNumber)}. Error message: ${e}`);
     }
 }
 exports.IssueUpdateError = IssueUpdateError;
@@ -29570,7 +29560,7 @@ class LatestVersionError extends WPVCError_1.WPVCError {
             super("Failed to fetch the latest WordPress version.");
         }
         else {
-            super("Failed to fetch the latest WordPress version. Error message: " + e);
+            super(`Failed to fetch the latest WordPress version. Error message: ${e}`);
         }
     }
 }
@@ -29754,16 +29744,12 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedBeta = outdatedBeta;
 const issue_management_1 = __nccwpck_require__(3813);
 function issueBody(testedVersion, latestVersion) {
-    return ("There is an upcoming WordPress version in the **beta** stage that the plugin hasn't been tested with.\n" +
-        "\n" +
-        "**Tested up to:** " +
-        testedVersion +
-        "\n" +
-        "**Beta version:** " +
-        latestVersion +
-        "\n" +
-        "\n" +
-        "This issue will be closed automatically when the versions match.");
+    return `There is an upcoming WordPress version in the **beta** stage that the plugin hasn't been tested with.
+
+**Tested up to:** ${testedVersion}
+**Beta version:** ${latestVersion}
+
+This issue will be closed automatically when the versions match.`;
 }
 function outdatedBeta(config, testedVersion, betaVersion) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -29799,16 +29785,12 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedRC = outdatedRC;
 const issue_management_1 = __nccwpck_require__(3813);
 function issueBody(testedVersion, latestVersion) {
-    return ('There is an upcoming WordPress version in the **release candidate** stage that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
-        "\n" +
-        "**Tested up to:** " +
-        testedVersion +
-        "\n" +
-        "**Upcoming version:** " +
-        latestVersion +
-        "\n" +
-        "\n" +
-        "This issue will be closed automatically when the versions match.");
+    return `There is an upcoming WordPress version in the **release candidate** stage that the plugin hasn't been tested with. Please test it and then change the "Tested up to" field in the plugin readme.
+
+**Tested up to:** ${testedVersion}
+**Upcoming version:** ${latestVersion}
+
+This issue will be closed automatically when the versions match.`;
 }
 function outdatedRC(config, testedVersion, rcVersion) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -29844,16 +29826,12 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedStable = outdatedStable;
 const issue_management_1 = __nccwpck_require__(3813);
 function issueBody(testedVersion, latestVersion) {
-    return ('There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
-        "\n" +
-        "**Tested up to:** " +
-        testedVersion +
-        "\n" +
-        "**Latest version:** " +
-        latestVersion +
-        "\n" +
-        "\n" +
-        "This issue will be closed automatically when the versions match.");
+    return `There is a new WordPress version that the plugin hasn't been tested with. Please test it and then change the "Tested up to" field in the plugin readme.
+
+**Tested up to:** ${testedVersion}
+**Latest version:** ${latestVersion}
+
+This issue will be closed automatically when the versions match.`;
 }
 function outdatedStable(config, testedVersion, stableVersion) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -30022,8 +30000,7 @@ function readme(config) {
                     return null;
                 }
                 else {
-                    throw new InvalidReadmeError_1.InvalidReadmeError("No readme file was found in repo and all usual locations were exhausted. Error message: " +
-                        String(e));
+                    throw new InvalidReadmeError_1.InvalidReadmeError(`No readme file was found in repo and all usual locations were exhausted. Error message: ${String(e)}`);
                 }
             });
             if (result === null) {
@@ -30142,9 +30119,7 @@ function httpsRequest(options) {
                         resolve(data);
                     }
                     else {
-                        reject(new Error("A request returned error " +
-                            ((_a = response.statusCode) !== null && _a !== void 0 ? _a : 0).toString() +
-                            "."));
+                        reject(new Error(`A request returned error ${((_a = response.statusCode) !== null && _a !== void 0 ? _a : 0).toString()}.`));
                     }
                 });
             })

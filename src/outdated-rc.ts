@@ -2,18 +2,12 @@ import type { Config } from "./interfaces/Config";
 import { createIssue, getIssue, updateIssue } from "./issue-management";
 
 function issueBody(testedVersion: string, latestVersion: string): string {
-  return (
-    'There is an upcoming WordPress version in the **release candidate** stage that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
-    "\n" +
-    "**Tested up to:** " +
-    testedVersion +
-    "\n" +
-    "**Upcoming version:** " +
-    latestVersion +
-    "\n" +
-    "\n" +
-    "This issue will be closed automatically when the versions match."
-  );
+  return `There is an upcoming WordPress version in the **release candidate** stage that the plugin hasn't been tested with. Please test it and then change the "Tested up to" field in the plugin readme.
+
+**Tested up to:** ${testedVersion}
+**Upcoming version:** ${latestVersion}
+
+This issue will be closed automatically when the versions match.`;
 }
 
 export async function outdatedRC(

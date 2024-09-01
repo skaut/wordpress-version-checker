@@ -19,9 +19,7 @@ async function httpsRequest(options: https.RequestOptions): Promise<string> {
           } else {
             reject(
               new Error(
-                "A request returned error " +
-                  (response.statusCode ?? 0).toString() +
-                  ".",
+                `A request returned error ${(response.statusCode ?? 0).toString()}.`,
               ),
             );
           }
