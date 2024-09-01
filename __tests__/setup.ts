@@ -8,7 +8,7 @@ import nodeFetch from "node-fetch";
 
 nock.disableNetConnect();
 
-type GitHub = Api & Octokit & { paginate: PaginateInterface };
+type GitHub = { paginate: PaginateInterface } & Api & Octokit;
 
 jest.mock("../src/octokit", () => ({
   octokit: (): GitHub =>
