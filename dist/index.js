@@ -29999,9 +29999,7 @@ function readme(config) {
                 if ((0, has_status_1.hasStatus)(e) && e.status === 404) {
                     return null;
                 }
-                else {
-                    throw new InvalidReadmeError_1.InvalidReadmeError(`No readme file was found in repo and all usual locations were exhausted. Error message: ${String(e)}`);
-                }
+                throw new InvalidReadmeError_1.InvalidReadmeError(`No readme file was found in repo and all usual locations were exhausted. Error message: ${String(e)}`);
             });
             if (result === null) {
                 continue;
@@ -30251,9 +30249,7 @@ function getWPVCConfig() {
             if ((0, has_status_1.hasStatus)(e) && e.status === 404) {
                 return null;
             }
-            else {
-                throw new ConfigError_1.ConfigError(String(e));
-            }
+            throw new ConfigError_1.ConfigError(String(e));
         });
         if (file === null) {
             return normalizeConfig({});

@@ -11,11 +11,10 @@ async function readme(config: Config): Promise<string> {
       .catch((e: unknown): never | null => {
         if (hasStatus(e) && e.status === 404) {
           return null;
-        } else {
-          throw new InvalidReadmeError(
-            `No readme file was found in repo and all usual locations were exhausted. Error message: ${String(e)}`,
-          );
         }
+        throw new InvalidReadmeError(
+          `No readme file was found in repo and all usual locations were exhausted. Error message: ${String(e)}`,
+        );
       });
     if (result === null) {
       continue;
