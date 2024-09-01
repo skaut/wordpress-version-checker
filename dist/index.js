@@ -30041,9 +30041,9 @@ function readme(config) {
 function testedVersion(config) {
     return __awaiter(this, void 0, void 0, function* () {
         const readmeContents = yield readme(config);
-        for (const line of readmeContents.split(/\r?\n/)) {
+        for (const line of readmeContents.split(/\r?\n/u)) {
             const matches = [
-                ...line.matchAll(/^[\s]*Tested up to:[\s]*([.\d]+)[\s]*$/g),
+                ...line.matchAll(/^[\s]*Tested up to:[\s]*([.\d]+)[\s]*$/gu),
             ];
             if (matches.length !== 1) {
                 continue;

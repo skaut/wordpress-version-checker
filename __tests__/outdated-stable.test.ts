@@ -33,10 +33,10 @@ describe("Succesful runs", () => {
       "The plugin hasn't been tested with the latest version of WordPress",
     );
     expect(mocked(createIssue).mock.calls[0][1]).toMatch(
-      /\*\*Tested up to:\*\* 0\.41/g,
+      /\*\*Tested up to:\*\* 0\.41/gu,
     );
     expect(mocked(createIssue).mock.calls[0][1]).toMatch(
-      /\*\*Latest version:\*\* 0\.42/g,
+      /\*\*Latest version:\*\* 0\.42/gu,
     );
     expect(mocked(createIssue).mock.calls[0][2]).toStrictEqual([]);
     expect(mocked(updateIssue).mock.calls).toHaveLength(0);
@@ -66,10 +66,10 @@ describe("Succesful runs", () => {
       "The plugin hasn't been tested with the latest version of WordPress",
     );
     expect(mocked(updateIssue).mock.calls[0][2]).toMatch(
-      /\*\*Tested up to:\*\* 0\.41/g,
+      /\*\*Tested up to:\*\* 0\.41/gu,
     );
     expect(mocked(updateIssue).mock.calls[0][2]).toMatch(
-      /\*\*Latest version:\*\* 0\.42/g,
+      /\*\*Latest version:\*\* 0\.42/gu,
     );
   });
 });
