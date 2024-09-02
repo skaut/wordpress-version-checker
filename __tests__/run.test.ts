@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import { mocked } from "jest-mock";
 
 import type { Config } from "../src/interfaces/Config";
+
 import { outdatedBeta } from "../src/outdated-beta";
 import { outdatedRC } from "../src/outdated-rc";
 import { outdatedStable } from "../src/outdated-stable";
@@ -30,10 +31,11 @@ describe("runs succesfully", () => {
 
   test("works with stable channel and up-to-date version", async () => {
     expect.assertions(4);
+
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.42", rc: "0.42", stable: "0.42" };
@@ -52,10 +54,11 @@ describe("runs succesfully", () => {
 
   test("works with stable channel and newer beta version", async () => {
     expect.assertions(4);
+
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.42", stable: "0.42" };
@@ -74,10 +77,11 @@ describe("runs succesfully", () => {
 
   test("works with stable channel and newer RC version", async () => {
     expect.assertions(4);
+
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.42" };
@@ -96,10 +100,11 @@ describe("runs succesfully", () => {
 
   test("works with stable channel and newer stable version", async () => {
     expect.assertions(7);
+
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.43" };
@@ -123,10 +128,11 @@ describe("runs succesfully", () => {
 
   test("works with RC channel and up-to-date version", async () => {
     expect.assertions(4);
+
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "rc",
       assignees: [],
+      channel: "rc",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.42", rc: "0.42", stable: "0.42" };
@@ -145,10 +151,11 @@ describe("runs succesfully", () => {
 
   test("works with RC channel and newer beta version", async () => {
     expect.assertions(4);
+
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "rc",
       assignees: [],
+      channel: "rc",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.42", stable: "0.42" };
@@ -167,10 +174,11 @@ describe("runs succesfully", () => {
 
   test("works with RC channel and newer RC version", async () => {
     expect.assertions(4);
+
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "rc",
       assignees: [],
+      channel: "rc",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.42" };
@@ -189,10 +197,11 @@ describe("runs succesfully", () => {
 
   test("works with RC channel and newer stable version", async () => {
     expect.assertions(7);
+
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "rc",
       assignees: [],
+      channel: "rc",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.43" };
@@ -216,10 +225,11 @@ describe("runs succesfully", () => {
 
   test("works with beta channel and up-to-date version", async () => {
     expect.assertions(4);
+
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "beta",
       assignees: [],
+      channel: "beta",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.42", rc: "0.42", stable: "0.42" };
@@ -238,10 +248,11 @@ describe("runs succesfully", () => {
 
   test("works with beta channel and newer beta version", async () => {
     expect.assertions(4);
+
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "beta",
       assignees: [],
+      channel: "beta",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.42", stable: "0.42" };
@@ -260,10 +271,11 @@ describe("runs succesfully", () => {
 
   test("works with beta channel and newer RC version", async () => {
     expect.assertions(4);
+
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "beta",
       assignees: [],
+      channel: "beta",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.42" };
@@ -282,10 +294,11 @@ describe("runs succesfully", () => {
 
   test("works with beta channel and newer stable version", async () => {
     expect.assertions(7);
+
     const config: Config = {
-      readme: ["readme.txt"],
-      channel: "beta",
       assignees: [],
+      channel: "beta",
+      readme: ["readme.txt"],
     };
     const testedVersionValue = "0.42";
     const wordpressVersionsValue = { beta: "0.43", rc: "0.43", stable: "0.43" };
@@ -310,6 +323,7 @@ describe("runs succesfully", () => {
 
 test("run fails gracefully on error", async () => {
   expect.assertions(1);
+
   mocked(getWPVCConfig).mockImplementationOnce(() => {
     throw new Error();
   });

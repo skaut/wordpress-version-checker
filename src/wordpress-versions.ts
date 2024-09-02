@@ -1,8 +1,9 @@
 import * as https from "https";
 
-import { LatestVersionError } from "./exceptions/LatestVersionError";
 import type { VersionCheckResponse } from "./interfaces/VersionCheckResponse";
 import type { WordpressVersions } from "./interfaces/WordpressVersions";
+
+import { LatestVersionError } from "./exceptions/LatestVersionError";
 
 async function httpsRequest(options: https.RequestOptions): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -19,9 +20,7 @@ async function httpsRequest(options: https.RequestOptions): Promise<string> {
           } else {
             reject(
               new Error(
-                "A request returned error " +
-                  (response.statusCode ?? 0).toString() +
-                  ".",
+                `A request returned error ${(response.statusCode ?? 0).toString()}.`,
               ),
             );
           }

@@ -1,6 +1,7 @@
+import type { Config } from "./interfaces/Config";
+
 import { ConfigError } from "./exceptions/ConfigError";
 import { hasStatus } from "./has-status";
-import type { Config } from "./interfaces/Config";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
@@ -69,9 +70,8 @@ export async function getWPVCConfig(): Promise<Config> {
     .catch((e: unknown): never | null => {
       if (hasStatus(e) && e.status === 404) {
         return null;
-      } else {
-        throw new ConfigError(String(e));
       }
+      throw new ConfigError(String(e));
     });
   if (file === null) {
     return normalizeConfig({});

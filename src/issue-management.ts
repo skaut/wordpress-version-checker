@@ -26,8 +26,8 @@ export async function commentOnIssue(
   await octokit()
     .rest.issues.createComment({
       ...repo(),
-      issue_number: issue,
       body: comment,
+      issue_number: issue,
     })
     .catch((e: unknown): never => {
       throw new IssueCommentError(issue, String(e));
@@ -54,10 +54,10 @@ export async function createIssue(
   await octokit()
     .rest.issues.create({
       ...repo(),
-      title,
+      assignees,
       body,
       labels: ["wpvc"],
-      assignees,
+      title,
     })
     .catch((e: unknown): never => {
       throw new IssueCreationError(String(e));
@@ -80,9 +80,9 @@ export async function updateIssue(
   await octokit()
     .rest.issues.update({
       ...repo(),
+      body,
       issue_number: issueNumber,
       title,
-      body,
     })
     .catch((e: unknown): never => {
       throw new IssueUpdateError(issueNumber, String(e));

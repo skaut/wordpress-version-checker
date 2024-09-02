@@ -1889,7 +1889,7 @@ class HttpClient {
         }
         const usingSsl = parsedUrl.protocol === 'https:';
         proxyAgent = new undici_1.ProxyAgent(Object.assign({ uri: proxyUrl.href, pipelining: !this._keepAlive ? 0 : 1 }, ((proxyUrl.username || proxyUrl.password) && {
-            token: `${proxyUrl.username}:${proxyUrl.password}`
+            token: `Basic ${Buffer.from(`${proxyUrl.username}:${proxyUrl.password}`).toString('base64')}`
         })));
         this._proxyAgentDispatcher = proxyAgent;
         if (usingSsl && this._ignoreSslError) {
@@ -2002,11 +2002,11 @@ function getProxyUrl(reqUrl) {
     })();
     if (proxyVar) {
         try {
-            return new URL(proxyVar);
+            return new DecodedURL(proxyVar);
         }
         catch (_a) {
             if (!proxyVar.startsWith('http://') && !proxyVar.startsWith('https://'))
-                return new URL(`http://${proxyVar}`);
+                return new DecodedURL(`http://${proxyVar}`);
         }
     }
     else {
@@ -2064,6 +2064,19 @@ function isLoopbackAddress(host) {
         hostLower.startsWith('127.') ||
         hostLower.startsWith('[::1]') ||
         hostLower.startsWith('[0:0:0:0:0:0:0:1]'));
+}
+class DecodedURL extends URL {
+    constructor(url, base) {
+        super(url, base);
+        this._decodedUsername = decodeURIComponent(super.username);
+        this._decodedPassword = decodeURIComponent(super.password);
+    }
+    get username() {
+        return this._decodedUsername;
+    }
+    get password() {
+        return this._decodedPassword;
+    }
 }
 //# sourceMappingURL=proxy.js.map
 
@@ -29424,8 +29437,7 @@ exports.ConfigError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class ConfigError extends WPVCError_1.WPVCError {
     constructor(e) {
-        super("Couldn't get the wordpress-version-checker config file. Error message: " +
-            e);
+        super(`Couldn't get the wordpress-version-checker config file. Error message: ${e}`);
     }
 }
 exports.ConfigError = ConfigError;
@@ -29442,10 +29454,7 @@ exports.GetIssueError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class GetIssueError extends WPVCError_1.WPVCError {
     constructor(issueNumber, e) {
-        super("Couldn't get the already existing issue #" +
-            String(issueNumber) +
-            ". Error message: " +
-            e);
+        super(`Couldn't get the already existing issue #${String(issueNumber)}. Error message: ${e}`);
     }
 }
 exports.GetIssueError = GetIssueError;
@@ -29462,7 +29471,7 @@ exports.InvalidReadmeError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class InvalidReadmeError extends WPVCError_1.WPVCError {
     constructor(e) {
-        super("Couldn't get the repository readme. Error message: " + e);
+        super(`Couldn't get the repository readme. Error message: ${e}`);
     }
 }
 exports.InvalidReadmeError = InvalidReadmeError;
@@ -29479,10 +29488,7 @@ exports.IssueCommentError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class IssueCommentError extends WPVCError_1.WPVCError {
     constructor(issueNumber, e) {
-        super("Couldn't add a comment to issue #" +
-            String(issueNumber) +
-            ". Error message: " +
-            e);
+        super(`Couldn't add a comment to issue #${String(issueNumber)}. Error message: ${e}`);
     }
 }
 exports.IssueCommentError = IssueCommentError;
@@ -29499,7 +29505,7 @@ exports.IssueCreationError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class IssueCreationError extends WPVCError_1.WPVCError {
     constructor(e) {
-        super("Couldn't create an issue. Error message: " + e);
+        super(`Couldn't create an issue. Error message: ${e}`);
     }
 }
 exports.IssueCreationError = IssueCreationError;
@@ -29516,7 +29522,7 @@ exports.IssueListError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class IssueListError extends WPVCError_1.WPVCError {
     constructor(e) {
-        super("Couldn't list issues. Error message: " + e);
+        super(`Couldn't list issues. Error message: ${e}`);
     }
 }
 exports.IssueListError = IssueListError;
@@ -29533,10 +29539,7 @@ exports.IssueUpdateError = void 0;
 const WPVCError_1 = __nccwpck_require__(2805);
 class IssueUpdateError extends WPVCError_1.WPVCError {
     constructor(issueNumber, e) {
-        super("Couldn't update the existing issue #" +
-            String(issueNumber) +
-            ". Error message: " +
-            e);
+        super(`Couldn't update the existing issue #${String(issueNumber)}. Error message: ${e}`);
     }
 }
 exports.IssueUpdateError = IssueUpdateError;
@@ -29557,7 +29560,7 @@ class LatestVersionError extends WPVCError_1.WPVCError {
             super("Failed to fetch the latest WordPress version.");
         }
         else {
-            super("Failed to fetch the latest WordPress version. Error message: " + e);
+            super(`Failed to fetch the latest WordPress version. Error message: ${e}`);
         }
     }
 }
@@ -29635,7 +29638,7 @@ function getIssue() {
 function commentOnIssue(issue, comment) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
-            .rest.issues.createComment(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issue, body: comment }))
+            .rest.issues.createComment(Object.assign(Object.assign({}, (0, repo_1.repo)()), { body: comment, issue_number: issue }))
             .catch((e) => {
             throw new IssueCommentError_1.IssueCommentError(issue, String(e));
         });
@@ -29653,8 +29656,8 @@ function closeIssue(issue) {
 function createIssue(title, body, assignees) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
-            .rest.issues.create(Object.assign(Object.assign({}, (0, repo_1.repo)()), { title,
-            body, labels: ["wpvc"], assignees }))
+            .rest.issues.create(Object.assign(Object.assign({}, (0, repo_1.repo)()), { assignees,
+            body, labels: ["wpvc"], title }))
             .catch((e) => {
             throw new IssueCreationError_1.IssueCreationError(String(e));
         });
@@ -29671,8 +29674,7 @@ function updateIssue(issueNumber, title, body) {
             return;
         }
         yield (0, octokit_1.octokit)()
-            .rest.issues.update(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issueNumber, title,
-            body }))
+            .rest.issues.update(Object.assign(Object.assign({}, (0, repo_1.repo)()), { body, issue_number: issueNumber, title }))
             .catch((e) => {
             throw new IssueUpdateError_1.IssueUpdateError(issueNumber, String(e));
         });
@@ -29741,16 +29743,12 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedBeta = outdatedBeta;
 const issue_management_1 = __nccwpck_require__(3813);
 function issueBody(testedVersion, latestVersion) {
-    return ("There is an upcoming WordPress version in the **beta** stage that the plugin hasn't been tested with.\n" +
-        "\n" +
-        "**Tested up to:** " +
-        testedVersion +
-        "\n" +
-        "**Beta version:** " +
-        latestVersion +
-        "\n" +
-        "\n" +
-        "This issue will be closed automatically when the versions match.");
+    return `There is an upcoming WordPress version in the **beta** stage that the plugin hasn't been tested with.
+
+**Tested up to:** ${testedVersion}
+**Beta version:** ${latestVersion}
+
+This issue will be closed automatically when the versions match.`;
 }
 function outdatedBeta(config, testedVersion, betaVersion) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -29786,16 +29784,12 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedRC = outdatedRC;
 const issue_management_1 = __nccwpck_require__(3813);
 function issueBody(testedVersion, latestVersion) {
-    return ('There is an upcoming WordPress version in the **release candidate** stage that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
-        "\n" +
-        "**Tested up to:** " +
-        testedVersion +
-        "\n" +
-        "**Upcoming version:** " +
-        latestVersion +
-        "\n" +
-        "\n" +
-        "This issue will be closed automatically when the versions match.");
+    return `There is an upcoming WordPress version in the **release candidate** stage that the plugin hasn't been tested with. Please test it and then change the "Tested up to" field in the plugin readme.
+
+**Tested up to:** ${testedVersion}
+**Upcoming version:** ${latestVersion}
+
+This issue will be closed automatically when the versions match.`;
 }
 function outdatedRC(config, testedVersion, rcVersion) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -29831,16 +29825,12 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedStable = outdatedStable;
 const issue_management_1 = __nccwpck_require__(3813);
 function issueBody(testedVersion, latestVersion) {
-    return ('There is a new WordPress version that the plugin hasn\'t been tested with. Please test it and then change the "Tested up to" field in the plugin readme.\n' +
-        "\n" +
-        "**Tested up to:** " +
-        testedVersion +
-        "\n" +
-        "**Latest version:** " +
-        latestVersion +
-        "\n" +
-        "\n" +
-        "This issue will be closed automatically when the versions match.");
+    return `There is a new WordPress version that the plugin hasn't been tested with. Please test it and then change the "Tested up to" field in the plugin readme.
+
+**Tested up to:** ${testedVersion}
+**Latest version:** ${latestVersion}
+
+This issue will be closed automatically when the versions match.`;
 }
 function outdatedStable(config, testedVersion, stableVersion) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -30002,16 +29992,14 @@ const repo_1 = __nccwpck_require__(1413);
 function readme(config) {
     return __awaiter(this, void 0, void 0, function* () {
         for (const readmeLocation of config.readme) {
+            // eslint-disable-next-line no-await-in-loop -- Intended sequential loading, see #1270
             const result = yield (0, octokit_1.octokit)()
                 .rest.repos.getContent(Object.assign(Object.assign({}, (0, repo_1.repo)()), { path: readmeLocation }))
                 .catch((e) => {
                 if ((0, has_status_1.hasStatus)(e) && e.status === 404) {
                     return null;
                 }
-                else {
-                    throw new InvalidReadmeError_1.InvalidReadmeError("No readme file was found in repo and all usual locations were exhausted. Error message: " +
-                        String(e));
-                }
+                throw new InvalidReadmeError_1.InvalidReadmeError(`No readme file was found in repo and all usual locations were exhausted. Error message: ${String(e)}`);
             });
             if (result === null) {
                 continue;
@@ -30028,9 +30016,9 @@ function readme(config) {
 function testedVersion(config) {
     return __awaiter(this, void 0, void 0, function* () {
         const readmeContents = yield readme(config);
-        for (const line of readmeContents.split(/\r?\n/)) {
+        for (const line of readmeContents.split(/\r?\n/u)) {
             const matches = [
-                ...line.matchAll(/^[\s]*Tested up to:[\s]*([.\d]+)[\s]*$/g),
+                ...line.matchAll(/^[\s]*Tested up to:[\s]*([.\d]+)[\s]*$/gu),
             ];
             if (matches.length !== 1) {
                 continue;
@@ -30129,9 +30117,7 @@ function httpsRequest(options) {
                         resolve(data);
                     }
                     else {
-                        reject(new Error("A request returned error " +
-                            ((_a = response.statusCode) !== null && _a !== void 0 ? _a : 0).toString() +
-                            "."));
+                        reject(new Error(`A request returned error ${((_a = response.statusCode) !== null && _a !== void 0 ? _a : 0).toString()}.`));
                     }
                 });
             })
@@ -30263,9 +30249,7 @@ function getWPVCConfig() {
             if ((0, has_status_1.hasStatus)(e) && e.status === 404) {
                 return null;
             }
-            else {
-                throw new ConfigError_1.ConfigError(String(e));
-            }
+            throw new ConfigError_1.ConfigError(String(e));
         });
         if (file === null) {
             return normalizeConfig({});

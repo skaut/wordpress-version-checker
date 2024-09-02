@@ -1,22 +1,22 @@
+import type { Config } from "./interfaces/Config";
+
 import { InvalidReadmeError } from "./exceptions/InvalidReadmeError";
 import { hasStatus } from "./has-status";
-import type { Config } from "./interfaces/Config";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
 async function readme(config: Config): Promise<string> {
   for (const readmeLocation of config.readme) {
+    // eslint-disable-next-line no-await-in-loop -- Intended sequential loading, see #1270
     const result = await octokit()
       .rest.repos.getContent({ ...repo(), path: readmeLocation })
       .catch((e: unknown): never | null => {
         if (hasStatus(e) && e.status === 404) {
           return null;
-        } else {
-          throw new InvalidReadmeError(
-            "No readme file was found in repo and all usual locations were exhausted. Error message: " +
-              String(e),
-          );
         }
+        throw new InvalidReadmeError(
+          `No readme file was found in repo and all usual locations were exhausted. Error message: ${String(e)}`,
+        );
       });
     if (result === null) {
       continue;
@@ -36,9 +36,9 @@ async function readme(config: Config): Promise<string> {
 
 export async function testedVersion(config: Config): Promise<string> {
   const readmeContents = await readme(config);
-  for (const line of readmeContents.split(/\r?\n/)) {
+  for (const line of readmeContents.split(/\r?\n/u)) {
     const matches = [
-      ...line.matchAll(/^[\s]*Tested up to:[\s]*([.\d]+)[\s]*$/g),
+      ...line.matchAll(/^[\s]*Tested up to:[\s]*([.\d]+)[\s]*$/gu),
     ];
     if (matches.length !== 1) {
       continue;

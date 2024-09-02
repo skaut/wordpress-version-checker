@@ -1,8 +1,9 @@
 import mockedEnv from "mocked-env";
 import nock from "nock";
 
-import { InvalidReadmeError } from "../src/exceptions/InvalidReadmeError";
 import type { Config } from "../src/interfaces/Config";
+
+import { InvalidReadmeError } from "../src/exceptions/InvalidReadmeError";
 import { testedVersion } from "../src/tested-version";
 
 jest.mock("@actions/core");
@@ -14,6 +15,7 @@ describe("[env variable mock]", () => {
   beforeEach(() => {
     restore = mockedEnv({ GITHUB_REPOSITORY: "OWNER/REPO" });
   });
+
   afterEach(() => {
     restore();
   });
@@ -34,15 +36,16 @@ describe("[env variable mock]", () => {
     "Tested up to: 0.42\t",
   ])("testedVersion works correctly", async (readme) => {
     expect.assertions(1);
+
     const readmePath = "path/to/readme.txt";
     const config: Config = {
-      readme: [readmePath],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: [readmePath],
     };
 
     nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/" + encodeURIComponent(readmePath))
+      .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath)}`)
       .reply(200, {
         content: Buffer.from(readme).toString("base64"),
       });
@@ -52,10 +55,11 @@ describe("[env variable mock]", () => {
 
   test("testedVersion fails gracefully on connection issues", async () => {
     expect.assertions(1);
+
     const config: Config = {
-      readme: ["path/to/readme.txt"],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: ["path/to/readme.txt"],
     };
 
     await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
@@ -63,15 +67,16 @@ describe("[env variable mock]", () => {
 
   test("testedVersion fails gracefully on no readme", async () => {
     expect.assertions(1);
+
     const readmePath = "path/to/readme.txt";
     const config: Config = {
-      readme: [readmePath],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: [readmePath],
     };
 
     nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/" + encodeURIComponent(readmePath))
+      .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath)}`)
       .reply(404);
 
     await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
@@ -79,15 +84,16 @@ describe("[env variable mock]", () => {
 
   test("testedVersion fails gracefully on invalid response", async () => {
     expect.assertions(1);
+
     const readmePath = "path/to/readme.txt";
     const config: Config = {
-      readme: [readmePath],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: [readmePath],
     };
 
     nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/" + encodeURIComponent(readmePath))
+      .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath)}`)
       .reply(200);
 
     await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
@@ -95,15 +101,16 @@ describe("[env variable mock]", () => {
 
   test("testedVersion fails gracefully on invalid response 2", async () => {
     expect.assertions(1);
+
     const readmePath = "path/to/readme.txt";
     const config: Config = {
-      readme: [readmePath],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: [readmePath],
     };
 
     nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/" + encodeURIComponent(readmePath))
+      .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath)}`)
       .reply(200, {
         content: "OOPS",
       });
@@ -120,15 +127,16 @@ describe("[env variable mock]", () => {
     "Tested up to: 0.41: 0.42",
   ])("testedVersion fails gracefully on invalid readme", async (readme) => {
     expect.assertions(1);
+
     const readmePath = "path/to/readme.txt";
     const config: Config = {
-      readme: [readmePath],
-      channel: "stable",
       assignees: [],
+      channel: "stable",
+      readme: [readmePath],
     };
 
     nock("https://api.github.com")
-      .get("/repos/OWNER/REPO/contents/" + encodeURIComponent(readmePath))
+      .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath)}`)
       .reply(200, {
         content: Buffer.from(readme).toString("base64"),
       });

@@ -22,6 +22,7 @@ describe("Succesful runs", () => {
 
   test("run works correctly with up-to-date version and an existing issue", async () => {
     expect.assertions(2);
+
     const existingIssue = 123;
 
     mocked(getIssue).mockResolvedValue(existingIssue);
