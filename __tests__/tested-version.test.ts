@@ -143,4 +143,26 @@ describe("[env variable mock]", () => {
 
     await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
   });
+
+  test("testedVersion works correctly with one invalid and one valid readme", async () => {
+    expect.assertions(1);
+
+    const readmePath1 = "path/to/readme1.txt";
+    const readmePath2 = "path/to/readme2.txt";
+    const config: Config = {
+      assignees: [],
+      channel: "stable",
+      readme: [readmePath1, readmePath2],
+    };
+
+    nock("https://api.github.com")
+      .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath1)}`)
+      .reply(404)
+      .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath2)}`)
+      .reply(200, {
+        content: Buffer.from("Tested up to: 0.42").toString("base64"),
+      });
+
+    await expect(testedVersion(config)).resolves.toBe("0.42");
+  });
 });
