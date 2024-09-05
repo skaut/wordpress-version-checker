@@ -1,9 +1,12 @@
 import type { Config } from "./interfaces/Config";
 
 import { ConfigError } from "./exceptions/ConfigError";
-import { hasStatus } from "./has-status";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
+
+function hasStatus(obj: unknown): obj is Record<"status", unknown> {
+  return Object.prototype.hasOwnProperty.call(obj, "status");
+}
 
 function normalizeConfig(rawConfig: unknown): Config {
   if (typeof rawConfig !== "object" || rawConfig === null) {

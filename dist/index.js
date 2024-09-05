@@ -29586,19 +29586,6 @@ exports.WPVCError = WPVCError;
 
 /***/ }),
 
-/***/ 9272:
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.hasStatus = hasStatus;
-function hasStatus(obj) {
-    return Object.prototype.hasOwnProperty.call(obj, "status");
-}
-
-
-/***/ }),
-
 /***/ 3813:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -30189,9 +30176,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getWPVCConfig = getWPVCConfig;
 const ConfigError_1 = __nccwpck_require__(6038);
-const has_status_1 = __nccwpck_require__(9272);
 const octokit_1 = __nccwpck_require__(6161);
 const repo_1 = __nccwpck_require__(1413);
+function hasStatus(obj) {
+    return Object.prototype.hasOwnProperty.call(obj, "status");
+}
 function normalizeConfig(rawConfig) {
     if (typeof rawConfig !== "object" || rawConfig === null) {
         throw new ConfigError_1.ConfigError("Invalid config file.");
@@ -30242,7 +30231,7 @@ function getWPVCConfig() {
         const file = yield (0, octokit_1.octokit)()
             .rest.repos.getContent(Object.assign(Object.assign({}, (0, repo_1.repo)()), { path: ".wordpress-version-checker.json" }))
             .catch((e) => {
-            if ((0, has_status_1.hasStatus)(e) && e.status === 404) {
+            if (hasStatus(e) && e.status === 404) {
                 return null;
             }
             throw new ConfigError_1.ConfigError(String(e));
