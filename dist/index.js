@@ -29986,29 +29986,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.testedVersion = testedVersion;
 const InvalidReadmeError_1 = __nccwpck_require__(8040);
-const has_status_1 = __nccwpck_require__(9272);
 const octokit_1 = __nccwpck_require__(6161);
 const repo_1 = __nccwpck_require__(1413);
 function readme(config) {
     return __awaiter(this, void 0, void 0, function* () {
-        for (const readmeLocation of config.readme) {
-            // eslint-disable-next-line no-await-in-loop -- Intended sequential loading, see #1270
-            const result = yield (0, octokit_1.octokit)()
+        const readmePromises = config.readme.map((readmeLocation) => __awaiter(this, void 0, void 0, function* () {
+            return (0, octokit_1.octokit)()
                 .rest.repos.getContent(Object.assign(Object.assign({}, (0, repo_1.repo)()), { path: readmeLocation }))
-                .catch((e) => {
-                if ((0, has_status_1.hasStatus)(e) && e.status === 404) {
-                    return null;
+                .then((result) => {
+                const encodedContent = result.data.content;
+                if (encodedContent === undefined) {
+                    throw new Error();
                 }
-                throw new InvalidReadmeError_1.InvalidReadmeError(`No readme file was found in repo and all usual locations were exhausted. Error message: ${String(e)}`);
+                return Buffer.from(encodedContent, "base64").toString();
             });
-            if (result === null) {
-                continue;
+        }));
+        for (const promiseResult of yield Promise.allSettled(readmePromises)) {
+            if (promiseResult.status === "fulfilled") {
+                return promiseResult.value;
             }
-            const encodedContent = result.data.content;
-            if (encodedContent === undefined) {
-                throw new InvalidReadmeError_1.InvalidReadmeError("No readme file was found in repo and all usual locations were exhausted.");
-            }
-            return Buffer.from(encodedContent, "base64").toString();
         }
         throw new InvalidReadmeError_1.InvalidReadmeError("No readme file was found in repo and all usual locations were exhausted.");
     });
