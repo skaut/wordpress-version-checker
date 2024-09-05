@@ -1,33 +1,25 @@
 import type { Config } from "./interfaces/Config";
 
 import { InvalidReadmeError } from "./exceptions/InvalidReadmeError";
-import { hasStatus } from "./has-status";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
 async function readme(config: Config): Promise<string> {
-  for (const readmeLocation of config.readme) {
-    // eslint-disable-next-line no-await-in-loop -- Intended sequential loading, see #1270
-    const result = await octokit()
+  const readmePromises = config.readme.map(async (readmeLocation) =>
+    octokit()
       .rest.repos.getContent({ ...repo(), path: readmeLocation })
-      .catch((e: unknown): never | null => {
-        if (hasStatus(e) && e.status === 404) {
-          return null;
+      .then((result) => {
+        const encodedContent = (result.data as { content?: string }).content;
+        if (encodedContent === undefined) {
+          throw new Error();
         }
-        throw new InvalidReadmeError(
-          `No readme file was found in repo and all usual locations were exhausted. Error message: ${String(e)}`,
-        );
-      });
-    if (result === null) {
-      continue;
+        return Buffer.from(encodedContent, "base64").toString();
+      }),
+  );
+  for (const promiseResult of await Promise.allSettled(readmePromises)) {
+    if (promiseResult.status === "fulfilled") {
+      return promiseResult.value;
     }
-    const encodedContent = (result.data as { content?: string }).content;
-    if (encodedContent === undefined) {
-      throw new InvalidReadmeError(
-        "No readme file was found in repo and all usual locations were exhausted.",
-      );
-    }
-    return Buffer.from(encodedContent, "base64").toString();
   }
   throw new InvalidReadmeError(
     "No readme file was found in repo and all usual locations were exhausted.",
