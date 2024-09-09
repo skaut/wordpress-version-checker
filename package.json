@@ -32,7 +32,7 @@
     "@types/jest": "^29.5.12",
     "@types/node": "^22.5.4",
     "@vercel/ncc": "^0.38.1",
-    "eslint": "^9.9.0",
+    "eslint": "^9.10.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jest": "^28.8.3",
     "eslint-plugin-perfectionist": "^3.3.0",
