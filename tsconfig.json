@@ -5,7 +5,6 @@
     "module": "commonjs",
     "outDir": "lib",
     "resolveJsonModule": true,
-    "skipLibCheck": true,
     "target": "es6",
 
     "allowUnreachableCode": false,
