@@ -1,16 +1,21 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "outDir": "lib",
     "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "outDir": "lib",
+    "resolveJsonModule": true,
+    "target": "es6",
+
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "exactOptionalPropertyTypes": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
     "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "resolveJsonModule": true,
     "strict": true
   }
 }
