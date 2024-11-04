@@ -169,9 +169,12 @@ export default tseslint.config(
     },
   },
   {
-    extends: [jest.recommended, jest.style],
+    ...jest.configs["flat/recommended"],
+    ...jest.configs["flat/style"],
     files: ["__tests__/**/*.test.ts", "__tests__/**/*.json"],
     rules: {
+      ...jest.configs["flat/recommended"].rules,
+      ...jest.configs["flat/style"].rules,
       "jest/consistent-test-it": ["error", { withinDescribe: "test" }],
       "jest/no-conditional-in-test": "error",
       "jest/no-confusing-set-timeout": "error",
@@ -208,6 +211,7 @@ export default tseslint.config(
     rules: {
       "@typescript-eslint/no-unsafe-argument": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
     },
   },
 );
