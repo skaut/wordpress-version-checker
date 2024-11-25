@@ -5,7 +5,7 @@ import type { Api } from "@octokit/plugin-rest-endpoint-methods/dist-types/types
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 
-type GitHub = { paginate: PaginateInterface } & Api & Octokit;
+type GitHub = Api & Octokit & { paginate: PaginateInterface };
 let octokitInstance: GitHub | undefined = undefined;
 
 export function octokit(): GitHub {

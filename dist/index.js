@@ -30316,10 +30316,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getIssue = getIssue;
-exports.commentOnIssue = commentOnIssue;
 exports.closeIssue = closeIssue;
+exports.commentOnIssue = commentOnIssue;
 exports.createIssue = createIssue;
+exports.getIssue = getIssue;
 exports.updateIssue = updateIssue;
 const GetIssueError_1 = __nccwpck_require__(1377);
 const IssueCommentError_1 = __nccwpck_require__(744);
@@ -30328,14 +30328,13 @@ const IssueListError_1 = __nccwpck_require__(3687);
 const IssueUpdateError_1 = __nccwpck_require__(700);
 const octokit_1 = __nccwpck_require__(6590);
 const repo_1 = __nccwpck_require__(6783);
-function getIssue() {
+function closeIssue(issue) {
     return __awaiter(this, void 0, void 0, function* () {
-        const issues = yield (0, octokit_1.octokit)()
-            .rest.issues.listForRepo(Object.assign(Object.assign({}, (0, repo_1.repo)()), { creator: "github-actions[bot]", labels: "wpvc" }))
+        yield (0, octokit_1.octokit)()
+            .rest.issues.update(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issue, state: "closed" }))
             .catch((e) => {
-            throw new IssueListError_1.IssueListError(String(e));
+            throw new IssueUpdateError_1.IssueUpdateError(issue, String(e));
         });
-        return issues.data.length > 0 ? issues.data[0].number : null;
     });
 }
 function commentOnIssue(issue, comment) {
@@ -30347,15 +30346,6 @@ function commentOnIssue(issue, comment) {
         });
     });
 }
-function closeIssue(issue) {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield (0, octokit_1.octokit)()
-            .rest.issues.update(Object.assign(Object.assign({}, (0, repo_1.repo)()), { issue_number: issue, state: "closed" }))
-            .catch((e) => {
-            throw new IssueUpdateError_1.IssueUpdateError(issue, String(e));
-        });
-    });
-}
 function createIssue(title, body, assignees) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, octokit_1.octokit)()
@@ -30364,6 +30354,16 @@ function createIssue(title, body, assignees) {
             .catch((e) => {
             throw new IssueCreationError_1.IssueCreationError(String(e));
         });
+    });
+}
+function getIssue() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const issues = yield (0, octokit_1.octokit)()
+            .rest.issues.listForRepo(Object.assign(Object.assign({}, (0, repo_1.repo)()), { creator: "github-actions[bot]", labels: "wpvc" }))
+            .catch((e) => {
+            throw new IssueListError_1.IssueListError(String(e));
+        });
+        return issues.data.length > 0 ? issues.data[0].number : null;
     });
 }
 function updateIssue(issueNumber, title, body) {
@@ -30445,14 +30445,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedBeta = outdatedBeta;
 const issue_management_1 = __nccwpck_require__(5702);
-function issueBody(testedVersion, latestVersion) {
-    return `There is an upcoming WordPress version in the **beta** stage that the plugin hasn't been tested with.
-
-**Tested up to:** ${testedVersion}
-**Beta version:** ${latestVersion}
-
-This issue will be closed automatically when the versions match.`;
-}
 function outdatedBeta(config, testedVersion, betaVersion) {
     return __awaiter(this, void 0, void 0, function* () {
         const existingIssue = yield (0, issue_management_1.getIssue)();
@@ -30465,6 +30457,14 @@ function outdatedBeta(config, testedVersion, betaVersion) {
             yield (0, issue_management_1.createIssue)(title, body, config.assignees);
         }
     });
+}
+function issueBody(testedVersion, latestVersion) {
+    return `There is an upcoming WordPress version in the **beta** stage that the plugin hasn't been tested with.
+
+**Tested up to:** ${testedVersion}
+**Beta version:** ${latestVersion}
+
+This issue will be closed automatically when the versions match.`;
 }
 
 
@@ -30486,14 +30486,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedRC = outdatedRC;
 const issue_management_1 = __nccwpck_require__(5702);
-function issueBody(testedVersion, latestVersion) {
-    return `There is an upcoming WordPress version in the **release candidate** stage that the plugin hasn't been tested with. Please test it and then change the "Tested up to" field in the plugin readme.
-
-**Tested up to:** ${testedVersion}
-**Upcoming version:** ${latestVersion}
-
-This issue will be closed automatically when the versions match.`;
-}
 function outdatedRC(config, testedVersion, rcVersion) {
     return __awaiter(this, void 0, void 0, function* () {
         const existingIssue = yield (0, issue_management_1.getIssue)();
@@ -30506,6 +30498,14 @@ function outdatedRC(config, testedVersion, rcVersion) {
             yield (0, issue_management_1.createIssue)(title, body, config.assignees);
         }
     });
+}
+function issueBody(testedVersion, latestVersion) {
+    return `There is an upcoming WordPress version in the **release candidate** stage that the plugin hasn't been tested with. Please test it and then change the "Tested up to" field in the plugin readme.
+
+**Tested up to:** ${testedVersion}
+**Upcoming version:** ${latestVersion}
+
+This issue will be closed automatically when the versions match.`;
 }
 
 
@@ -30527,14 +30527,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.outdatedStable = outdatedStable;
 const issue_management_1 = __nccwpck_require__(5702);
-function issueBody(testedVersion, latestVersion) {
-    return `There is a new WordPress version that the plugin hasn't been tested with. Please test it and then change the "Tested up to" field in the plugin readme.
-
-**Tested up to:** ${testedVersion}
-**Latest version:** ${latestVersion}
-
-This issue will be closed automatically when the versions match.`;
-}
 function outdatedStable(config, testedVersion, stableVersion) {
     return __awaiter(this, void 0, void 0, function* () {
         const existingIssue = yield (0, issue_management_1.getIssue)();
@@ -30547,6 +30539,14 @@ function outdatedStable(config, testedVersion, stableVersion) {
             yield (0, issue_management_1.createIssue)(title, body, config.assignees);
         }
     });
+}
+function issueBody(testedVersion, latestVersion) {
+    return `There is a new WordPress version that the plugin hasn't been tested with. Please test it and then change the "Tested up to" field in the plugin readme.
+
+**Tested up to:** ${testedVersion}
+**Latest version:** ${latestVersion}
+
+This issue will be closed automatically when the versions match.`;
 }
 
 
@@ -30691,6 +30691,21 @@ exports.testedVersion = testedVersion;
 const InvalidReadmeError_1 = __nccwpck_require__(7629);
 const octokit_1 = __nccwpck_require__(6590);
 const repo_1 = __nccwpck_require__(6783);
+function testedVersion(config) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const readmeContents = yield readme(config);
+        for (const line of readmeContents.split(/\r?\n/u)) {
+            const matches = [
+                ...line.matchAll(/^[\s]*Tested up to:[\s]*([.\d]+)[\s]*$/gu),
+            ];
+            if (matches.length !== 1) {
+                continue;
+            }
+            return matches[0][1];
+        }
+        throw new InvalidReadmeError_1.InvalidReadmeError('No "Tested up to:" line found');
+    });
+}
 function readme(config) {
     return __awaiter(this, void 0, void 0, function* () {
         const readmePromises = config.readme.map((readmeLocation) => __awaiter(this, void 0, void 0, function* () {
@@ -30710,21 +30725,6 @@ function readme(config) {
             }
         }
         throw new InvalidReadmeError_1.InvalidReadmeError("No readme file was found in repo and all usual locations were exhausted.");
-    });
-}
-function testedVersion(config) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const readmeContents = yield readme(config);
-        for (const line of readmeContents.split(/\r?\n/u)) {
-            const matches = [
-                ...line.matchAll(/^[\s]*Tested up to:[\s]*([.\d]+)[\s]*$/gu),
-            ];
-            if (matches.length !== 1) {
-                continue;
-            }
-            return matches[0][1];
-        }
-        throw new InvalidReadmeError_1.InvalidReadmeError('No "Tested up to:" line found');
     });
 }
 
@@ -30800,6 +30800,41 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.wordpressVersions = wordpressVersions;
 const https = __importStar(__nccwpck_require__(5692));
 const LatestVersionError_1 = __nccwpck_require__(9389);
+function wordpressVersions() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const rawData = yield httpsRequest({
+            host: "api.wordpress.org",
+            path: "/core/version-check/1.7/?channel=beta",
+        }).catch((e) => {
+            throw new LatestVersionError_1.LatestVersionError(typeof e === "string" ? e : undefined);
+        });
+        let response = {};
+        try {
+            response = JSON.parse(rawData);
+        }
+        catch (e) {
+            throw new LatestVersionError_1.LatestVersionError(e.message);
+        }
+        if (response.offers === undefined) {
+            throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
+        }
+        const latest = response.offers.find((record) => record.response === "upgrade");
+        if ((latest === null || latest === void 0 ? void 0 : latest.current) === undefined) {
+            throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
+        }
+        const development = response.offers.find((record) => record.response === "development");
+        return {
+            beta: (development === null || development === void 0 ? void 0 : development.current) !== undefined &&
+                (isBetaVersion(development.current) || isRCVersion(development.current))
+                ? normalizeVersion(development.current)
+                : null,
+            rc: (development === null || development === void 0 ? void 0 : development.current) !== undefined && isRCVersion(development.current)
+                ? normalizeVersion(development.current)
+                : null,
+            stable: normalizeVersion(latest.current),
+        };
+    });
+}
 function httpsRequest(options) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
@@ -30837,41 +30872,6 @@ function isRCVersion(version) {
 function normalizeVersion(version) {
     return version.split("-")[0].split(".").slice(0, 2).join("."); // Discard patch version and RC designations
 }
-function wordpressVersions() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const rawData = yield httpsRequest({
-            host: "api.wordpress.org",
-            path: "/core/version-check/1.7/?channel=beta",
-        }).catch((e) => {
-            throw new LatestVersionError_1.LatestVersionError(typeof e === "string" ? e : undefined);
-        });
-        let response = {};
-        try {
-            response = JSON.parse(rawData);
-        }
-        catch (e) {
-            throw new LatestVersionError_1.LatestVersionError(e.message);
-        }
-        if (response.offers === undefined) {
-            throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
-        }
-        const latest = response.offers.find((record) => record.response === "upgrade");
-        if ((latest === null || latest === void 0 ? void 0 : latest.current) === undefined) {
-            throw new LatestVersionError_1.LatestVersionError("Couldn't find the latest version");
-        }
-        const development = response.offers.find((record) => record.response === "development");
-        return {
-            beta: (development === null || development === void 0 ? void 0 : development.current) !== undefined &&
-                (isBetaVersion(development.current) || isRCVersion(development.current))
-                ? normalizeVersion(development.current)
-                : null,
-            rc: (development === null || development === void 0 ? void 0 : development.current) !== undefined && isRCVersion(development.current)
-                ? normalizeVersion(development.current)
-                : null,
-            stable: normalizeVersion(latest.current),
-        };
-    });
-}
 
 
 /***/ }),
@@ -30894,6 +30894,33 @@ exports.getWPVCConfig = getWPVCConfig;
 const ConfigError_1 = __nccwpck_require__(1086);
 const octokit_1 = __nccwpck_require__(6590);
 const repo_1 = __nccwpck_require__(6783);
+function getWPVCConfig() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const file = yield (0, octokit_1.octokit)()
+            .rest.repos.getContent(Object.assign(Object.assign({}, (0, repo_1.repo)()), { path: ".wordpress-version-checker.json" }))
+            .catch((e) => {
+            if (hasStatus(e) && e.status === 404) {
+                return null;
+            }
+            throw new ConfigError_1.ConfigError(String(e));
+        });
+        if (file === null) {
+            return normalizeConfig({});
+        }
+        const encodedContent = file.data.content;
+        if (encodedContent === undefined) {
+            throw new ConfigError_1.ConfigError("Failed to decode the file.");
+        }
+        let config = undefined;
+        try {
+            config = JSON.parse(Buffer.from(encodedContent, "base64").toString());
+        }
+        catch (e) {
+            throw new ConfigError_1.ConfigError(e.message);
+        }
+        return normalizeConfig(config);
+    });
+}
 function hasStatus(obj) {
     return Object.prototype.hasOwnProperty.call(obj, "status");
 }
@@ -30941,33 +30968,6 @@ function normalizeConfig(rawConfig) {
         config.channel = rawConfig.channel;
     }
     return config;
-}
-function getWPVCConfig() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const file = yield (0, octokit_1.octokit)()
-            .rest.repos.getContent(Object.assign(Object.assign({}, (0, repo_1.repo)()), { path: ".wordpress-version-checker.json" }))
-            .catch((e) => {
-            if (hasStatus(e) && e.status === 404) {
-                return null;
-            }
-            throw new ConfigError_1.ConfigError(String(e));
-        });
-        if (file === null) {
-            return normalizeConfig({});
-        }
-        const encodedContent = file.data.content;
-        if (encodedContent === undefined) {
-            throw new ConfigError_1.ConfigError("Failed to decode the file.");
-        }
-        let config = undefined;
-        try {
-            config = JSON.parse(Buffer.from(encodedContent, "base64").toString());
-        }
-        catch (e) {
-            throw new ConfigError_1.ConfigError(e.message);
-        }
-        return normalizeConfig(config);
-    });
 }
 
 

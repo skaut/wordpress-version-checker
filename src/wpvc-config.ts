@@ -4,6 +4,34 @@ import { ConfigError } from "./exceptions/ConfigError";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
+export async function getWPVCConfig(): Promise<Config> {
+  const file = await octokit()
+    .rest.repos.getContent({
+      ...repo(),
+      path: ".wordpress-version-checker.json",
+    })
+    .catch((e: unknown): never | null => {
+      if (hasStatus(e) && e.status === 404) {
+        return null;
+      }
+      throw new ConfigError(String(e));
+    });
+  if (file === null) {
+    return normalizeConfig({});
+  }
+  const encodedContent = (file.data as { content?: string }).content;
+  if (encodedContent === undefined) {
+    throw new ConfigError("Failed to decode the file.");
+  }
+  let config: unknown = undefined;
+  try {
+    config = JSON.parse(Buffer.from(encodedContent, "base64").toString());
+  } catch (e) {
+    throw new ConfigError((e as SyntaxError).message);
+  }
+  return normalizeConfig(config);
+}
+
 function hasStatus(obj: unknown): obj is Record<"status", unknown> {
   return Object.prototype.hasOwnProperty.call(obj, "status");
 }
@@ -62,32 +90,4 @@ function normalizeConfig(rawConfig: unknown): Config {
     config.channel = rawConfig.channel as "beta" | "rc" | "stable";
   }
   return config;
-}
-
-export async function getWPVCConfig(): Promise<Config> {
-  const file = await octokit()
-    .rest.repos.getContent({
-      ...repo(),
-      path: ".wordpress-version-checker.json",
-    })
-    .catch((e: unknown): never | null => {
-      if (hasStatus(e) && e.status === 404) {
-        return null;
-      }
-      throw new ConfigError(String(e));
-    });
-  if (file === null) {
-    return normalizeConfig({});
-  }
-  const encodedContent = (file.data as { content?: string }).content;
-  if (encodedContent === undefined) {
-    throw new ConfigError("Failed to decode the file.");
-  }
-  let config: unknown = undefined;
-  try {
-    config = JSON.parse(Buffer.from(encodedContent, "base64").toString());
-  } catch (e) {
-    throw new ConfigError((e as SyntaxError).message);
-  }
-  return normalizeConfig(config);
 }
