@@ -5,6 +5,45 @@ import type { WordpressVersions } from "./interfaces/WordpressVersions";
 
 import { LatestVersionError } from "./exceptions/LatestVersionError";
 
+export async function wordpressVersions(): Promise<WordpressVersions> {
+  const rawData = await httpsRequest({
+    host: "api.wordpress.org",
+    path: "/core/version-check/1.7/?channel=beta",
+  }).catch((e: unknown): never => {
+    throw new LatestVersionError(typeof e === "string" ? e : undefined);
+  });
+  let response: VersionCheckResponse = {};
+  try {
+    response = JSON.parse(rawData) as VersionCheckResponse;
+  } catch (e) {
+    throw new LatestVersionError((e as SyntaxError).message);
+  }
+  if (response.offers === undefined) {
+    throw new LatestVersionError("Couldn't find the latest version");
+  }
+  const latest = response.offers.find(
+    (record): boolean => record.response === "upgrade",
+  );
+  if (latest?.current === undefined) {
+    throw new LatestVersionError("Couldn't find the latest version");
+  }
+  const development = response.offers.find(
+    (record): boolean => record.response === "development",
+  );
+  return {
+    beta:
+      development?.current !== undefined &&
+      (isBetaVersion(development.current) || isRCVersion(development.current))
+        ? normalizeVersion(development.current)
+        : null,
+    rc:
+      development?.current !== undefined && isRCVersion(development.current)
+        ? normalizeVersion(development.current)
+        : null,
+    stable: normalizeVersion(latest.current),
+  };
+}
+
 async function httpsRequest(options: https.RequestOptions): Promise<string> {
   return new Promise((resolve, reject) => {
     https
@@ -44,43 +83,4 @@ function isRCVersion(version: string): boolean {
 
 function normalizeVersion(version: string): string {
   return version.split("-")[0].split(".").slice(0, 2).join("."); // Discard patch version and RC designations
-}
-
-export async function wordpressVersions(): Promise<WordpressVersions> {
-  const rawData = await httpsRequest({
-    host: "api.wordpress.org",
-    path: "/core/version-check/1.7/?channel=beta",
-  }).catch((e: unknown): never => {
-    throw new LatestVersionError(typeof e === "string" ? e : undefined);
-  });
-  let response: VersionCheckResponse = {};
-  try {
-    response = JSON.parse(rawData) as VersionCheckResponse;
-  } catch (e) {
-    throw new LatestVersionError((e as SyntaxError).message);
-  }
-  if (response.offers === undefined) {
-    throw new LatestVersionError("Couldn't find the latest version");
-  }
-  const latest = response.offers.find(
-    (record): boolean => record.response === "upgrade",
-  );
-  if (latest?.current === undefined) {
-    throw new LatestVersionError("Couldn't find the latest version");
-  }
-  const development = response.offers.find(
-    (record): boolean => record.response === "development",
-  );
-  return {
-    beta:
-      development?.current !== undefined &&
-      (isBetaVersion(development.current) || isRCVersion(development.current))
-        ? normalizeVersion(development.current)
-        : null,
-    rc:
-      development?.current !== undefined && isRCVersion(development.current)
-        ? normalizeVersion(development.current)
-        : null,
-    stable: normalizeVersion(latest.current),
-  };
 }

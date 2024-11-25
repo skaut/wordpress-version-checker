@@ -6,17 +6,16 @@ import { IssueUpdateError } from "./exceptions/IssueUpdateError";
 import { octokit } from "./octokit";
 import { repo } from "./repo";
 
-export async function getIssue(): Promise<number | null> {
-  const issues = await octokit()
-    .rest.issues.listForRepo({
+export async function closeIssue(issue: number): Promise<void> {
+  await octokit()
+    .rest.issues.update({
       ...repo(),
-      creator: "github-actions[bot]",
-      labels: "wpvc",
+      issue_number: issue,
+      state: "closed",
     })
     .catch((e: unknown): never => {
-      throw new IssueListError(String(e));
+      throw new IssueUpdateError(issue, String(e));
     });
-  return issues.data.length > 0 ? issues.data[0].number : null;
 }
 
 export async function commentOnIssue(
@@ -31,18 +30,6 @@ export async function commentOnIssue(
     })
     .catch((e: unknown): never => {
       throw new IssueCommentError(issue, String(e));
-    });
-}
-
-export async function closeIssue(issue: number): Promise<void> {
-  await octokit()
-    .rest.issues.update({
-      ...repo(),
-      issue_number: issue,
-      state: "closed",
-    })
-    .catch((e: unknown): never => {
-      throw new IssueUpdateError(issue, String(e));
     });
 }
 
@@ -62,6 +49,19 @@ export async function createIssue(
     .catch((e: unknown): never => {
       throw new IssueCreationError(String(e));
     });
+}
+
+export async function getIssue(): Promise<number | null> {
+  const issues = await octokit()
+    .rest.issues.listForRepo({
+      ...repo(),
+      creator: "github-actions[bot]",
+      labels: "wpvc",
+    })
+    .catch((e: unknown): never => {
+      throw new IssueListError(String(e));
+    });
+  return issues.data.length > 0 ? issues.data[0].number : null;
 }
 
 export async function updateIssue(
