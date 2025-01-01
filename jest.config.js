@@ -8,7 +8,6 @@ export default {
   setupFiles: ["<rootDir>/__tests__/setup.ts"],
   testMatch: ["<rootDir>/__tests__/**/*.test.ts"],
   transform: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention -- The key is a glob.
     "^.+\\.[jt]s$": [
       "ts-jest",
       {
