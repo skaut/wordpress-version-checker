@@ -47,16 +47,18 @@
     "ts-jest": "^29.2.5",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.20.0",
-    "vite": "^6.0.11"
+    "vite": "^6.0.11",
+    "vitest": "^3.0.4"
   },
   "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf dist/*",
     "prebuild": "npm run clean",
     "build": "vite build",
-    "lint:eslint": "eslint \"src/**/*.ts\" \"__tests__/**/*.ts\" \"*.config.{js,ts}\"",
+    "lint:eslint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\" \"__tests__/**/*.ts\" \"*.config.{js,ts}\"",
     "lint:typecheck": "tsc --noEmit",
     "lint": "run-p -c --aggregate-output lint:*",
-    "test": "jest"
+    "test": "jest",
+    "vitest": "vitest"
   }
 }

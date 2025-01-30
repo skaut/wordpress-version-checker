@@ -19,4 +19,8 @@ export default defineConfig({
   optimizeDeps: {
     exclude: NODE_BUILT_IN_MODULES,
   },
+  test: {
+    mockReset: true,
+    setupFiles: ["tests/setup.ts"],
+  },
 });
