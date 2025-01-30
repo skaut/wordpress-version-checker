@@ -1,4 +1,5 @@
 import nock from "nock";
+import { expect, test } from "vitest";
 
 import { LatestVersionError } from "../src/exceptions/LatestVersionError";
 import { wordpressVersions } from "../src/wordpress-versions";

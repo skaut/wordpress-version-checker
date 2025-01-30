@@ -1,10 +1,11 @@
 import mockedEnv from "mocked-env";
 import nock from "nock";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { ConfigError } from "../src/exceptions/ConfigError";
 import { getWPVCConfig } from "../src/wpvc-config";
 
-jest.mock("@actions/core");
+vi.mock("@actions/core");
 
 describe("Mocked env variables", () => {
   // eslint-disable-next-line @typescript-eslint/init-declarations -- Shouldn't assign outside of hooks
