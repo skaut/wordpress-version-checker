@@ -1,12 +1,13 @@
 import mockedEnv from "mocked-env";
 import nock from "nock";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import type { Config } from "../src/interfaces/Config";
 
 import { InvalidReadmeError } from "../src/exceptions/InvalidReadmeError";
 import { testedVersion } from "../src/tested-version";
 
-jest.mock("@actions/core");
+vi.mock("@actions/core");
 
 describe("[env variable mock]", () => {
   // eslint-disable-next-line @typescript-eslint/init-declarations -- Shouldn't assign outside of hooks
