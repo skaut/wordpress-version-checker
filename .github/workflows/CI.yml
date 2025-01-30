@@ -72,7 +72,7 @@ jobs:
 
       - name: "Run tests"
         run: |
-          npm test
+          npm run test-coverage
 
       - name: "Upload coverage results"
         uses: codecov/codecov-action@v5.3.1
