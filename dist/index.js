@@ -14014,7 +14014,7 @@ var Vg = va((A) => console.warn(A)), qg = va((A) => console.warn(A)), bt = class
     const e = Object.assign({}, s.request);
     s.request.headers.authorization && (e.headers = Object.assign({}, s.request.headers, {
       authorization: s.request.headers.authorization.replace(
-        / .*$/,
+        new RegExp("(?<! ) .*$"),
         " [REDACTED]"
       )
     })), e.url = e.url.replace(/\bclient_secret=\w+/g, "client_secret=[REDACTED]").replace(/\baccess_token=\w+/g, "access_token=[REDACTED]"), this.request = e, Object.defineProperty(this, "code", {
