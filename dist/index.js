@@ -13762,7 +13762,7 @@ function Dg() {
   }
   return Q.Singular = n.bind(), Q.Collection = u.bind(), at.exports = Q, at.exports.Hook = Q, at.exports.Singular = Q.Singular, at.exports.Collection = Q.Collection, at.exports;
 }
-var bg = Dg(), kg = "9.0.5", Fg = `octokit-endpoint.js/${kg} ${or()}`, Sg = {
+var bg = Dg(), kg = "9.0.6", Fg = `octokit-endpoint.js/${kg} ${or()}`, Sg = {
   method: "GET",
   baseUrl: "https://api.github.com",
   headers: {
@@ -13813,9 +13813,9 @@ function Ug(A, r) {
   const s = /\?/.test(A) ? "&" : "?", t = Object.keys(r);
   return t.length === 0 ? A : A + s + t.map((e) => e === "q" ? "q=" + r.q.split("+").map(encodeURIComponent).join("+") : `${e}=${encodeURIComponent(r[e])}`).join("&");
 }
-var Gg = /\{[^}]+\}/g;
+var Gg = /\{[^{}}]+\}/g;
 function Lg(A) {
-  return A.replace(/^\W+|\W+$/g, "").split(/,/);
+  return A.replace(new RegExp("(?:^\\W+)|(?:(?<!\\W)\\W+$)", "g"), "").split(/,/);
 }
 function Mg(A) {
   const r = A.match(Gg);
@@ -13918,7 +13918,7 @@ function La(A) {
       `application/vnd$1$2.${A.mediaType.format}`
     )
   ).join(",")), s.endsWith("/graphql") && (o = A.mediaType.previews) != null && o.length)) {
-    const a = t.accept.match(/[\w-]+(?=-preview)/g) || [];
+    const a = t.accept.match(new RegExp("(?<![\\w-])[\\w-]+(?=-preview)", "g")) || [];
     t.accept = a.concat(A.mediaType.previews).map((g) => {
       const f = A.mediaType.format ? `.${A.mediaType.format}` : "+json";
       return `application/vnd.github.${g}-preview${f}`;
