@@ -14035,7 +14035,7 @@ var Vg = va((A) => console.warn(A)), qg = va((A) => console.warn(A)), bt = class
       }
     });
   }
-}, Wg = "8.4.0";
+}, Wg = "8.4.1";
 function jg(A) {
   if (typeof A != "object" || A === null || Object.prototype.toString.call(A) !== "[object Object]")
     return !1;
@@ -14071,7 +14071,7 @@ function Wi(A) {
     for (const g of a.headers)
       t[g[0]] = g[1];
     if ("deprecation" in t) {
-      const g = t.link && t.link.match(/<([^>]+)>; rel="deprecation"/), f = g && g.pop();
+      const g = t.link && t.link.match(/<([^<>]+)>; rel="deprecation"/), f = g && g.pop();
       r.warn(
         `[@octokit/request] "${A.method} ${A.url}" is deprecated. It is scheduled to be removed on ${t.sunset}${f ? `. See ${f}` : ""}`
       );
