@@ -5045,7 +5045,7 @@ function er() {
     }
     onHeaderField(G) {
       const L = this.headers.length;
-      L & 1 ? this.headers[L - 1] = Buffer.concat([this.headers[L - 1], G]) : this.headers.push(G), this.trackHeader(G.length);
+      (L & 1) === 0 ? this.headers.push(G) : this.headers[L - 1] = Buffer.concat([this.headers[L - 1], G]), this.trackHeader(G.length);
     }
     onHeaderValue(G) {
       let L = this.headers.length;
