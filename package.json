@@ -30,7 +30,7 @@
     "@eslint-community/eslint-plugin-eslint-comments": "^4.4.1",
     "@eslint/js": "^9.22.0",
     "@types/node": "^22.13.5",
-    "@vitest/coverage-v8": "^3.0.7",
+    "@vitest/coverage-v8": "^3.0.8",
     "@vitest/eslint-plugin": "^1.1.36",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.2",
