@@ -40,7 +40,7 @@ function ac(A) {
   return A && A.__esModule && Object.prototype.hasOwnProperty.call(A, "default") ? A.default : A;
 }
 function ro(A) {
-  if (A.__esModule) return A;
+  if (Object.prototype.hasOwnProperty.call(A, "__esModule")) return A;
   var r = A.default;
   if (typeof r == "function") {
     var s = function t() {
