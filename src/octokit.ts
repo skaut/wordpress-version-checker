@@ -9,8 +9,6 @@ type GitHub = Api & Octokit & { paginate: PaginateInterface };
 let octokitInstance: GitHub | undefined = undefined;
 
 export function octokit(): GitHub {
-  if (octokitInstance === undefined) {
-    octokitInstance = github.getOctokit(core.getInput("repo-token"));
-  }
+  octokitInstance ??= github.getOctokit(core.getInput("repo-token"));
   return octokitInstance;
 }

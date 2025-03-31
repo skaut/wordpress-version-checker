@@ -8,8 +8,6 @@ interface Repo {
 let repoInstance: Repo | undefined = undefined;
 
 export function repo(): Repo {
-  if (repoInstance === undefined) {
-    repoInstance = github.context.repo;
-  }
+  repoInstance ??= github.context.repo;
   return repoInstance;
 }
