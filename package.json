@@ -33,7 +33,7 @@
     "@vitest/coverage-v8": "^3.1.2",
     "@vitest/eslint-plugin": "^1.1.43",
     "eslint": "^9.26.0",
-    "eslint-config-prettier": "^10.1.2",
+    "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-perfectionist": "^4.12.3",
     "eslint-plugin-prefer-arrow-functions": "^3.6.2",
     "eslint-plugin-prettier": "^5.3.1",
