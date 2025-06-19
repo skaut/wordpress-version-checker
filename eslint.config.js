@@ -170,7 +170,7 @@ export default tseslint.config(
   },
   {
     extends: [vitest.configs.recommended],
-    files: ["tests/**/*.test.ts"],
+    files: ["tests/**/*.ts"],
     rules: {
       "@typescript-eslint/unbound-method": "off",
       "vitest/consistent-test-it": ["error", { withinDescribe: "test" }],
