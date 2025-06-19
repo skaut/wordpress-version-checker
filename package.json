@@ -53,7 +53,7 @@
     "clean": "rimraf dist/*",
     "prebuild": "npm run clean",
     "build": "vite build",
-    "lint:eslint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\" \"*.config.{js,ts}\"",
+    "lint:eslint": "eslint",
     "lint:typecheck": "tsc --noEmit",
     "lint": "run-p -c --aggregate-output lint:*",
     "test": "vitest",
