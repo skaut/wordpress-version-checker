@@ -7,6 +7,8 @@ import nock from "nock";
 import nodeFetch from "node-fetch";
 import { vi } from "vitest";
 
+/* eslint-disable vitest/require-hook -- OK in the setup file */
+
 nock.disableNetConnect();
 
 type GitHub = Api & Octokit & { paginate: PaginateInterface };
@@ -19,3 +21,5 @@ vi.mock("../src/octokit", () => ({
       },
     }),
 }));
+
+/* eslint-enable */

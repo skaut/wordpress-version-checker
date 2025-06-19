@@ -26,7 +26,7 @@
     "build": "vite build",
     "clean": "rimraf dist/*",
     "lint": "run-p -c --aggregate-output lint:*",
-    "lint:eslint": "eslint",
+    "lint:eslint": "eslint --color",
     "lint:typecheck": "tsc --noEmit",
     "test": "vitest",
     "test-coverage": "vitest run --coverage"
