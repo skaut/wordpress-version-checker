@@ -1,3 +1,5 @@
+/// <reference types="vitest/config" />
+
 import { builtinModules } from "node:module";
 import { defineConfig } from "vite";
 
