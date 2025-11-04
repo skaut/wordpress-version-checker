@@ -2,10 +2,11 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "outDir": "lib",
     "resolveJsonModule": true,
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "target": "es6",
 
     "allowUnreachableCode": false,
