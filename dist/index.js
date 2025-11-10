@@ -3680,7 +3680,6 @@ function qt() {
     else if (r.isFormDataLike(U)) {
       const mA = `----formdata-undici-0${`${h(1e11)}`.padStart(11, "0")}`, T = `--${mA}\r
 Content-Disposition: form-data`;
-      /*! formdata-polyfill. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> */
       const AA = (SA) => SA.replace(/\n/g, "%0A").replace(/\r/g, "%0D").replace(/"/g, "%22"), EA = (SA) => SA.replace(/\r?\n|\r/g, `\r
 `), BA = [], QA = new Uint8Array([13, 10]);
       P = 0;
@@ -11057,7 +11056,6 @@ function Qa() {
       a > A ? (C += 8, o = 127) : a > 125 && (C += 2, o = 126);
       const i = Buffer.allocUnsafe(a + C);
       i[0] = i[1] = 0, i[0] |= 128, i[0] = (i[0] & 240) + e;
-      /*! ws. MIT License. Einar Otto Stangvik <einaros@gmail.com> */
       i[C - 4] = this.maskKey[0], i[C - 3] = this.maskKey[1], i[C - 2] = this.maskKey[2], i[C - 1] = this.maskKey[3], i[1] = o, o === 126 ? i.writeUInt16BE(a, 2) : o === 127 && (i[2] = i[3] = 0, i.writeUIntBE(a, 4, 6)), i[1] |= 128;
       for (let E = 0; E < a; E++)
         i[C + E] = this.frameData[E] ^ this.maskKey[E % 4];
