@@ -44,7 +44,7 @@
     "@eslint/markdown": "^7.5.1",
     "@types/node": "^24.10.0",
     "@vitest/coverage-v8": "^4.0.9",
-    "@vitest/eslint-plugin": "^1.4.2",
+    "@vitest/eslint-plugin": "^1.4.3",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-package-json": "^0.79.0",
