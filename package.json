@@ -43,7 +43,7 @@
     "@eslint/json": "^0.14.0",
     "@eslint/markdown": "^7.5.1",
     "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.9",
+    "@vitest/coverage-v8": "^4.0.13",
     "@vitest/eslint-plugin": "^1.4.3",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
