@@ -54,7 +54,7 @@ describe("[env variable mock]", () => {
 
   test("getIssue fails gracefully on connection issues", async () => {
     expect.assertions(1);
-    await expect(getIssue()).rejects.toThrow(IssueListError);
+    await expect(getIssue()).rejects.toThrowError(IssueListError);
   });
 
   test("getIssue fails gracefully on nonexistent repo", async () => {
@@ -65,7 +65,7 @@ describe("[env variable mock]", () => {
       .query({ creator: "github-actions[bot]", labels: "wpvc" })
       .reply(404);
 
-    await expect(getIssue()).rejects.toThrow(IssueListError);
+    await expect(getIssue()).rejects.toThrowError(IssueListError);
   });
 
   test("commentOnIssue works correctly", async () => {
@@ -85,7 +85,7 @@ describe("[env variable mock]", () => {
 
   test("commentOnIssue fails gracefully on connection issues", async () => {
     expect.assertions(1);
-    await expect(commentOnIssue(123, "ISSUE_BODY")).rejects.toThrow(
+    await expect(commentOnIssue(123, "ISSUE_BODY")).rejects.toThrowError(
       IssueCommentError,
     );
   });
@@ -101,7 +101,7 @@ describe("[env variable mock]", () => {
       })
       .reply(404);
 
-    await expect(commentOnIssue(123, issueBody)).rejects.toThrow(
+    await expect(commentOnIssue(123, issueBody)).rejects.toThrowError(
       IssueCommentError,
     );
     expect(scope.isDone()).toBe(true);
@@ -122,7 +122,7 @@ describe("[env variable mock]", () => {
 
   test("closeIssue fails gracefully on connection issues", async () => {
     expect.assertions(1);
-    await expect(closeIssue(123)).rejects.toThrow(IssueUpdateError);
+    await expect(closeIssue(123)).rejects.toThrowError(IssueUpdateError);
   });
 
   test("closeIssue fails gracefully on nonexistent repo", async () => {
@@ -134,7 +134,7 @@ describe("[env variable mock]", () => {
       })
       .reply(404);
 
-    await expect(closeIssue(123)).rejects.toThrow(IssueUpdateError);
+    await expect(closeIssue(123)).rejects.toThrowError(IssueUpdateError);
     expect(scope.isDone()).toBe(true);
   });
 
@@ -181,9 +181,9 @@ describe("[env variable mock]", () => {
   test("createIssue fails gracefully on connection issues", async () => {
     expect.assertions(1);
 
-    await expect(createIssue("ISSUE_TITLE", "ISSUE_BODY", [])).rejects.toThrow(
-      IssueCreationError,
-    );
+    await expect(
+      createIssue("ISSUE_TITLE", "ISSUE_BODY", []),
+    ).rejects.toThrowError(IssueCreationError);
   });
 
   test("createIssue fails gracefully on nonexistent repo", async () => {
@@ -191,9 +191,9 @@ describe("[env variable mock]", () => {
 
     nock("https://api.github.com").post("/repos/OWNER/REPO/issues").reply(404);
 
-    await expect(createIssue("ISSUE_TITLE", "ISSUE_BODY", [])).rejects.toThrow(
-      IssueCreationError,
-    );
+    await expect(
+      createIssue("ISSUE_TITLE", "ISSUE_BODY", []),
+    ).rejects.toThrowError(IssueCreationError);
   });
 
   test("updateIssue works correctly with an up-to-date-issue", async () => {
@@ -254,7 +254,9 @@ describe("[env variable mock]", () => {
       .patch("/repos/OWNER/REPO/issues/123", { body, title })
       .reply(200);
 
-    await expect(updateIssue(123, title, body)).rejects.toThrow(GetIssueError);
+    await expect(updateIssue(123, title, body)).rejects.toThrowError(
+      GetIssueError,
+    );
   });
 
   test("updateIssue fails gracefully on connection issues on updating the existing issue", async () => {
@@ -267,7 +269,7 @@ describe("[env variable mock]", () => {
       .get("/repos/OWNER/REPO/issues/123")
       .reply(200, { body, title: "WRONG_TITLE" });
 
-    await expect(updateIssue(123, title, body)).rejects.toThrow(
+    await expect(updateIssue(123, title, body)).rejects.toThrowError(
       IssueUpdateError,
     );
     expect(scope.isDone()).toBe(true);
@@ -282,8 +284,8 @@ describe("[env variable mock]", () => {
       .patch("/repos/OWNER/REPO/issues/123")
       .reply(404);
 
-    await expect(updateIssue(123, "ISSUE_TITLE", "ISSUE_BODY")).rejects.toThrow(
-      GetIssueError,
-    );
+    await expect(
+      updateIssue(123, "ISSUE_TITLE", "ISSUE_BODY"),
+    ).rejects.toThrowError(GetIssueError);
   });
 });
