@@ -51,7 +51,7 @@ test("wordpressVersions works correctly when stable, RC, and beta versions are a
 
 test("wordpressVersions fails gracefully on connection issues", async () => {
   expect.assertions(1);
-  await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
+  await expect(wordpressVersions()).rejects.toThrowError(LatestVersionError);
 });
 
 test("wordpressVersions fails gracefully on connection issues 2", async () => {
@@ -61,7 +61,7 @@ test("wordpressVersions fails gracefully on connection issues 2", async () => {
     .get("/core/version-check/1.7/?channel=beta")
     .reply(404);
 
-  await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
+  await expect(wordpressVersions()).rejects.toThrowError(LatestVersionError);
 });
 
 test("wordpressVersions fails gracefully on invalid response", async () => {
@@ -71,7 +71,7 @@ test("wordpressVersions fails gracefully on invalid response", async () => {
     .get("/core/version-check/1.7/?channel=beta")
     .reply(200);
 
-  await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
+  await expect(wordpressVersions()).rejects.toThrowError(LatestVersionError);
 });
 
 test("wordpressVersions fails gracefully on invalid response 2", async () => {
@@ -83,7 +83,7 @@ test("wordpressVersions fails gracefully on invalid response 2", async () => {
       translations: [],
     });
 
-  await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
+  await expect(wordpressVersions()).rejects.toThrowError(LatestVersionError);
 });
 
 test("wordpressVersions fails gracefully on invalid response 3", async () => {
@@ -96,7 +96,7 @@ test("wordpressVersions fails gracefully on invalid response 3", async () => {
       translations: [],
     });
 
-  await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
+  await expect(wordpressVersions()).rejects.toThrowError(LatestVersionError);
 });
 
 test("wordpressVersions fails gracefully on invalid response 4", async () => {
@@ -113,7 +113,7 @@ test("wordpressVersions fails gracefully on invalid response 4", async () => {
       translations: [],
     });
 
-  await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
+  await expect(wordpressVersions()).rejects.toThrowError(LatestVersionError);
 });
 
 test("wordpressVersions fails gracefully on invalid response 5", async () => {
@@ -130,5 +130,5 @@ test("wordpressVersions fails gracefully on invalid response 5", async () => {
       translations: [],
     });
 
-  await expect(wordpressVersions()).rejects.toThrow(LatestVersionError);
+  await expect(wordpressVersions()).rejects.toThrowError(LatestVersionError);
 });
