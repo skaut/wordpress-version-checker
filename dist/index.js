@@ -11672,7 +11672,7 @@ function qc() {
   }
   class p {
     constructor(i, f, y) {
-      this._ignoreSslError = !1, this._allowRedirects = !0, this._allowRedirectDowngrade = !1, this._maxRedirects = 50, this._allowRetries = !1, this._maxRetries = 1, this._keepAlive = !1, this._disposed = !1, this.userAgent = i, this.handlers = f || [], this.requestOptions = y, y && (y.ignoreSslError != null && (this._ignoreSslError = y.ignoreSslError), this._socketTimeout = y.socketTimeout, y.allowRedirects != null && (this._allowRedirects = y.allowRedirects), y.allowRedirectDowngrade != null && (this._allowRedirectDowngrade = y.allowRedirectDowngrade), y.maxRedirects != null && (this._maxRedirects = Math.max(y.maxRedirects, 0)), y.keepAlive != null && (this._keepAlive = y.keepAlive), y.allowRetries != null && (this._allowRetries = y.allowRetries), y.maxRetries != null && (this._maxRetries = y.maxRetries));
+      this._ignoreSslError = !1, this._allowRedirects = !0, this._allowRedirectDowngrade = !1, this._maxRedirects = 50, this._allowRetries = !1, this._maxRetries = 1, this._keepAlive = !1, this._disposed = !1, this.userAgent = this._getUserAgentWithOrchestrationId(i), this.handlers = f || [], this.requestOptions = y, y && (y.ignoreSslError != null && (this._ignoreSslError = y.ignoreSslError), this._socketTimeout = y.socketTimeout, y.allowRedirects != null && (this._allowRedirects = y.allowRedirects), y.allowRedirectDowngrade != null && (this._allowRedirectDowngrade = y.allowRedirectDowngrade), y.maxRedirects != null && (this._maxRedirects = Math.max(y.maxRedirects, 0)), y.keepAlive != null && (this._keepAlive = y.keepAlive), y.allowRetries != null && (this._allowRetries = y.allowRetries), y.maxRetries != null && (this._maxRetries = y.maxRetries));
     }
     options(i, f) {
       return t(this, void 0, void 0, function* () {
@@ -11937,6 +11937,14 @@ function qc() {
       })), this._proxyAgentDispatcher = y, k && this._ignoreSslError && (y.options = Object.assign(y.options.requestTls || {}, {
         rejectUnauthorized: !1
       })), y;
+    }
+    _getUserAgentWithOrchestrationId(i) {
+      const f = i || "actions/http-client", y = process.env.ACTIONS_ORCHESTRATION_ID;
+      if (y) {
+        const k = y.replace(/[^a-z0-9_.-]/gi, "_");
+        return `${f} actions_orchestration_id/${k}`;
+      }
+      return f;
     }
     _performExponentialBackoff(i) {
       return t(this, void 0, void 0, function* () {
