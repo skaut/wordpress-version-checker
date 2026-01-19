@@ -38,7 +38,7 @@
     "ts-custom-error": "^3.3.1"
   },
   "devDependencies": {
-    "@eslint-community/eslint-plugin-eslint-comments": "^4.5.0",
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.6.0",
     "@eslint/js": "^9.39.2",
     "@eslint/json": "^0.14.0",
     "@eslint/markdown": "^7.5.1",
