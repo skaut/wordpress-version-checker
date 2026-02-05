@@ -7,7 +7,7 @@
     "outDir": "lib",
     "resolveJsonModule": true,
     "skipLibCheck": false,
-    "target": "es6",
+    "target": "es2022",
 
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
