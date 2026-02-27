@@ -21,6 +21,17 @@
   "author": "Marek Dědič",
   "type": "module",
   "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
+  "sideEffects": true,
+  "files": [
+    "action.yml",
+    "app.yml",
+    "dist"
+  ],
   "scripts": {
     "prebuild": "npm run clean",
     "build": "vite build",
