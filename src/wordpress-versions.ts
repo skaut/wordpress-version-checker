@@ -12,6 +12,7 @@ export async function wordpressVersions(): Promise<WordpressVersions> {
   }).catch((e: unknown): never => {
     throw new LatestVersionError(typeof e === "string" ? e : undefined);
   });
+  // eslint-disable-next-line no-useless-assignment -- no way to declare it in the try block
   let response: VersionCheckResponse = {};
   try {
     response = JSON.parse(rawData) as VersionCheckResponse;

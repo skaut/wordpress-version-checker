@@ -23,6 +23,7 @@ export async function getWPVCConfig(): Promise<Config> {
   if (encodedContent === undefined) {
     throw new ConfigError("Failed to decode the file.");
   }
+  // eslint-disable-next-line no-useless-assignment -- no way to declare it in the try block
   let config: unknown = undefined;
   try {
     config = JSON.parse(Buffer.from(encodedContent, "base64").toString());
