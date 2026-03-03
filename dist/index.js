@@ -16602,7 +16602,7 @@ async function Qs(e, r, t) {
 }
 async function cg(e, r, t) {
   const o = await ot(), A = "The plugin hasn't been tested with a beta version of WordPress", n = gg(r, t);
-  o !== null ? await Qs(o, A, n) : await us(A, n, e.assignees);
+  o === null ? await us(A, n, e.assignees) : await Qs(o, A, n);
 }
 function gg(e, r) {
   return `There is an upcoming WordPress version in the **beta** stage that the plugin hasn't been tested with.
@@ -16614,7 +16614,7 @@ This issue will be closed automatically when the versions match.`;
 }
 async function lg(e, r, t) {
   const o = await ot(), A = "The plugin hasn't been tested with an upcoming version of WordPress", n = Eg(r, t);
-  o !== null ? await Qs(o, A, n) : await us(A, n, e.assignees);
+  o === null ? await us(A, n, e.assignees) : await Qs(o, A, n);
 }
 function Eg(e, r) {
   return `There is an upcoming WordPress version in the **release candidate** stage that the plugin hasn't been tested with. Please test it and then change the "Tested up to" field in the plugin readme.
@@ -16626,7 +16626,7 @@ This issue will be closed automatically when the versions match.`;
 }
 async function ug(e, r, t) {
   const o = await ot(), A = "The plugin hasn't been tested with the latest version of WordPress", n = Qg(r, t);
-  o !== null ? await Qs(o, A, n) : await us(A, n, e.assignees);
+  o === null ? await us(A, n, e.assignees) : await Qs(o, A, n);
 }
 function Qg(e, r) {
   return `There is a new WordPress version that the plugin hasn't been tested with. Please test it and then change the "Tested up to" field in the plugin readme.
