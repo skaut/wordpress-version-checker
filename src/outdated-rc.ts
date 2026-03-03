@@ -11,10 +11,10 @@ export async function outdatedRC(
   const title =
     "The plugin hasn't been tested with an upcoming version of WordPress";
   const body = issueBody(testedVersion, rcVersion);
-  if (existingIssue !== null) {
-    await updateIssue(existingIssue, title, body);
-  } else {
+  if (existingIssue === null) {
     await createIssue(title, body, config.assignees);
+  } else {
+    await updateIssue(existingIssue, title, body);
   }
 }
 
