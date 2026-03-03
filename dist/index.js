@@ -16548,6 +16548,7 @@ function gA() {
 async function ig(e) {
   await cA().rest.issues.update({
     ...gA(),
+    // eslint-disable-next-line camelcase -- API name
     issue_number: e,
     state: "closed"
   }).catch((r) => {
@@ -16558,6 +16559,7 @@ async function ag(e, r) {
   await cA().rest.issues.createComment({
     ...gA(),
     body: r,
+    // eslint-disable-next-line camelcase -- API name
     issue_number: e
   }).catch((t) => {
     throw new Za(e, String(t));
@@ -16591,6 +16593,7 @@ async function Qs(e, r, t) {
   o.data.title === r && o.data.body === t || await cA().rest.issues.update({
     ...gA(),
     body: t,
+    // eslint-disable-next-line camelcase -- API name
     issue_number: e,
     title: r
   }).catch((A) => {

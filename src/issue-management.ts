@@ -10,6 +10,7 @@ export async function closeIssue(issue: number): Promise<void> {
   await octokit()
     .rest.issues.update({
       ...repo(),
+      // eslint-disable-next-line camelcase -- API name
       issue_number: issue,
       state: "closed",
     })
@@ -26,6 +27,7 @@ export async function commentOnIssue(
     .rest.issues.createComment({
       ...repo(),
       body: comment,
+      // eslint-disable-next-line camelcase -- API name
       issue_number: issue,
     })
     .catch((e: unknown): never => {
@@ -70,6 +72,7 @@ export async function updateIssue(
   body: string,
 ): Promise<void> {
   const issue = await octokit()
+    // eslint-disable-next-line camelcase -- API name
     .rest.issues.get({ ...repo(), issue_number: issueNumber })
     .catch((e: unknown): never => {
       throw new GetIssueError(issueNumber, String(e));
@@ -81,6 +84,7 @@ export async function updateIssue(
     .rest.issues.update({
       ...repo(),
       body,
+      // eslint-disable-next-line camelcase -- API name
       issue_number: issueNumber,
       title,
     })
