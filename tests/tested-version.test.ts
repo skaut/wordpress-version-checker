@@ -63,9 +63,7 @@ describe("[env variable mock]", () => {
       readme: ["path/to/readme.txt"],
     };
 
-    await expect(testedVersion(config)).rejects.toThrowError(
-      InvalidReadmeError,
-    );
+    await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
   });
 
   test("testedVersion fails gracefully on no readme", async () => {
@@ -82,9 +80,7 @@ describe("[env variable mock]", () => {
       .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath)}`)
       .reply(404);
 
-    await expect(testedVersion(config)).rejects.toThrowError(
-      InvalidReadmeError,
-    );
+    await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
   });
 
   test("testedVersion fails gracefully on invalid response", async () => {
@@ -101,9 +97,7 @@ describe("[env variable mock]", () => {
       .get(`/repos/OWNER/REPO/contents/${encodeURIComponent(readmePath)}`)
       .reply(200);
 
-    await expect(testedVersion(config)).rejects.toThrowError(
-      InvalidReadmeError,
-    );
+    await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
   });
 
   test("testedVersion fails gracefully on invalid response 2", async () => {
@@ -122,9 +116,7 @@ describe("[env variable mock]", () => {
         content: "OOPS",
       });
 
-    await expect(testedVersion(config)).rejects.toThrowError(
-      InvalidReadmeError,
-    );
+    await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
   });
 
   test.each([
@@ -150,9 +142,7 @@ describe("[env variable mock]", () => {
         content: Buffer.from(readme).toString("base64"),
       });
 
-    await expect(testedVersion(config)).rejects.toThrowError(
-      InvalidReadmeError,
-    );
+    await expect(testedVersion(config)).rejects.toThrow(InvalidReadmeError);
   });
 
   test("testedVersion works correctly with one invalid and one valid readme", async () => {
