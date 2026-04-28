@@ -12,7 +12,7 @@ import "string_decoder";
 import "child_process";
 import "timers";
 //#region \0rolldown/runtime.js
-var d = Object.create, f = Object.defineProperty, p = Object.getOwnPropertyDescriptor, m = Object.getOwnPropertyNames, h = Object.getPrototypeOf, g = Object.prototype.hasOwnProperty, _ = (e, t) => () => (t || e((t = { exports: {} }).exports, t), t.exports), v = (e, t, n, r) => {
+var d = Object.create, f = Object.defineProperty, p = Object.getOwnPropertyDescriptor, m = Object.getOwnPropertyNames, h = Object.getPrototypeOf, g = Object.prototype.hasOwnProperty, _ = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), v = (e, t, n, r) => {
 	if (t && typeof t == "object" || typeof t == "function") for (var i = m(t), a = 0, o = i.length, s; a < o; a++) s = i[a], !g.call(e, s) && s !== n && f(e, s, {
 		get: ((e) => t[e]).bind(null, s),
 		enumerable: !(r = p(t, s)) || r.enumerable
@@ -2712,11 +2712,12 @@ var O = /* @__PURE__ */ _(((e) => {
 })), K = /* @__PURE__ */ _(((e, t) => {
 	var { Blob: n, File: r } = b("node:buffer"), { kState: i } = G(), { webidl: a } = U(), o = class e {
 		constructor(e, t, n = {}) {
+			let r = t, a = n.type, o = n.lastModified ?? Date.now();
 			this[i] = {
 				blobLike: e,
-				name: t,
-				type: n.type,
-				lastModified: n.lastModified ?? Date.now()
+				name: r,
+				type: a,
+				lastModified: o
 			};
 		}
 		stream(...t) {
