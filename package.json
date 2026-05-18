@@ -58,7 +58,7 @@
     "@vitest/eslint-plugin": "^1.6.17",
     "eslint": "^10.3.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-package-json": "^0.91.2",
+    "eslint-plugin-package-json": "^1.0.0",
     "eslint-plugin-perfectionist": "^5.9.0",
     "eslint-plugin-prefer-arrow-functions": "^3.9.1",
     "eslint-plugin-prettier": "^5.5.5",
