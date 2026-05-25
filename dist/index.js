@@ -1255,7 +1255,7 @@ var O = /* @__PURE__ */ _(((e) => {
 		}
 	};
 })), z = /* @__PURE__ */ _(((e, t) => {
-	var n = 0, r = 1e3, i = (r >> 1) - 1, a, o = Symbol("kFastTimer"), s = [], c = -2, l = -1, u = 0, d = 1;
+	var n = 0, r = 1e3, i = 499, a, o = Symbol("kFastTimer"), s = [], c = -2, l = -1, u = 0, d = 1;
 	function f() {
 		n += i;
 		let e = 0, t = s.length;
@@ -3159,15 +3159,15 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 	}
 	var fe = null, pe = de();
 	pe.catch();
-	var Q = null, $ = null, me = 0, he = null, ge = 0, _e = 1, ve = 2 | _e, ye = 4 | _e, be = 8 | ge, xe = class {
+	var Q = null, $ = null, me = 0, he = null, ge = 1, _e = 3, ve = 5, ye = 8, be = class {
 		constructor(e, t, { exports: r }) {
 			n(Number.isFinite(e[V]) && e[V] > 0), this.llhttp = r, this.ptr = this.llhttp.llhttp_alloc(X.TYPE.RESPONSE), this.client = e, this.socket = t, this.timeout = null, this.timeoutValue = null, this.timeoutType = null, this.statusCode = null, this.statusText = "", this.upgrade = !1, this.headers = [], this.headersSize = 0, this.headersMaxSize = e[V], this.shouldKeepAlive = !1, this.paused = !1, this.resume = this.resume.bind(this), this.bytesRead = 0, this.keepAlive = "", this.contentLength = "", this.connection = "", this.maxResponseSize = e[q];
 		}
 		setTimeout(e, t) {
-			e !== this.timeoutValue || t & _e ^ this.timeoutType & _e ? (this.timeout &&= (a.clearTimeout(this.timeout), null), e && (t & _e ? this.timeout = a.setFastTimeout(Se, e, new WeakRef(this)) : (this.timeout = setTimeout(Se, e, new WeakRef(this)), this.timeout.unref())), this.timeoutValue = e) : this.timeout && this.timeout.refresh && this.timeout.refresh(), this.timeoutType = t;
+			e !== this.timeoutValue || t & ge ^ this.timeoutType & ge ? (this.timeout &&= (a.clearTimeout(this.timeout), null), e && (t & ge ? this.timeout = a.setFastTimeout(xe, e, new WeakRef(this)) : (this.timeout = setTimeout(xe, e, new WeakRef(this)), this.timeout.unref())), this.timeoutValue = e) : this.timeout && this.timeout.refresh && this.timeout.refresh(), this.timeoutType = t;
 		}
 		resume() {
-			this.socket.destroyed || !this.paused || (n(this.ptr != null), n(Q == null), this.llhttp.llhttp_resume(this.ptr), n(this.timeoutType === ye), this.timeout && this.timeout.refresh && this.timeout.refresh(), this.paused = !1, this.execute(this.socket.read() || se), this.readMore());
+			this.socket.destroyed || !this.paused || (n(this.ptr != null), n(Q == null), this.llhttp.llhttp_resume(this.ptr), n(this.timeoutType === ve), this.timeout && this.timeout.refresh && this.timeout.refresh(), this.paused = !1, this.execute(this.socket.read() || se), this.readMore());
 		}
 		readMore() {
 			for (; !this.paused && this.ptr;) {
@@ -3258,9 +3258,9 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			if (!l) return -1;
 			if (n(!this.upgrade), n(this.statusCode < 200), e === 100) return r.destroy(o, new d("bad response", r.getSocketInfo(o))), -1;
 			if (t && !l.upgrade) return r.destroy(o, new d("bad upgrade", r.getSocketInfo(o))), -1;
-			if (n(this.timeoutType === ve), this.statusCode = e, this.shouldKeepAlive = i || l.method === "HEAD" && !o[_] && this.connection.toLowerCase() === "keep-alive", this.statusCode >= 200) {
+			if (n(this.timeoutType === _e), this.statusCode = e, this.shouldKeepAlive = i || l.method === "HEAD" && !o[_] && this.connection.toLowerCase() === "keep-alive", this.statusCode >= 200) {
 				let e = l.bodyTimeout == null ? a[U] : l.bodyTimeout;
-				this.setTimeout(e, ye);
+				this.setTimeout(e, ve);
 			} else this.timeout && this.timeout.refresh && this.timeout.refresh();
 			if (l.method === "CONNECT" || t) return n(a[S] === 1), this.upgrade = !0, 2;
 			if (n((this.headers.length & 1) == 0), this.headers = [], this.headersSize = 0, this.shouldKeepAlive && a[L]) {
@@ -3277,7 +3277,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			let { client: t, socket: i, statusCode: a, maxResponseSize: o } = this;
 			if (i.destroyed) return -1;
 			let s = t[E][t[N]];
-			if (n(s), n(this.timeoutType === ye), this.timeout && this.timeout.refresh && this.timeout.refresh(), n(a >= 200), o > -1 && this.bytesRead + e.length > o) return r.destroy(i, new h()), -1;
+			if (n(s), n(this.timeoutType === ve), this.timeout && this.timeout.refresh && this.timeout.refresh(), n(a >= 200), o > -1 && this.bytesRead + e.length > o) return r.destroy(i, new h()), -1;
 			if (this.bytesRead += e.length, s.onData(e) === !1) return X.ERROR.PAUSED;
 		}
 		onMessageComplete() {
@@ -3295,13 +3295,13 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			}
 		}
 	};
-	function Se(e) {
+	function xe(e) {
 		let { socket: t, timeoutType: i, client: a, paused: o } = e.deref();
 		/* istanbul ignore else */
-		i === ve ? (!t[T] || t.writableNeedDrain || a[S] > 1) && (n(!o, "cannot be paused while waiting for headers"), r.destroy(t, new l())) : i === ye ? o || r.destroy(t, new p()) : i === be && (n(a[S] === 0 && a[B]), r.destroy(t, new f("socket idle timeout")));
+		i === _e ? (!t[T] || t.writableNeedDrain || a[S] > 1) && (n(!o, "cannot be paused while waiting for headers"), r.destroy(t, new l())) : i === ve ? o || r.destroy(t, new p()) : i === ye && (n(a[S] === 0 && a[B]), r.destroy(t, new f("socket idle timeout")));
 	}
-	async function Ce(e, t) {
-		e[R] = t, fe || (fe = await pe, pe = null), t[D] = !1, t[T] = !1, t[_] = !1, t[x] = !1, t[y] = new xe(e, t, fe), le(t, "error", function(e) {
+	async function Se(e, t) {
+		e[R] = t, fe || (fe = await pe, pe = null), t[D] = !1, t[T] = !1, t[_] = !1, t[x] = !1, t[y] = new be(e, t, fe), le(t, "error", function(e) {
 			n(e.code !== "ERR_TLS_CERT_ALTNAME_INVALID");
 			let t = this[y];
 			if (e.code === "ECONNRESET" && t.statusCode && !t.shouldKeepAlive) {
@@ -3343,10 +3343,10 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			version: "h1",
 			defaultPipelining: 1,
 			write(...t) {
-				return Ee(e, ...t);
+				return Te(e, ...t);
 			},
 			resume() {
-				we(e);
+				Ce(e);
 			},
 			destroy(e, n) {
 				i ? queueMicrotask(n) : t.destroy(e).on("close", n);
@@ -3359,20 +3359,20 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			}
 		};
 	}
-	function we(e) {
+	function Ce(e) {
 		let t = e[R];
 		if (t && !t.destroyed) {
-			if (e[w] === 0 ? !t[D] && t.unref && (t.unref(), t[D] = !0) : t[D] && t.ref && (t.ref(), t[D] = !1), e[w] === 0) t[y].timeoutType !== be && t[y].setTimeout(e[B], be);
-			else if (e[S] > 0 && t[y].statusCode < 200 && t[y].timeoutType !== ve) {
+			if (e[w] === 0 ? !t[D] && t.unref && (t.unref(), t[D] = !0) : t[D] && t.ref && (t.ref(), t[D] = !1), e[w] === 0) t[y].timeoutType !== ye && t[y].setTimeout(e[B], ye);
+			else if (e[S] > 0 && t[y].statusCode < 200 && t[y].timeoutType !== _e) {
 				let n = e[E][e[N]], r = n.headersTimeout == null ? e[H] : n.headersTimeout;
-				t[y].setTimeout(r, ve);
+				t[y].setTimeout(r, _e);
 			}
 		}
 	}
-	function Te(e) {
+	function we(e) {
 		return e !== "GET" && e !== "HEAD" && e !== "OPTIONS" && e !== "TRACE" && e !== "CONNECT";
 	}
-	function Ee(e, t) {
+	function Te(e, t) {
 		let { method: a, path: s, host: l, upgrade: u, blocking: d, reset: p } = t, { body: m, headers: h, contentLength: g } = t, v = a === "PUT" || a === "POST" || a === "PATCH" || a === "QUERY" || a === "PROPFIND" || a === "PROPPATCH";
 		if (r.isFormDataLike(m)) {
 			ue ||= ae().extractBody;
@@ -3381,7 +3381,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		} else r.isBlobLike(m) && t.contentType == null && m.type && h.push("content-type", m.type);
 		m && typeof m.read == "function" && m.read(0);
 		let y = r.bodyLength(m);
-		if (g = y ?? g, g === null && (g = t.contentLength), g === 0 && !v && (g = null), Te(a) && g > 0 && t.contentLength !== null && t.contentLength !== g) {
+		if (g = y ?? g, g === null && (g = t.contentLength), g === 0 && !v && (g = null), we(a) && g > 0 && t.contentLength !== null && t.contentLength !== g) {
 			if (e[W]) return r.errorRequest(e, t, new o()), !1;
 			process.emitWarning(new o());
 		}
@@ -3405,11 +3405,11 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			request: t,
 			headers: C,
 			socket: b
-		}), !m || y === 0 ? Oe(S, null, e, t, b, g, C, v) : r.isBuffer(m) ? Oe(S, m, e, t, b, g, C, v) : r.isBlobLike(m) ? typeof m.stream == "function" ? Ae(S, m.stream(), e, t, b, g, C, v) : ke(S, m, e, t, b, g, C, v) : r.isStream(m) ? De(S, m, e, t, b, g, C, v) : r.isIterable(m) ? Ae(S, m, e, t, b, g, C, v) : n(!1), !0;
+		}), !m || y === 0 ? De(S, null, e, t, b, g, C, v) : r.isBuffer(m) ? De(S, m, e, t, b, g, C, v) : r.isBlobLike(m) ? typeof m.stream == "function" ? ke(S, m.stream(), e, t, b, g, C, v) : Oe(S, m, e, t, b, g, C, v) : r.isStream(m) ? Ee(S, m, e, t, b, g, C, v) : r.isIterable(m) ? ke(S, m, e, t, b, g, C, v) : n(!1), !0;
 	}
-	function De(e, t, i, a, o, s, l, u) {
+	function Ee(e, t, i, a, o, s, l, u) {
 		n(s !== 0 || i[S] === 0, "stream body cannot be pipelined");
-		let d = !1, f = new je({
+		let d = !1, f = new Ae({
 			abort: e,
 			socket: o,
 			request: a,
@@ -3444,14 +3444,14 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		};
 		t.on("data", p).on("end", g).on("error", g).on("close", h), t.resume && t.resume(), o.on("drain", m).on("error", g), t.errorEmitted ?? t.errored ? setImmediate(() => g(t.errored)) : (t.endEmitted ?? t.readableEnded) && setImmediate(() => g(null)), (t.closeEmitted ?? t.closed) && setImmediate(h);
 	}
-	function Oe(e, t, i, a, o, s, c, l) {
+	function De(e, t, i, a, o, s, c, l) {
 		try {
 			t ? r.isBuffer(t) && (n(s === t.byteLength, "buffer body must have content length"), o.cork(), o.write(`${c}content-length: ${s}\r\n\r\n`, "latin1"), o.write(t), o.uncork(), a.onBodySent(t), !l && a.reset !== !1 && (o[_] = !0)) : s === 0 ? o.write(`${c}content-length: 0\r\n\r\n`, "latin1") : (n(s === null, "no body must not have content length"), o.write(`${c}\r\n`, "latin1")), a.onRequestSent(), i[Y]();
 		} catch (t) {
 			e(t);
 		}
 	}
-	async function ke(e, t, r, i, a, s, c, l) {
+	async function Oe(e, t, r, i, a, s, c, l) {
 		n(s === t.size, "blob body must have content length");
 		try {
 			if (s != null && s !== t.size) throw new o();
@@ -3461,7 +3461,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			e(t);
 		}
 	}
-	async function Ae(e, t, r, i, a, o, s, c) {
+	async function ke(e, t, r, i, a, o, s, c) {
 		n(o !== 0 || r[S] === 0, "iterator body cannot be pipelined");
 		let l = null;
 		function u() {
@@ -3474,7 +3474,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			n(l === null), a[I] ? t(a[I]) : l = e;
 		});
 		a.on("close", u).on("drain", u);
-		let f = new je({
+		let f = new Ae({
 			abort: e,
 			socket: a,
 			request: i,
@@ -3495,7 +3495,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			a.off("close", u).off("drain", u);
 		}
 	}
-	var je = class {
+	var Ae = class {
 		constructor({ abort: e, socket: t, request: n, contentLength: r, client: i, expectsPayload: a, header: o }) {
 			this.socket = t, this.request = n, this.contentLength = r, this.client = i, this.bytesWritten = 0, this.expectsPayload = a, this.header = o, this.abort = e, t[T] = !0;
 		}
@@ -3511,7 +3511,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			}
 			t.cork(), a === 0 && (!s && n.reset !== !1 && (t[_] = !0), r === null ? t.write(`${c}transfer-encoding: chunked\r\n`, "latin1") : t.write(`${c}content-length: ${r}\r\n\r\n`, "latin1")), r === null && t.write(`\r\n${l.toString(16)}\r\n`, "latin1"), this.bytesWritten += l;
 			let u = t.write(e);
-			return t.uncork(), n.onBodySent(e), u || t[y].timeout && t[y].timeoutType === ve && t[y].timeout.refresh && t[y].timeout.refresh(), u;
+			return t.uncork(), n.onBodySent(e), u || t[y].timeout && t[y].timeoutType === _e && t[y].timeout.refresh && t[y].timeout.refresh(), u;
 		}
 		end() {
 			let { socket: e, contentLength: t, client: n, bytesWritten: r, expectsPayload: i, header: a, request: s } = this;
@@ -3521,7 +3521,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 					if (n[W]) throw new o();
 					process.emitWarning(new o());
 				}
-				e[y].timeout && e[y].timeoutType === ve && e[y].timeout.refresh && e[y].timeout.refresh(), n[Y]();
+				e[y].timeout && e[y].timeoutType === _e && e[y].timeout.refresh && e[y].timeout.refresh(), n[Y]();
 			}
 		}
 		destroy(e) {
@@ -3529,7 +3529,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			t[T] = !1, e && (n(r[S] <= 1, "pipeline should only contain this request"), i(e));
 		}
 	};
-	t.exports = Ce;
+	t.exports = Se;
 })), oe = /* @__PURE__ */ _(((e, t) => {
 	var n = b("node:assert"), { pipeline: r } = b("node:stream"), i = P(), { RequestContentLengthMismatchError: a, RequestAbortedError: o, SocketError: s, InformationalError: c } = j(), { kUrl: l, kReset: u, kClient: d, kRunning: f, kPending: p, kQueue: m, kPendingIdx: h, kRunningIdx: g, kError: _, kSocket: v, kStrictContentLength: y, kOnError: x, kMaxConcurrentStreams: S, kHTTP2Session: C, kResume: w, kSize: T, kHTTPContext: E } = A(), D = Symbol("open streams"), O, k = !1, M;
 	try {
