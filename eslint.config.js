@@ -184,6 +184,12 @@ export default tseslint.config(
     },
   },
   {
+    files: ["scripts/**/*.js"],
+    rules: {
+      "no-console": "off",
+    },
+  },
+  {
     extends: [vitest.configs.recommended],
     files: ["tests/**/*.ts"],
     rules: {
