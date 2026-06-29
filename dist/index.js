@@ -4896,7 +4896,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		return n.utf8Slice(i, r);
 	}
 	function w(e, t) {
-		if (e.length === 0 || t === 0) return new Uint8Array();
+		if (e.length === 0 || t === 0) return /* @__PURE__ */ new Uint8Array();
 		if (e.length === 1) return new Uint8Array(e[0]);
 		let n = new Uint8Array(Buffer.allocUnsafeSlow(t).buffer), r = 0;
 		for (let t = 0; t < e.length; ++t) {
