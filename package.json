@@ -59,7 +59,7 @@
     "@eslint/markdown": "^8.0.3",
     "@types/node": "^26.1.1",
     "@vitest/coverage-v8": "^4.1.9",
-    "@vitest/eslint-plugin": "^1.6.23",
+    "@vitest/eslint-plugin": "^1.6.24",
     "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-package-json": "^1.6.2",
