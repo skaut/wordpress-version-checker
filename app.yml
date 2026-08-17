@@ -1,3 +1,4 @@
+---
 # This is a GitHub App Manifest. These settings will be used by default when
 # initially configuring your GitHub App.
 #
@@ -76,11 +77,13 @@ default_permissions:
   # https://developer.github.com/v3/apps/permissions/#metadata-permissions
   # metadata: read
 
-  # Retrieve Pages statuses, configuration, and builds, as well as create new builds.
+  # Retrieve Pages statuses, configuration, and builds, as well as create
+  # new builds.
   # https://developer.github.com/v3/apps/permissions/#permission-on-pages
   # pages: read
 
-  # Pull requests and related comments, assignees, labels, milestones, and merges.
+  # Pull requests and related comments, assignees, labels, milestones, and
+  # merges.
   # https://developer.github.com/v3/apps/permissions/#permission-on-pull-requests
   # pull_requests: read
 
@@ -134,6 +137,7 @@ url: https://skaut.github.io/wordpress-version-checker
 # A description of the GitHub App.
 description: https://skaut.github.io/wordpress-version-checker
 
-# Set to true when your GitHub App is available to the public or false when it is only accessible to the owner of the app.
+# Set to true when your GitHub App is available to the public or false when
+# it is only accessible to the owner of the app.
 # Default: true
 public: false
