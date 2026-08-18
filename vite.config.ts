@@ -22,6 +22,9 @@ export default defineConfig({
     exclude: NODE_BUILT_IN_MODULES,
   },
   test: {
+    coverage: {
+      exclude: ["tests/**"],
+    },
     mockReset: true,
     setupFiles: ["tests/setup.ts"],
   },
