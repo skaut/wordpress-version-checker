@@ -46,6 +46,9 @@
   "simple-git-hooks": {
     "pre-commit": "node scripts/pre-commit.js"
   },
+  "engines": {
+    "node": ">=24"
+  },
   "dependencies": {
     "@actions/core": "^3.0.1",
     "@actions/github": "^9.1.1",
@@ -57,7 +60,7 @@
     "@eslint/js": "^10.0.1",
     "@eslint/json": "^2.0.1",
     "@eslint/markdown": "^8.0.3",
-    "@types/node": "^26.4.0",
+    "@types/node": "^24.13.3",
     "@vitest/coverage-v8": "^4.1.11",
     "@vitest/eslint-plugin": "^1.6.27",
     "eslint": "^10.9.1",
