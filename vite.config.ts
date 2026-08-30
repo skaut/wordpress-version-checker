@@ -17,6 +17,7 @@ export default defineConfig({
     rollupOptions: {
       external: NODE_BUILT_IN_MODULES,
     },
+    target: "node24",
   },
   optimizeDeps: {
     exclude: NODE_BUILT_IN_MODULES,
