@@ -5,7 +5,7 @@ name: "CI"
     branches: "*"
   pull_request:
 env:
-  node-version: 22
+  node-version: 24
 
 jobs:
   build:
