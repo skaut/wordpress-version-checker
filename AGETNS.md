@@ -13,8 +13,8 @@ npm run build          # vite build -> dist/index.js (prebuild cleans dist/)
 npm run lint           # eslint + tsc --noEmit in parallel
 npm run lint:eslint    # eslint only
 npm run lint:typecheck # tsc --noEmit only
-npm test               # vitest (watch mode)
-npm run test-coverage  # vitest run --coverage (what CI runs)
+npm test               # vitest run --coverage (what CI runs)
+npm run test-watch     # vitest (watch mode)
 
 npx vitest run tests/run.test.ts          # single test file
 npx vitest run -t "some test name"        # single test by name
