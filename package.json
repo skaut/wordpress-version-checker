@@ -35,6 +35,8 @@
   "scripts": {
     "prebuild": "npm run clean",
     "build": "vite build",
+    "check": "run-p -c --aggregate-output check:*",
+    "check:js-compat": "es-check es2024 --module --checkFeatures 'dist/**/*.js'",
     "clean": "rimraf dist/*",
     "lint": "run-p -c --aggregate-output lint:*",
     "lint:eslint": "eslint --color",
@@ -63,6 +65,7 @@
     "@types/node": "^24.13.3",
     "@vitest/coverage-v8": "^4.1.11",
     "@vitest/eslint-plugin": "^1.6.27",
+    "es-check": "^9.6.4",
     "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-package-json": "^1.7.1",
