@@ -42,8 +42,8 @@
     "lint:eslint": "eslint --color",
     "lint:typecheck": "tsc --noEmit",
     "prepare": "simple-git-hooks",
-    "test": "vitest",
-    "test-coverage": "vitest run --coverage"
+    "test": "vitest run --coverage",
+    "test-watch": "vitest"
   },
   "simple-git-hooks": {
     "pre-commit": "node scripts/pre-commit.js"
