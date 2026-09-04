@@ -12862,7 +12862,7 @@ async function Ei() {
 	return Oi(n);
 }
 function Di(e) {
-	return Object.prototype.hasOwnProperty.call(e, "status");
+	return typeof e == "object" && !!e && Object.hasOwn(e, "status");
 }
 function Oi(e) {
 	if (typeof e != "object" || !e) throw new Ti("Invalid config file.");

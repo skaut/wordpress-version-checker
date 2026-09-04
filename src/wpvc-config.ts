@@ -34,7 +34,9 @@ export async function getWPVCConfig(): Promise<Config> {
 }
 
 function hasStatus(obj: unknown): obj is Record<"status", unknown> {
-  return Object.prototype.hasOwnProperty.call(obj, "status");
+  return (
+    obj !== null && typeof obj === "object" && Object.hasOwn(obj, "status")
+  );
 }
 
 function normalizeConfig(rawConfig: unknown): Config {
