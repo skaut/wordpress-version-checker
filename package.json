@@ -63,7 +63,7 @@
     "@eslint/json": "^2.1.0",
     "@eslint/markdown": "^8.0.3",
     "@types/node": "^26.5.1",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "^5.0.0",
     "@vitest/eslint-plugin": "^1.6.27",
     "es-check": "^9.7.1",
     "eslint": "^10.10.0",
