@@ -65,7 +65,7 @@
     "@types/node": "^26.4.1",
     "@vitest/coverage-v8": "^4.1.11",
     "@vitest/eslint-plugin": "^1.6.27",
-    "es-check": "^9.6.4",
+    "es-check": "^9.7.1",
     "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-package-json": "^1.8.0",
