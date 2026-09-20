@@ -1,0 +1,86 @@
+---
+name: "CI"
+"on":
+  push:
+    branches: "*"
+  pull_request:
+env:
+  node-version: 24
+
+jobs:
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v7
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.node-version }}
+          cache: "npm"
+
+      - name: "Install NPM dependencies"
+        run: |
+          npm ci
+
+      - name: "Build"
+        run: |
+          npm run build
+
+      - name: "Check the built output"
+        run: |
+          npm run check
+
+      - name: "Check for clean repo"
+        run: |
+          [ -z "$(git status --porcelain)" ] || (c=$?; git status; (exit $c))
+
+  lint:
+    name: "Lint"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v7
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.node-version }}
+          cache: "npm"
+
+      - name: "Install NPM dependencies"
+        run: |
+          npm ci
+
+      - name: "Lint"
+        run: |
+          npm run lint
+
+  test:
+    name: "Test"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v7
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.node-version }}
+          cache: "npm"
+
+      - name: "Install NPM dependencies"
+        run: |
+          npm ci
+
+      - name: "Run tests"
+        run: |
+          npm test
+
+      - name: "Upload coverage results"
+        uses: codecov/codecov-action@v7.1.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
