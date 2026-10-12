@@ -12,7 +12,7 @@ test("wordpressVersions works correctly when only stable version is available", 
 
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
-    .reply(200, stable as Record<string, unknown>);
+    .reply(200, stable);
 
   await expect(wordpressVersions()).resolves.toStrictEqual({
     beta: null,
@@ -26,7 +26,7 @@ test("wordpressVersions works correctly when both stable and beta versions are a
 
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
-    .reply(200, beta as Record<string, unknown>);
+    .reply(200, beta);
 
   await expect(wordpressVersions()).resolves.toStrictEqual({
     beta: "6.3",
@@ -40,7 +40,7 @@ test("wordpressVersions works correctly when stable, RC, and beta versions are a
 
   nock("https://api.wordpress.org")
     .get("/core/version-check/1.7/?channel=beta")
-    .reply(200, rc as Record<string, unknown>);
+    .reply(200, rc);
 
   await expect(wordpressVersions()).resolves.toStrictEqual({
     beta: "6.3",
