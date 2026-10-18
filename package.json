@@ -78,7 +78,7 @@
     "nock": "^15.0.1",
     "node-fetch": "^3.3.2",
     "npm-run-all2": "^9.0.3",
-    "prettier": "^3.9.9",
+    "prettier": "^3.9.10",
     "rimraf": "^6.1.3",
     "simple-git-hooks": "^2.14.0",
     "typescript": "^6.0.3",
