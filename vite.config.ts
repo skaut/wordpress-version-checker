@@ -14,7 +14,7 @@ export default defineConfig({
       fileName: "index",
       formats: ["es"],
     },
-    rollupOptions: {
+    rolldownOptions: {
       external: NODE_BUILT_IN_MODULES,
     },
     target: "node24",
