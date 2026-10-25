@@ -11,8 +11,8 @@ import "assert";
 import "string_decoder";
 import "child_process";
 import "timers";
-//#region \0rolldown/runtime.js
-var u = Object.create, d = Object.defineProperty, f = Object.getOwnPropertyDescriptor, p = Object.getOwnPropertyNames, m = Object.getPrototypeOf, h = Object.prototype.hasOwnProperty, g = (e, t) => () => (t || (e((t = { exports: {} }).exports, t), e = null), t.exports), _ = (e, t, n, r) => {
+// \0rolldown/runtime.js
+var u = Object.create, d = Object.defineProperty, f = Object.getOwnPropertyDescriptor, p = Object.getOwnPropertyNames, m = Object.getPrototypeOf, h = Object.prototype.hasOwnProperty, g = (e, t) => () => (t || (e((t = { exports: {} }).exports, t, t.exports), e = null), t.exports), _ = (e, t, n, r) => {
 	if (t && typeof t == "object" || typeof t == "function") for (var i = p(t), a = 0, o = i.length, s; a < o; a++) s = i[a], !h.call(e, s) && s !== n && d(e, s, {
 		get: ((e) => t[e]).bind(null, s),
 		enumerable: !(r = f(t, s)) || r.enumerable
@@ -25,8 +25,7 @@ var u = Object.create, d = Object.defineProperty, f = Object.getOwnPropertyDescr
 	if (typeof require < "u") return require.apply(this, arguments);
 	throw Error("Calling `require` for \"" + e + "\" in an environment that doesn't expose the `require` function. See https://rolldown.rs/in-depth/bundling-cjs#require-external-modules for more details.");
 });
-//#endregion
-//#region node_modules/@actions/core/lib/utils.js
+// node_modules/@actions/core/lib/utils.js
 function b(e) {
 	return e == null ? "" : typeof e == "string" || e instanceof String ? e : JSON.stringify(e);
 }
@@ -40,8 +39,7 @@ function x(e) {
 		endColumn: e.endColumn
 	} : {};
 }
-//#endregion
-//#region node_modules/@actions/core/lib/command.js
+// node_modules/@actions/core/lib/command.js
 function S(t, n, r) {
 	let i = new w(t, n, r);
 	process.stdout.write(i.toString() + e.EOL);
@@ -69,8 +67,7 @@ function T(e) {
 function E(e) {
 	return b(e).replace(/%/g, "%25").replace(/\r/g, "%0D").replace(/\n/g, "%0A").replace(/:/g, "%3A").replace(/,/g, "%2C");
 }
-//#endregion
-//#region node_modules/tunnel/lib/tunnel.js
+// node_modules/tunnel/lib/tunnel.js
 var D = /* @__PURE__ */ g(((e) => {
 	y("net");
 	var t = y("tls"), n = y("http"), r = y("https"), i = y("events");
@@ -108,11 +105,7 @@ var D = /* @__PURE__ */ g(((e) => {
 	}
 	a.inherits(u, i.EventEmitter), u.prototype.addRequest = function(e, t, n, r) {
 		var i = this, a = p({ request: e }, i.options, f(t, n, r));
-		if (i.sockets.length >= this.maxSockets) {
-			i.requests.push(a);
-			return;
-		}
-		i.createSocket(a, function(t) {
+		i.sockets.length >= this.maxSockets ? i.requests.push(a) : i.createSocket(a, function(t) {
 			t.on("free", n), t.on("close", r), t.on("agentRemove", r), e.onSocket(t);
 			function n() {
 				i.emit("free", t, a);
@@ -146,15 +139,11 @@ var D = /* @__PURE__ */ g(((e) => {
 				m("tunneling socket could not be established, statusCode=%d", i.statusCode), o.destroy();
 				var c = /* @__PURE__ */ Error("tunneling socket could not be established, statusCode=" + i.statusCode);
 				c.code = "ECONNRESET", e.request.emit("error", c), n.removeSocket(r);
-				return;
-			}
-			if (s.length > 0) {
+			} else if (s.length > 0) {
 				m("got illegal response body from proxy"), o.destroy();
 				var c = /* @__PURE__ */ Error("got illegal response body from proxy");
 				c.code = "ECONNRESET", e.request.emit("error", c), n.removeSocket(r);
-				return;
-			}
-			return m("tunneling connection has established"), n.sockets[n.sockets.indexOf(r)] = o, t(o);
+			} else return m("tunneling connection has established"), n.sockets[n.sockets.indexOf(r)] = o, t(o);
 		}
 		function l(t) {
 			a.removeAllListeners(), m("tunneling socket could not be established, cause=%s\n", t.message, t.stack);
@@ -1008,7 +997,7 @@ var D = /* @__PURE__ */ g(((e) => {
 			else if (s(i)) {
 				this.body = i;
 				let e = this.body._readableState;
-				(!e || !e.autoDestroy) && (this.endHandler = function() {
+				e && e.autoDestroy || (this.endHandler = function() {
 					c(this);
 				}, this.body.on("end", this.endHandler)), this.errorHandler = (e) => {
 					this.abort ? this.abort(e) : this.error = e;
@@ -1320,7 +1309,7 @@ var D = /* @__PURE__ */ g(((e) => {
 			this._onTimeout = e, this._idleTimeout = t, this._timerArg = n, this.refresh();
 		}
 		refresh() {
-			this._state === s && o.push(this), (!i || o.length === 1) && f(), this._state = l;
+			this._state === s && o.push(this), i && o.length !== 1 || f(), this._state = l;
 		}
 		clear() {
 			this._state = c, this._idleStart = -1;
@@ -3362,9 +3351,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			if (e.code === "ECONNRESET" && t.statusCode && !t.shouldKeepAlive) {
 				let e = t.finish();
 				e && (this[L] = e, this[b][J](e));
-				return;
-			}
-			this[L] = e, this[b][J](e);
+			} else this[L] = e, this[b][J](e);
 		}), Z(t, "readable", function() {
 			let e = this[x];
 			e && e.readMore();
@@ -3373,9 +3360,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			if (e.statusCode && !e.shouldKeepAlive) {
 				let t = e.finish();
 				t && r.destroy(this, t);
-				return;
-			}
-			r.destroy(this, new f("other side closed", r.getSocketInfo(this)));
+			} else r.destroy(this, new f("other side closed", r.getSocketInfo(this)));
 		}), Z(t, "close", function() {
 			let e = this[b], t = this[x];
 			De(this), t && (!this[L] && t.statusCode && !t.shouldKeepAlive && (this[L] = t.finish() || this[L]), this[x].destroy(), this[x] = null);
@@ -3471,13 +3456,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		let x = e[z];
 		De(x);
 		let C = (n) => {
-			if (!t.aborted) {
-				if (t.completed) {
-					(t.upgrade || t.method === "CONNECT") && r.destroy(x, new p("aborted"));
-					return;
-				}
-				r.errorRequest(e, t, n || new c()), r.destroy(h), r.destroy(x, new p("aborted"));
-			}
+			t.aborted || (t.completed ? (t.upgrade || t.method === "CONNECT") && r.destroy(x, new p("aborted")) : (r.errorRequest(e, t, n || new c()), r.destroy(h), r.destroy(x, new p("aborted"))));
 		};
 		try {
 			t.onConnect(C);
@@ -3726,13 +3705,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		let E, { hostname: D, port: k } = e[u];
 		C[F] = f || `${D}${k ? `:${k}` : ""}`, C[I] = c;
 		let A = (n) => {
-			if (!t.aborted) {
-				if (t.completed) {
-					c === "CONNECT" && E != null && a.destroy(E, n || new s());
-					return;
-				}
-				n ||= new s(), a.errorRequest(e, t, n), E != null && a.destroy(E, n), a.destroy(S, n), e[h][e[_]++] = null, e[T]();
-			}
+			t.aborted || (t.completed ? c === "CONNECT" && E != null && a.destroy(E, n || new s()) : (n ||= new s(), a.errorRequest(e, t, n), E != null && a.destroy(E, n), a.destroy(S, n), e[h][e[_]++] = null, e[T]()));
 		};
 		try {
 			t.onConnect(A);
@@ -3771,7 +3744,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			let [e, t] = j(S);
 			C["content-type"] = t, S = e.stream, N = e.length;
 		}
-		if (N ??= t.contentLength, (N === 0 || !M) && (N = null), G(c) && N > 0 && t.contentLength != null && t.contentLength !== N) {
+		if (N ??= t.contentLength, N !== 0 && M || (N = null), G(c) && N > 0 && t.contentLength != null && t.contentLength !== N) {
 			if (e[x]) return a.errorRequest(e, t, new o()), !1;
 			process.emitWarning(new o());
 		}
@@ -3788,9 +3761,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			if (t.onResponseStarted(), t.aborted) {
 				let n = new s();
 				a.errorRequest(e, t, n), a.destroy(E, n);
-				return;
-			}
-			t.onHeaders(Number(r), te(i), E.resume.bind(E), "") === !1 && E.pause(), E.on("data", (e) => {
+			} else t.onHeaders(Number(r), te(i), E.resume.bind(E), "") === !1 && E.pause(), E.on("data", (e) => {
 				t.onData(e) === !1 && E.pause();
 			});
 		}), E.once("end", () => {
@@ -4483,11 +4454,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		[a](e, t) {
 			let n = t.onHeaders;
 			t.onHeaders = function(e, r, i) {
-				if (e === 407) {
-					typeof t.onError == "function" && t.onError(new d("Proxy Authentication Required (407)"));
-					return;
-				}
-				n && n.call(this, e, r, i);
+				e === 407 ? typeof t.onError == "function" && t.onError(new d("Proxy Authentication Required (407)")) : n && n.call(this, e, r, i);
 			};
 			let { origin: r, path: i = "/", headers: o = {} } = e;
 			if (e.path = r + i, !("host" in o) && !("Host" in o)) {
@@ -4743,19 +4710,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		}
 		static [r](e, { state: t, opts: n }, r) {
 			let { statusCode: i, code: a, headers: o } = e, { method: s, retryOptions: c } = n, { maxRetries: u, minTimeout: d, maxTimeout: f, timeoutFactor: p, statusCodes: m, errorCodes: h, methods: g } = c, { counter: _ } = t;
-			if (a && a !== "UND_ERR_REQ_RETRY" && !h.includes(a)) {
-				r(e);
-				return;
-			}
-			if (Array.isArray(g) && !g.includes(s)) {
-				r(e);
-				return;
-			}
-			if (i != null && Array.isArray(m) && !m.includes(i)) {
-				r(e);
-				return;
-			}
-			if (_ > u) {
+			if (a && a !== "UND_ERR_REQ_RETRY" && !h.includes(a) || Array.isArray(g) && !g.includes(s) || i != null && Array.isArray(m) && !m.includes(i) || _ > u) {
 				r(e);
 				return;
 			}
@@ -5077,11 +5032,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			}));
 		}
 		onConnect(e, t) {
-			if (this.reason) {
-				e(this.reason);
-				return;
-			}
-			n(this.callback), this.abort = e, this.context = t;
+			this.reason ? e(this.reason) : (n(this.callback), this.abort = e, this.context = t);
 		}
 		onHeaders(e, t, n, i) {
 			let { callback: a, opaque: c, abort: l, context: u, responseHeaders: d, highWaterMark: f } = this, p = d === "raw" ? o.parseRawHeaders(t) : o.parseHeaders(t);
@@ -5149,15 +5100,9 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		e.abort ? e.abort(e[a]?.reason) : e.reason = e[a]?.reason ?? new r(), c(e);
 	}
 	function s(e, t) {
-		if (e.reason = null, e[a] = null, e[i] = null, t) {
-			if (t.aborted) {
-				o(e);
-				return;
-			}
-			e[a] = t, e[i] = () => {
-				o(e);
-			}, n(e[a], e[i]);
-		}
+		e.reason = null, e[a] = null, e[i] = null, t && (t.aborted ? o(e) : (e[a] = t, e[i] = () => {
+			o(e);
+		}, n(e[a], e[i])));
 	}
 	function c(e) {
 		e[a] && ("removeEventListener" in e[a] ? e[a].removeEventListener("abort", e[i]) : e[a].removeListener("abort", e[i]), e[a] = null, e[i] = null);
@@ -5186,11 +5131,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			}), u(this, r);
 		}
 		onConnect(e, t) {
-			if (this.reason) {
-				e(this.reason);
-				return;
-			}
-			n(this.callback), this.abort = e, this.context = t;
+			this.reason ? e(this.reason) : (n(this.callback), this.abort = e, this.context = t);
 		}
 		onHeaders(e, t, n, a) {
 			let { factory: l, opaque: u, context: d, callback: f, responseHeaders: p } = this, m = p === "raw" ? s.parseRawHeaders(t) : s.parseHeaders(t);
@@ -5311,11 +5252,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		}
 		onConnect(e, t) {
 			let { ret: n, res: r } = this;
-			if (this.reason) {
-				e(this.reason);
-				return;
-			}
-			f(!r, "pipeline cannot be retried"), f(!n.destroyed), this.abort = e, this.context = t;
+			this.reason ? e(this.reason) : (f(!r, "pipeline cannot be retried"), f(!n.destroyed), this.abort = e, this.context = t);
 		}
 		onHeaders(e, t, n) {
 			let { opaque: r, handler: i, context: a } = this;
@@ -5394,11 +5331,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			super("UNDICI_UPGRADE"), this.responseHeaders = a || null, this.opaque = i || null, this.callback = t, this.abort = null, this.context = null, o(this, r);
 		}
 		onConnect(e, t) {
-			if (this.reason) {
-				e(this.reason);
-				return;
-			}
-			c(this.callback), this.abort = e, this.context = null;
+			this.reason ? e(this.reason) : (c(this.callback), this.abort = e, this.context = null);
 		}
 		onHeaders() {
 			throw new r("bad upgrade", null);
@@ -5450,11 +5383,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			super("UNDICI_CONNECT"), this.opaque = r || null, this.responseHeaders = a || null, this.callback = t, this.abort = null, s(this, n);
 		}
 		onConnect(e, t) {
-			if (this.reason) {
-				e(this.reason);
-				return;
-			}
-			n(this.callback), this.abort = e, this.context = t;
+			this.reason ? e(this.reason) : (n(this.callback), this.abort = e, this.context = t);
 		}
 		onHeaders() {
 			throw new a("bad connect", null);
@@ -5541,9 +5470,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 	function p(e, t) {
 		if (Array.isArray(e)) {
 			for (let n = 0; n < e.length; n += 2) if (e[n].toLocaleLowerCase() === t.toLocaleLowerCase()) return e[n + 1];
-			return;
-		}
-		return typeof e.get == "function" ? e.get(t) : f(e)[t.toLocaleLowerCase()];
+		} else return typeof e.get == "function" ? e.get(t) : f(e)[t.toLocaleLowerCase()];
 	}
 	function m(e) {
 		let t = e.slice(), n = [];
@@ -6045,13 +5972,7 @@ ${e.format(t)}
 			return this.#i += e.length, this.#i >= this.#e && (this.#n = !0, this.#r ? this.#o.onError(this.#a) : this.#o.onComplete([])), !0;
 		}
 		onComplete(e) {
-			if (!this.#n) {
-				if (this.#r) {
-					this.#o.onError(this.reason);
-					return;
-				}
-				this.#o.onComplete(e);
-			}
+			this.#n || (this.#r ? this.#o.onError(this.reason) : this.#o.onComplete(e));
 		}
 	};
 	function s({ maxSize: e } = { maxSize: 1048576 }) {
@@ -7148,17 +7069,7 @@ ${e.format(t)}
 			request: i,
 			processResponseEndOfBody: Ee,
 			processResponse: (e) => {
-				if (!s) {
-					if (e.aborted) {
-						Ae(n, i, a, l.serializedAbortReason);
-						return;
-					}
-					if (e.type === "error") {
-						n.reject(TypeError("fetch failed", { cause: e.error }));
-						return;
-					}
-					a = new WeakRef(o(e, "immutable")), n.resolve(a.deref()), n = null;
-				}
+				s || (e.aborted ? Ae(n, i, a, l.serializedAbortReason) : e.type === "error" ? n.reject(TypeError("fetch failed", { cause: e.error })) : (a = new WeakRef(o(e, "immutable")), n.resolve(a.deref()), n = null));
 			},
 			dispatcher: r[q]
 		}), n.promise;
@@ -7213,11 +7124,7 @@ ${e.format(t)}
 				return;
 			}
 			await F(a.body, (n) => {
-				if (!d(n, r.integrity)) {
-					t("integrity mismatch");
-					return;
-				}
-				a.body = J(n)[0], Ie(e, a);
+				d(n, r.integrity) ? (a.body = J(n)[0], Ie(e, a)) : t("integrity mismatch");
 			}, t);
 		} else Ie(e, a);
 	}
@@ -7948,11 +7855,7 @@ ${e.format(t)}
 			u.brandCheck(this, e), u.argumentLengthCheck(arguments, 1, "FileReader.readAsDataURL"), t = u.converters.Blob(t, { strict: !1 }), r(this, t, "DataURL");
 		}
 		abort() {
-			if (this[a] === "empty" || this[a] === "done") {
-				this[s] = null;
-				return;
-			}
-			this[a] === "loading" && (this[a] = "done", this[s] = null), this[l] = !0, i("abort", this), this[a] !== "loading" && i("loadend", this);
+			this[a] === "empty" || this[a] === "done" ? this[s] = null : (this[a] === "loading" && (this[a] = "done", this[s] = null), this[l] = !0, i("abort", this), this[a] !== "loading" && i("loadend", this));
 		}
 		get readyState() {
 			switch (u.brandCheck(this, e), this[a]) {
@@ -8122,11 +8025,7 @@ ${e.format(t)}
 						}
 					},
 					processResponseEndOfBody(e) {
-						if (e.aborted) {
-							c.reject(new DOMException("aborted", "AbortError"));
-							return;
-						}
-						c.resolve(e);
+						e.aborted ? c.reject(new DOMException("aborted", "AbortError")) : c.resolve(e);
 					}
 				})), r.push(c.promise);
 			}
@@ -8460,9 +8359,7 @@ ${e.format(t)}
 			if (r === 46) {
 				if (t === 0 || e.charCodeAt(n - 1) === 45) throw Error("Invalid cookie domain");
 				t = 0;
-				continue;
-			}
-			if (t === 0 && !o(r) || !o(r) && r !== 45 || ++t > 63) throw Error("Invalid cookie domain");
+			} else if (t === 0 && !o(r) || !o(r) && r !== 45 || ++t > 63) throw Error("Invalid cookie domain");
 		}
 		if (t === 0 || e.charCodeAt(e.length - 1) === 45) throw Error("Invalid cookie domain");
 	}
@@ -9194,11 +9091,7 @@ ${e.format(t)}
 					return;
 				}
 				this.#e[s] = [], this.#e[c] = 0, this.#e.on("data", (e) => {
-					if (this.#e[c] += e.length, this.#n > 0 && this.#e[c] > this.#n) {
-						l(new a()), this.#e.removeAllListeners(), this.#e.destroy(), this.#e = null;
-						return;
-					}
-					this.#e[s].push(e);
+					this.#e[c] += e.length, this.#n > 0 && this.#e[c] > this.#n ? (l(new a()), this.#e.removeAllListeners(), this.#e.destroy(), this.#e = null) : this.#e[s].push(e);
 				}), this.#e.on("error", (e) => {
 					this.#e = null, l(e);
 				});
@@ -9294,19 +9187,7 @@ ${e.format(t)}
 						if (t) {
 							let e = t instanceof E ? 1009 : 1007;
 							D(this.ws, e, t.message);
-							return;
-						}
-						if (this.writeFragments(n)) {
-							if (this.#l > 0 && this.#t > this.#l) {
-								D(this.ws, 1009, new E().message);
-								return;
-							}
-							if (!this.#a.fin) {
-								this.#i = i.INFO, this.#r = !0, this.run(e);
-								return;
-							}
-							_(this.ws, this.#a.binaryType, this.consumeFragments()), this.#r = !0, this.#i = i.INFO, this.run(e);
-						}
+						} else this.writeFragments(n) && (this.#l > 0 && this.#t > this.#l ? D(this.ws, 1009, new E().message) : this.#a.fin ? (_(this.ws, this.#a.binaryType, this.consumeFragments()), this.#r = !0, this.#i = i.INFO, this.run(e)) : (this.#i = i.INFO, this.#r = !0, this.run(e)));
 					}), this.#r = !1;
 					break;
 				} else {
@@ -9695,38 +9576,28 @@ ${e.format(t)}
 			e.readableObjectMode = !0, super(e), this.state = e.eventSourceSettings || {}, e.push && (this.push = e.push);
 		}
 		_transform(e, t, n) {
-			if (e.length === 0) {
-				n();
-				return;
-			}
-			if (this.chunks.push(e), this.checkBOM && this.handleBOM()) {
-				n();
-				return;
-			}
-			for (; this.hasCurrentByte();) {
-				let e = this.currentByte();
-				if (this.eventEndCheck) {
-					if (this.crlfCheck) {
-						if (e === o) {
-							this.crlfCheck = !1, this.consumeCurrentByte();
+			if (e.length === 0) n();
+			else if (this.chunks.push(e), this.checkBOM && this.handleBOM()) n();
+			else {
+				for (; this.hasCurrentByte();) {
+					let e = this.currentByte();
+					if (this.eventEndCheck) {
+						if (this.crlfCheck) {
+							if (e === o) {
+								this.crlfCheck = !1, this.consumeCurrentByte();
+								continue;
+							}
+							this.crlfCheck = !1;
+						}
+						if (e === o || e === s) {
+							e === s && (this.crlfCheck = !0), this.consumeCurrentByte(), this.hasPendingEvent() && this.processEvent(this.event), this.clearEvent();
 							continue;
 						}
-						this.crlfCheck = !1;
-					}
-					if (e === o || e === s) {
-						e === s && (this.crlfCheck = !0), this.consumeCurrentByte(), this.hasPendingEvent() && this.processEvent(this.event), this.clearEvent();
-						continue;
-					}
-					this.eventEndCheck = !1;
-					continue;
+						this.eventEndCheck = !1;
+					} else e === o || e === s ? (e === s && (this.crlfCheck = !0), this.parseLine(this.readLine(), this.event), this.consumeCurrentByte(), this.eventEndCheck = !0) : this.advanceCursor();
 				}
-				if (e === o || e === s) {
-					e === s && (this.crlfCheck = !0), this.parseLine(this.readLine(), this.event), this.consumeCurrentByte(), this.eventEndCheck = !0;
-					continue;
-				}
-				this.advanceCursor();
+				n();
 			}
-			n();
 		}
 		parseLine(e, t) {
 			if (e.length === 0) return;
@@ -9736,17 +9607,9 @@ ${e.format(t)}
 			if (n !== -1 && (r = n, i = n + 1, e[i] === l && ++i), g(e, r, u)) {
 				let n = e.toString("utf8", i);
 				t.data === void 0 ? t.data = n : t.data += `\n${n}`;
-				return;
-			}
-			if (g(e, r, p)) {
-				m(e, i) && (t.retry = e.toString("utf8", i));
-				return;
-			}
-			if (g(e, r, f)) {
-				h(e, i) && (t.id = e.toString("utf8", i));
-				return;
-			}
-			if (g(e, r, d)) {
+			} else if (g(e, r, p)) m(e, i) && (t.retry = e.toString("utf8", i));
+			else if (g(e, r, f)) h(e, i) && (t.id = e.toString("utf8", i));
+			else if (g(e, r, d)) {
 				let n = e.toString("utf8", i);
 				n.length > 0 && (t.event = n);
 			}
@@ -10032,8 +9895,7 @@ var bt;
 (function(e) {
 	e.ApplicationJson = "application/json";
 })(bt ||= {}), vt.MovedPermanently, vt.ResourceMoved, vt.SeeOther, vt.TemporaryRedirect, vt.PermanentRedirect, vt.BadGateway, vt.ServiceUnavailable, vt.GatewayTimeout;
-//#endregion
-//#region node_modules/@actions/core/lib/summary.js
+// node_modules/@actions/core/lib/summary.js
 var xt = function(e, t, n, r) {
 	function i(e) {
 		return e instanceof n ? e : new n(function(t) {
@@ -10166,8 +10028,7 @@ new class {
 		return this.addRaw(n).addEOL();
 	}
 }();
-//#endregion
-//#region node_modules/@actions/io/lib/io-util.js
+// node_modules/@actions/io/lib/io-util.js
 var { chmod: Et, copyFile: Dt, lstat: Ot, mkdir: kt, open: At, readdir: jt, rename: Mt, rm: Nt, rmdir: Pt, stat: Ft, symlink: It, unlink: Lt } = r.promises;
 process.platform, r.constants.O_RDONLY, process.platform, l.EventEmitter, l.EventEmitter, t.platform(), t.arch();
 var Rt;
@@ -10185,8 +10046,7 @@ function Bt(e) {
 function Vt(e, t = {}) {
 	S("error", x(t), e instanceof Error ? e.toString() : e);
 }
-//#endregion
-//#region node_modules/compare-versions/lib/esm/utils.js
+// node_modules/compare-versions/lib/esm/utils.js
 var Ht = /^[v^~<>=]*?(\d+)(?:\.([x*]|\d+)(?:\.([x*]|\d+)(?:\.([x*]|\d+))?(?:-([\da-z\-]+(?:\.[\da-z\-]+)*))?(?:\+[\da-z\-]+(?:\.[\da-z\-]+)*)?)?)?$/i, Ut = (e) => {
 	if (typeof e != "string") throw TypeError("Invalid argument expected string");
 	let t = e.match(Ht);
@@ -10223,8 +10083,7 @@ var Ht = /^[v^~<>=]*?(\d+)(?:\.([x*]|\d+)(?:\.([x*]|\d+)(?:\.([x*]|\d+))?(?:-([\
 	if (typeof e != "string") throw TypeError(`Invalid operator type, expected string but got ${typeof e}`);
 	if (Qt.indexOf(e) === -1) throw Error(`Invalid operator, expected one of ${Qt.join("|")}`);
 };
-//#endregion
-//#region node_modules/ts-custom-error/dist/custom-error.mjs
+// node_modules/ts-custom-error/dist/custom-error.mjs
 function en(e, t) {
 	var n = Object.setPrototypeOf;
 	n ? n(e, t) : e.__proto__ = t;
@@ -10355,8 +10214,8 @@ var nn = function() {
 			return this._decodedPassword;
 		}
 	};
-})), pn = /* @__PURE__ */ v((/* @__PURE__ */ g(((e) => {
-	var t = e && e.__createBinding || (Object.create ? (function(e, t, n, r) {
+})), pn = /* @__PURE__ */ v((/* @__PURE__ */ g(((e, t, n) => {
+	var r = n && n.__createBinding || (Object.create ? (function(e, t, n, r) {
 		r === void 0 && (r = n);
 		var i = Object.getOwnPropertyDescriptor(t, n);
 		(!i || ("get" in i ? !t.__esModule : i.writable || i.configurable)) && (i = {
@@ -10367,14 +10226,14 @@ var nn = function() {
 		}), Object.defineProperty(e, r, i);
 	}) : (function(e, t, n, r) {
 		r === void 0 && (r = n), e[r] = t[n];
-	})), n = e && e.__setModuleDefault || (Object.create ? (function(e, t) {
+	})), i = n && n.__setModuleDefault || (Object.create ? (function(e, t) {
 		Object.defineProperty(e, "default", {
 			enumerable: !0,
 			value: t
 		});
 	}) : function(e, t) {
 		e.default = t;
-	}), r = e && e.__importStar || (function() {
+	}), a = n && n.__importStar || (function() {
 		var e = function(t) {
 			return e = Object.getOwnPropertyNames || function(e) {
 				var t = [];
@@ -10382,13 +10241,13 @@ var nn = function() {
 				return t;
 			}, e(t);
 		};
-		return function(r) {
-			if (r && r.__esModule) return r;
-			var i = {};
-			if (r != null) for (var a = e(r), o = 0; o < a.length; o++) a[o] !== "default" && t(i, r, a[o]);
-			return n(i, r), i;
+		return function(t) {
+			if (t && t.__esModule) return t;
+			var n = {};
+			if (t != null) for (var a = e(t), o = 0; o < a.length; o++) a[o] !== "default" && r(n, t, a[o]);
+			return i(n, t), n;
 		};
-	})(), i = e && e.__awaiter || function(e, t, n, r) {
+	})(), o = n && n.__awaiter || function(e, t, n, r) {
 		function i(e) {
 			return e instanceof n ? e : new n(function(t) {
 				t(e);
@@ -10415,51 +10274,51 @@ var nn = function() {
 			c((r = r.apply(e, t || [])).next());
 		});
 	};
-	Object.defineProperty(e, "__esModule", { value: !0 }), e.HttpClient = e.HttpClientResponse = e.HttpClientError = e.MediaTypes = e.Headers = e.HttpCodes = void 0, e.getProxyUrl = p, e.isHttps = S;
-	var a = r(y("http")), o = r(y("https")), s = r(fn()), c = r(O()), l = gt(), u;
+	Object.defineProperty(e, "__esModule", { value: !0 }), e.HttpClient = e.HttpClientResponse = e.HttpClientError = e.MediaTypes = e.Headers = e.HttpCodes = void 0, e.getProxyUrl = h, e.isHttps = w;
+	var s = a(y("http")), c = a(y("https")), l = a(fn()), u = a(O()), d = gt(), f;
 	(function(e) {
 		e[e.OK = 200] = "OK", e[e.MultipleChoices = 300] = "MultipleChoices", e[e.MovedPermanently = 301] = "MovedPermanently", e[e.ResourceMoved = 302] = "ResourceMoved", e[e.SeeOther = 303] = "SeeOther", e[e.NotModified = 304] = "NotModified", e[e.UseProxy = 305] = "UseProxy", e[e.SwitchProxy = 306] = "SwitchProxy", e[e.TemporaryRedirect = 307] = "TemporaryRedirect", e[e.PermanentRedirect = 308] = "PermanentRedirect", e[e.BadRequest = 400] = "BadRequest", e[e.Unauthorized = 401] = "Unauthorized", e[e.PaymentRequired = 402] = "PaymentRequired", e[e.Forbidden = 403] = "Forbidden", e[e.NotFound = 404] = "NotFound", e[e.MethodNotAllowed = 405] = "MethodNotAllowed", e[e.NotAcceptable = 406] = "NotAcceptable", e[e.ProxyAuthenticationRequired = 407] = "ProxyAuthenticationRequired", e[e.RequestTimeout = 408] = "RequestTimeout", e[e.Conflict = 409] = "Conflict", e[e.Gone = 410] = "Gone", e[e.TooManyRequests = 429] = "TooManyRequests", e[e.InternalServerError = 500] = "InternalServerError", e[e.NotImplemented = 501] = "NotImplemented", e[e.BadGateway = 502] = "BadGateway", e[e.ServiceUnavailable = 503] = "ServiceUnavailable", e[e.GatewayTimeout = 504] = "GatewayTimeout";
-	})(u || (e.HttpCodes = u = {}));
-	var d;
+	})(f || (e.HttpCodes = f = {}));
+	var p;
 	(function(e) {
 		e.Accept = "accept", e.ContentType = "content-type";
-	})(d || (e.Headers = d = {}));
-	var f;
+	})(p || (e.Headers = p = {}));
+	var m;
 	(function(e) {
 		e.ApplicationJson = "application/json";
-	})(f || (e.MediaTypes = f = {}));
-	function p(e) {
-		let t = s.getProxyUrl(new URL(e));
+	})(m || (e.MediaTypes = m = {}));
+	function h(e) {
+		let t = l.getProxyUrl(new URL(e));
 		return t ? t.href : "";
 	}
-	var m = [
-		u.MovedPermanently,
-		u.ResourceMoved,
-		u.SeeOther,
-		u.TemporaryRedirect,
-		u.PermanentRedirect
-	], h = [
-		u.BadGateway,
-		u.ServiceUnavailable,
-		u.GatewayTimeout
-	], g = [
+	var g = [
+		f.MovedPermanently,
+		f.ResourceMoved,
+		f.SeeOther,
+		f.TemporaryRedirect,
+		f.PermanentRedirect
+	], _ = [
+		f.BadGateway,
+		f.ServiceUnavailable,
+		f.GatewayTimeout
+	], v = [
 		"OPTIONS",
 		"GET",
 		"DELETE",
 		"HEAD"
-	], _ = 10, v = 5, b = class e extends Error {
+	], b = 10, x = 5, S = class e extends Error {
 		constructor(t, n) {
 			super(t), this.name = "HttpClientError", this.statusCode = n, Object.setPrototypeOf(this, e.prototype);
 		}
 	};
-	e.HttpClientError = b;
-	var x = class {
+	e.HttpClientError = S;
+	var C = class {
 		constructor(e) {
 			this.message = e;
 		}
 		readBody() {
-			return i(this, void 0, void 0, function* () {
-				return new Promise((e) => i(this, void 0, void 0, function* () {
+			return o(this, void 0, void 0, function* () {
+				return new Promise((e) => o(this, void 0, void 0, function* () {
 					let t = Buffer.alloc(0);
 					this.message.on("data", (e) => {
 						t = Buffer.concat([t, e]);
@@ -10470,8 +10329,8 @@ var nn = function() {
 			});
 		}
 		readBodyBuffer() {
-			return i(this, void 0, void 0, function* () {
-				return new Promise((e) => i(this, void 0, void 0, function* () {
+			return o(this, void 0, void 0, function* () {
+				return new Promise((e) => o(this, void 0, void 0, function* () {
 					let t = [];
 					this.message.on("data", (e) => {
 						t.push(e);
@@ -10482,8 +10341,8 @@ var nn = function() {
 			});
 		}
 	};
-	e.HttpClientResponse = x;
-	function S(e) {
+	e.HttpClientResponse = C;
+	function w(e) {
 		return new URL(e).protocol === "https:";
 	}
 	e.HttpClient = class {
@@ -10491,82 +10350,82 @@ var nn = function() {
 			this._ignoreSslError = !1, this._allowRedirects = !0, this._allowRedirectDowngrade = !1, this._maxRedirects = 50, this._allowRetries = !1, this._maxRetries = 1, this._keepAlive = !1, this._disposed = !1, this.userAgent = this._getUserAgentWithOrchestrationId(e), this.handlers = t || [], this.requestOptions = n, n && (n.ignoreSslError != null && (this._ignoreSslError = n.ignoreSslError), this._socketTimeout = n.socketTimeout, n.allowRedirects != null && (this._allowRedirects = n.allowRedirects), n.allowRedirectDowngrade != null && (this._allowRedirectDowngrade = n.allowRedirectDowngrade), n.maxRedirects != null && (this._maxRedirects = Math.max(n.maxRedirects, 0)), n.keepAlive != null && (this._keepAlive = n.keepAlive), n.allowRetries != null && (this._allowRetries = n.allowRetries), n.maxRetries != null && (this._maxRetries = n.maxRetries));
 		}
 		options(e, t) {
-			return i(this, void 0, void 0, function* () {
+			return o(this, void 0, void 0, function* () {
 				return this.request("OPTIONS", e, null, t || {});
 			});
 		}
 		get(e, t) {
-			return i(this, void 0, void 0, function* () {
+			return o(this, void 0, void 0, function* () {
 				return this.request("GET", e, null, t || {});
 			});
 		}
 		del(e, t) {
-			return i(this, void 0, void 0, function* () {
+			return o(this, void 0, void 0, function* () {
 				return this.request("DELETE", e, null, t || {});
 			});
 		}
 		post(e, t, n) {
-			return i(this, void 0, void 0, function* () {
+			return o(this, void 0, void 0, function* () {
 				return this.request("POST", e, t, n || {});
 			});
 		}
 		patch(e, t, n) {
-			return i(this, void 0, void 0, function* () {
+			return o(this, void 0, void 0, function* () {
 				return this.request("PATCH", e, t, n || {});
 			});
 		}
 		put(e, t, n) {
-			return i(this, void 0, void 0, function* () {
+			return o(this, void 0, void 0, function* () {
 				return this.request("PUT", e, t, n || {});
 			});
 		}
 		head(e, t) {
-			return i(this, void 0, void 0, function* () {
+			return o(this, void 0, void 0, function* () {
 				return this.request("HEAD", e, null, t || {});
 			});
 		}
 		sendStream(e, t, n, r) {
-			return i(this, void 0, void 0, function* () {
+			return o(this, void 0, void 0, function* () {
 				return this.request(e, t, n, r);
 			});
 		}
 		getJson(e) {
-			return i(this, arguments, void 0, function* (e, t = {}) {
-				t[d.Accept] = this._getExistingOrDefaultHeader(t, d.Accept, f.ApplicationJson);
+			return o(this, arguments, void 0, function* (e, t = {}) {
+				t[p.Accept] = this._getExistingOrDefaultHeader(t, p.Accept, m.ApplicationJson);
 				let n = yield this.get(e, t);
 				return this._processResponse(n, this.requestOptions);
 			});
 		}
 		postJson(e, t) {
-			return i(this, arguments, void 0, function* (e, t, n = {}) {
+			return o(this, arguments, void 0, function* (e, t, n = {}) {
 				let r = JSON.stringify(t, null, 2);
-				n[d.Accept] = this._getExistingOrDefaultHeader(n, d.Accept, f.ApplicationJson), n[d.ContentType] = this._getExistingOrDefaultContentTypeHeader(n, f.ApplicationJson);
+				n[p.Accept] = this._getExistingOrDefaultHeader(n, p.Accept, m.ApplicationJson), n[p.ContentType] = this._getExistingOrDefaultContentTypeHeader(n, m.ApplicationJson);
 				let i = yield this.post(e, r, n);
 				return this._processResponse(i, this.requestOptions);
 			});
 		}
 		putJson(e, t) {
-			return i(this, arguments, void 0, function* (e, t, n = {}) {
+			return o(this, arguments, void 0, function* (e, t, n = {}) {
 				let r = JSON.stringify(t, null, 2);
-				n[d.Accept] = this._getExistingOrDefaultHeader(n, d.Accept, f.ApplicationJson), n[d.ContentType] = this._getExistingOrDefaultContentTypeHeader(n, f.ApplicationJson);
+				n[p.Accept] = this._getExistingOrDefaultHeader(n, p.Accept, m.ApplicationJson), n[p.ContentType] = this._getExistingOrDefaultContentTypeHeader(n, m.ApplicationJson);
 				let i = yield this.put(e, r, n);
 				return this._processResponse(i, this.requestOptions);
 			});
 		}
 		patchJson(e, t) {
-			return i(this, arguments, void 0, function* (e, t, n = {}) {
+			return o(this, arguments, void 0, function* (e, t, n = {}) {
 				let r = JSON.stringify(t, null, 2);
-				n[d.Accept] = this._getExistingOrDefaultHeader(n, d.Accept, f.ApplicationJson), n[d.ContentType] = this._getExistingOrDefaultContentTypeHeader(n, f.ApplicationJson);
+				n[p.Accept] = this._getExistingOrDefaultHeader(n, p.Accept, m.ApplicationJson), n[p.ContentType] = this._getExistingOrDefaultContentTypeHeader(n, m.ApplicationJson);
 				let i = yield this.patch(e, r, n);
 				return this._processResponse(i, this.requestOptions);
 			});
 		}
 		request(e, t, n, r) {
-			return i(this, void 0, void 0, function* () {
+			return o(this, void 0, void 0, function* () {
 				if (this._disposed) throw Error("Client has already been disposed.");
-				let i = new URL(t), a = this._prepareRequest(e, i, r), o = this._allowRetries && g.includes(e) ? this._maxRetries + 1 : 1, s = 0, c;
+				let i = new URL(t), a = this._prepareRequest(e, i, r), o = this._allowRetries && v.includes(e) ? this._maxRetries + 1 : 1, s = 0, c;
 				do {
-					if (c = yield this.requestRaw(a, n), c && c.message && c.message.statusCode === u.Unauthorized) {
+					if (c = yield this.requestRaw(a, n), c && c.message && c.message.statusCode === f.Unauthorized) {
 						let e;
 						for (let t of this.handlers) if (t.canHandleAuthentication(c)) {
 							e = t;
@@ -10575,7 +10434,7 @@ var nn = function() {
 						return e ? e.handleAuthentication(this, a, n) : c;
 					}
 					let t = this._maxRedirects;
-					for (; c.message.statusCode && m.includes(c.message.statusCode) && this._allowRedirects && t > 0;) {
+					for (; c.message.statusCode && g.includes(c.message.statusCode) && this._allowRedirects && t > 0;) {
 						let o = c.message.headers.location;
 						if (!o) break;
 						let s = new URL(o);
@@ -10583,7 +10442,7 @@ var nn = function() {
 						if (yield c.readBody(), s.hostname !== i.hostname) for (let e in r) e.toLowerCase() === "authorization" && delete r[e];
 						a = this._prepareRequest(e, s, r), c = yield this.requestRaw(a, n), t--;
 					}
-					if (!c.message.statusCode || !h.includes(c.message.statusCode)) return c;
+					if (!c.message.statusCode || !_.includes(c.message.statusCode)) return c;
 					s += 1, s < o && (yield c.readBody(), yield this._performExponentialBackoff(s));
 				} while (s < o);
 				return c;
@@ -10593,7 +10452,7 @@ var nn = function() {
 			this._agent && this._agent.destroy(), this._disposed = !0;
 		}
 		requestRaw(e, t) {
-			return i(this, void 0, void 0, function* () {
+			return o(this, void 0, void 0, function* () {
 				return new Promise((n, r) => {
 					function i(e, t) {
 						e ? r(e) : t ? n(t) : r(/* @__PURE__ */ Error("Unknown error"));
@@ -10609,7 +10468,7 @@ var nn = function() {
 				r || (r = !0, n(e, t));
 			}
 			let a = e.httpModule.request(e.options, (e) => {
-				i(void 0, new x(e));
+				i(void 0, new C(e));
 			}), o;
 			a.on("socket", (e) => {
 				o = e;
@@ -10626,25 +10485,25 @@ var nn = function() {
 			return this._getAgent(t);
 		}
 		getAgentDispatcher(e) {
-			let t = new URL(e), n = s.getProxyUrl(t);
+			let t = new URL(e), n = l.getProxyUrl(t);
 			if (n && n.hostname) return this._getProxyAgentDispatcher(t, n);
 		}
 		_prepareRequest(e, t, n) {
 			let r = {};
 			r.parsedUrl = t;
 			let i = r.parsedUrl.protocol === "https:";
-			r.httpModule = i ? o : a;
-			let s = i ? 443 : 80;
-			if (r.options = {}, r.options.host = r.parsedUrl.hostname, r.options.port = r.parsedUrl.port ? parseInt(r.parsedUrl.port) : s, r.options.path = (r.parsedUrl.pathname || "") + (r.parsedUrl.search || ""), r.options.method = e, r.options.headers = this._mergeHeaders(n), this.userAgent != null && (r.options.headers["user-agent"] = this.userAgent), r.options.agent = this._getAgent(r.parsedUrl), this.handlers) for (let e of this.handlers) e.prepareRequest(r.options);
+			r.httpModule = i ? c : s;
+			let a = i ? 443 : 80;
+			if (r.options = {}, r.options.host = r.parsedUrl.hostname, r.options.port = r.parsedUrl.port ? parseInt(r.parsedUrl.port) : a, r.options.path = (r.parsedUrl.pathname || "") + (r.parsedUrl.search || ""), r.options.method = e, r.options.headers = this._mergeHeaders(n), this.userAgent != null && (r.options.headers["user-agent"] = this.userAgent), r.options.agent = this._getAgent(r.parsedUrl), this.handlers) for (let e of this.handlers) e.prepareRequest(r.options);
 			return r;
 		}
 		_mergeHeaders(e) {
-			return this.requestOptions && this.requestOptions.headers ? Object.assign({}, C(this.requestOptions.headers), C(e || {})) : C(e || {});
+			return this.requestOptions && this.requestOptions.headers ? Object.assign({}, T(this.requestOptions.headers), T(e || {})) : T(e || {});
 		}
 		_getExistingOrDefaultHeader(e, t, n) {
 			let r;
 			if (this.requestOptions && this.requestOptions.headers) {
-				let e = C(this.requestOptions.headers)[t];
+				let e = T(this.requestOptions.headers)[t];
 				e && (r = typeof e == "number" ? e.toString() : e);
 			}
 			let i = e[t];
@@ -10653,33 +10512,33 @@ var nn = function() {
 		_getExistingOrDefaultContentTypeHeader(e, t) {
 			let n;
 			if (this.requestOptions && this.requestOptions.headers) {
-				let e = C(this.requestOptions.headers)[d.ContentType];
+				let e = T(this.requestOptions.headers)[p.ContentType];
 				e && (n = typeof e == "number" ? String(e) : Array.isArray(e) ? e.join(", ") : e);
 			}
-			let r = e[d.ContentType];
+			let r = e[p.ContentType];
 			return r === void 0 ? n === void 0 ? t : n : typeof r == "number" ? String(r) : Array.isArray(r) ? r.join(", ") : r;
 		}
 		_getAgent(e) {
-			let t, n = s.getProxyUrl(e), r = n && n.hostname;
+			let t, n = l.getProxyUrl(e), r = n && n.hostname;
 			if (this._keepAlive && r && (t = this._proxyAgent), r || (t = this._agent), t) return t;
-			let i = e.protocol === "https:", l = 100;
-			if (this.requestOptions && (l = this.requestOptions.maxSockets || a.globalAgent.maxSockets), n && n.hostname) {
+			let i = e.protocol === "https:", a = 100;
+			if (this.requestOptions && (a = this.requestOptions.maxSockets || s.globalAgent.maxSockets), n && n.hostname) {
 				let e = {
-					maxSockets: l,
+					maxSockets: a,
 					keepAlive: this._keepAlive,
 					proxy: Object.assign(Object.assign({}, (n.username || n.password) && { proxyAuth: `${n.username}:${n.password}` }), {
 						host: n.hostname,
 						port: n.port
 					})
-				}, r, a = n.protocol === "https:";
-				r = i ? a ? c.httpsOverHttps : c.httpsOverHttp : a ? c.httpOverHttps : c.httpOverHttp, t = r(e), this._proxyAgent = t;
+				}, r, o = n.protocol === "https:";
+				r = i ? o ? u.httpsOverHttps : u.httpsOverHttp : o ? u.httpOverHttps : u.httpOverHttp, t = r(e), this._proxyAgent = t;
 			}
 			if (!t) {
 				let e = {
 					keepAlive: this._keepAlive,
-					maxSockets: l
+					maxSockets: a
 				};
-				t = i ? new o.Agent(e) : new a.Agent(e), this._agent = t;
+				t = i ? new c.Agent(e) : new s.Agent(e), this._agent = t;
 			}
 			return i && this._ignoreSslError && (t.options = Object.assign(t.options || {}, { rejectUnauthorized: !1 })), t;
 		}
@@ -10687,7 +10546,7 @@ var nn = function() {
 			let n;
 			if (this._keepAlive && (n = this._proxyAgentDispatcher), n) return n;
 			let r = e.protocol === "https:";
-			return n = new l.ProxyAgent(Object.assign({
+			return n = new d.ProxyAgent(Object.assign({
 				uri: t.href,
 				pipelining: +!!this._keepAlive
 			}, (t.username || t.password) && { token: `Basic ${Buffer.from(`${t.username}:${t.password}`).toString("base64")}` })), this._proxyAgentDispatcher = n, r && this._ignoreSslError && (n.options = Object.assign(n.options.requestTls || {}, { rejectUnauthorized: !1 })), n;
@@ -10697,21 +10556,21 @@ var nn = function() {
 			return n ? `${t} actions_orchestration_id/${n.replace(/[^a-z0-9_.-]/gi, "_")}` : t;
 		}
 		_performExponentialBackoff(e) {
-			return i(this, void 0, void 0, function* () {
-				e = Math.min(_, e);
-				let t = v * 2 ** e;
+			return o(this, void 0, void 0, function* () {
+				e = Math.min(b, e);
+				let t = x * 2 ** e;
 				return new Promise((e) => setTimeout(() => e(), t));
 			});
 		}
 		_processResponse(e, t) {
-			return i(this, void 0, void 0, function* () {
-				return new Promise((n, r) => i(this, void 0, void 0, function* () {
+			return o(this, void 0, void 0, function* () {
+				return new Promise((n, r) => o(this, void 0, void 0, function* () {
 					let i = e.message.statusCode || 0, a = {
 						statusCode: i,
 						result: null,
 						headers: {}
 					};
-					i === u.NotFound && n(a);
+					i === f.NotFound && n(a);
 					function o(e, t) {
 						if (typeof t == "string") {
 							let e = new Date(t);
@@ -10726,14 +10585,14 @@ var nn = function() {
 					if (i > 299) {
 						let e;
 						e = s && s.message ? s.message : c && c.length > 0 ? c : `Failed request: (${i})`;
-						let t = new b(e, i);
+						let t = new S(e, i);
 						t.result = a.result, r(t);
 					} else n(a);
 				}));
 			});
 		}
 	};
-	var C = (e) => Object.keys(e).reduce((t, n) => (t[n.toLowerCase()] = e[n], t), {});
+	var T = (e) => Object.keys(e).reduce((t, n) => (t[n.toLowerCase()] = e[n], t), {});
 })))(), 1), mn = function(e, t, n, r) {
 	function i(e) {
 		return e instanceof n ? e : new n(function(t) {
@@ -10789,19 +10648,16 @@ function bn(e) {
 	}
 	return e;
 }
-//#endregion
-//#region node_modules/universal-user-agent/index.js
+// node_modules/universal-user-agent/index.js
 function xn() {
 	return typeof navigator == "object" && "userAgent" in navigator ? navigator.userAgent : typeof process == "object" && process.version !== void 0 ? `Node.js/${process.version.substr(1)} (${process.platform}; ${process.arch})` : "<environment undetectable>";
 }
-//#endregion
-//#region node_modules/before-after-hook/lib/register.js
+// node_modules/before-after-hook/lib/register.js
 function Sn(e, t, n, r) {
 	if (typeof n != "function") throw Error("method for before hook must be a function");
 	return r ||= {}, Array.isArray(t) ? t.reverse().reduce((t, n) => Sn.bind(null, e, n, t, r), n)() : Promise.resolve().then(() => e.registry[t] ? e.registry[t].reduce((e, t) => t.hook.bind(null, e, r), n)() : n(r));
 }
-//#endregion
-//#region node_modules/before-after-hook/lib/add.js
+// node_modules/before-after-hook/lib/add.js
 function Cn(e, t, n, r) {
 	let i = r;
 	e.registry[n] || (e.registry[n] = []), t === "before" && (r = (e, t) => Promise.resolve().then(i.bind(null, t)).then(e.bind(null, t))), t === "after" && (r = (e, t) => {
@@ -10812,15 +10668,13 @@ function Cn(e, t, n, r) {
 		orig: i
 	});
 }
-//#endregion
-//#region node_modules/before-after-hook/lib/remove.js
+// node_modules/before-after-hook/lib/remove.js
 function wn(e, t, n) {
 	if (!e.registry[t]) return;
 	let r = e.registry[t].map((e) => e.orig).indexOf(n);
 	r !== -1 && e.registry[t].splice(r, 1);
 }
-//#endregion
-//#region node_modules/before-after-hook/index.js
+// node_modules/before-after-hook/index.js
 var Tn = Function.bind, En = Tn.bind(Tn);
 function Dn(e, t, n) {
 	let r = En(wn, null).apply(null, n ? [t, n] : [t]);
@@ -11222,8 +11076,7 @@ function yr(e) {
 		url: "/graphql"
 	});
 }
-//#endregion
-//#region node_modules/@octokit/auth-token/dist-bundle/index.js
+// node_modules/@octokit/auth-token/dist-bundle/index.js
 var br = "(?:[a-zA-Z0-9_-]+)", xr = "\\.", Sr = RegExp(`^${br}${xr}${br}${xr}${br}$`), Cr = Sr.test.bind(Sr);
 async function wr(e) {
 	let t = Cr(e), n = e.startsWith("v1.") || e.startsWith("ghs_"), r = e.startsWith("ghu_");
@@ -11254,11 +11107,7 @@ var Nr = `octokit-core.js/${Or} ${xn()}`, Pr = class {
 		return class extends this {
 			constructor(...t) {
 				let n = t[0] || {};
-				if (typeof e == "function") {
-					super(e(n));
-					return;
-				}
-				super(Object.assign({}, e, n, n.userAgent && e.userAgent ? { userAgent: `${n.userAgent} ${e.userAgent}` } : null));
+				super(typeof e == "function" ? e(n) : Object.assign({}, e, n, n.userAgent && e.userAgent ? { userAgent: `${n.userAgent} ${e.userAgent}` } : null));
 			}
 		};
 	}
@@ -12666,14 +12515,12 @@ function Br(e, t, n, r, i) {
 	}
 	return Object.assign(o, a);
 }
-//#endregion
-//#region node_modules/@octokit/plugin-rest-endpoint-methods/dist-src/index.js
+// node_modules/@octokit/plugin-rest-endpoint-methods/dist-src/index.js
 function Vr(e) {
 	return { rest: zr(e) };
 }
 Vr.VERSION = Fr;
-//#endregion
-//#region node_modules/@octokit/plugin-paginate-rest/dist-bundle/index.js
+// node_modules/@octokit/plugin-paginate-rest/dist-bundle/index.js
 var Hr = "0.0.0-development";
 function Ur(e) {
 	if (!e.data) return {
@@ -12742,26 +12589,22 @@ function Zr(e, t) {
 	let i = bn(n.userAgent);
 	return i && (n.userAgent = i), n;
 }
-//#endregion
-//#region node_modules/@actions/github/lib/github.js
+// node_modules/@actions/github/lib/github.js
 var Qr = new dn();
 function $r(e, t, ...n) {
 	return new (Xr.plugin(...n))(Zr(e, t));
 }
-//#endregion
-//#region src/octokit.ts
+// src/octokit.ts
 var ei = void 0;
 function ti() {
 	return ei ??= $r(zt("repo-token")), ei;
 }
-//#endregion
-//#region src/repo.ts
+// src/repo.ts
 var ni = void 0;
 function ri() {
 	return ni ??= Qr.repo, ni;
 }
-//#endregion
-//#region src/issue-management.ts
+// src/issue-management.ts
 async function ii(e) {
 	await ti().rest.issues.update({
 		...ri(),
@@ -12817,8 +12660,7 @@ async function ci(e, t, n) {
 		throw new un(e, String(t));
 	});
 }
-//#endregion
-//#region src/outdated-beta.ts
+// src/outdated-beta.ts
 async function li(e, t, n) {
 	let r = await si(), i = "The plugin hasn't been tested with a beta version of WordPress", a = ui(t, n);
 	r === null ? await oi(i, a, e.assignees) : await ci(r, i, a);
@@ -12831,8 +12673,7 @@ function ui(e, t) {
 
 This issue will be closed automatically when the versions match.`;
 }
-//#endregion
-//#region src/outdated-rc.ts
+// src/outdated-rc.ts
 async function di(e, t, n) {
 	let r = await si(), i = "The plugin hasn't been tested with an upcoming version of WordPress", a = fi(t, n);
 	r === null ? await oi(i, a, e.assignees) : await ci(r, i, a);
@@ -12845,8 +12686,7 @@ function fi(e, t) {
 
 This issue will be closed automatically when the versions match.`;
 }
-//#endregion
-//#region src/outdated-stable.ts
+// src/outdated-stable.ts
 async function pi(e, t, n) {
 	let r = await si(), i = "The plugin hasn't been tested with the latest version of WordPress", a = mi(t, n);
 	r === null ? await oi(i, a, e.assignees) : await ci(r, i, a);
@@ -12859,15 +12699,13 @@ function mi(e, t) {
 
 This issue will be closed automatically when the versions match.`;
 }
-//#endregion
-//#region src/exceptions/InvalidReadmeError.ts
+// src/exceptions/InvalidReadmeError.ts
 var hi = class extends an {
 	constructor(e) {
 		super(`Couldn't get the repository readme. Error message: ${e}`);
 	}
 };
-//#endregion
-//#region src/tested-version.ts
+// src/tested-version.ts
 async function gi(e) {
 	let t = await _i(e);
 	for (let e of t.split(/\r?\n/u)) {
@@ -12888,21 +12726,18 @@ async function _i(e) {
 	for (let e of await Promise.allSettled(t)) if (e.status === "fulfilled") return e.value;
 	throw new hi("No readme file was found in repo and all usual locations were exhausted.");
 }
-//#endregion
-//#region src/up-to-date.ts
+// src/up-to-date.ts
 async function vi() {
 	let e = await si();
 	e !== null && (await ai(e, "The \"Tested up to\" version in the readme matches the latest version now, closing this issue."), await ii(e));
 }
-//#endregion
-//#region src/exceptions/LatestVersionError.ts
+// src/exceptions/LatestVersionError.ts
 var yi = class extends an {
 	constructor(e) {
 		super(e === void 0 ? "Failed to fetch the latest WordPress version." : `Failed to fetch the latest WordPress version. Error message: ${e}`);
 	}
 };
-//#endregion
-//#region src/wordpress-versions.ts
+// src/wordpress-versions.ts
 async function bi() {
 	let e = await xi({
 		host: "api.wordpress.org",
@@ -12950,15 +12785,13 @@ function Ci(e) {
 function wi(e) {
 	return e.split("-")[0].split(".").slice(0, 2).join(".");
 }
-//#endregion
-//#region src/exceptions/ConfigError.ts
+// src/exceptions/ConfigError.ts
 var Ti = class extends an {
 	constructor(e) {
 		super(`Couldn't get the wordpress-version-checker config file. Error message: ${e}`);
 	}
 };
-//#endregion
-//#region src/wpvc-config.ts
+// src/wpvc-config.ts
 async function Ei() {
 	let e = await ti().rest.repos.getContent({
 		...ri(),
@@ -13014,8 +12847,7 @@ function Oi(e) {
 	}
 	return t;
 }
-//#endregion
-//#region src/run.ts
+// src/run.ts
 async function ki() {
 	try {
 		let e = await Ei(), t = await gi(e), n = await bi(), r = e.channel === "beta" ? n.beta : null, i = ["beta", "rc"].includes(e.channel) ? n.rc : null;
@@ -13024,7 +12856,5 @@ async function ki() {
 		Bt(e.message);
 	}
 }
-//#endregion
-//#region src/index.ts
+// src/index.ts
 ki();
-//#endregion
