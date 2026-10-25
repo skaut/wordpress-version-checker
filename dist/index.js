@@ -739,7 +739,7 @@ var D = /* @__PURE__ */ g(((e) => {
 			bytesRead: e.bytesRead
 		};
 	}
-	function oe(e) {
+	function J(e) {
 		let t;
 		return new ReadableStream({
 			async start() {
@@ -762,7 +762,7 @@ var D = /* @__PURE__ */ g(((e) => {
 			type: "bytes"
 		});
 	}
-	function J(e) {
+	function oe(e) {
 		return e && typeof e == "object" && typeof e.append == "function" && typeof e.delete == "function" && typeof e.get == "function" && typeof e.getAll == "function" && typeof e.has == "function" && typeof e.set == "function" && e[Symbol.toStringTag] === "FormData";
 	}
 	function Y(e, t) {
@@ -880,11 +880,11 @@ var D = /* @__PURE__ */ g(((e) => {
 		destroy: B,
 		bodyLength: R,
 		deepClone: I,
-		ReadableStreamFrom: oe,
+		ReadableStreamFrom: J,
 		isBuffer: W,
 		validateHandler: ie,
 		getSocketInfo: ae,
-		isFormDataLike: J,
+		isFormDataLike: oe,
 		buildURL: T,
 		addAbortListener: Y,
 		isValidHTTPToken: ue,
@@ -1197,52 +1197,55 @@ var D = /* @__PURE__ */ g(((e) => {
 	};
 	t.exports = r;
 })), L = /* @__PURE__ */ g(((e, t) => {
-	var n = I(), { ClientDestroyedError: r, ClientClosedError: i, InvalidArgumentError: a } = A(), { kDestroy: o, kClose: s, kClosed: c, kDestroyed: l, kDispatch: u, kInterceptors: d } = k(), f = Symbol("onDestroyed"), p = Symbol("onClosed"), m = Symbol("Intercepted Dispatch"), h = Symbol("webSocketOptions");
-	t.exports = class extends n {
+	var n = y("node:buffer"), r = I(), { ClientDestroyedError: i, ClientClosedError: a, InvalidArgumentError: o } = A(), { kDestroy: s, kClose: c, kClosed: l, kDestroyed: u, kDispatch: d, kInterceptors: f } = k(), p = Symbol("onDestroyed"), m = Symbol("onClosed"), h = Symbol("Intercepted Dispatch"), g = Symbol("webSocketOptions"), _ = Symbol("eventSourceOptions");
+	t.exports = class extends r {
 		constructor(e) {
-			super(), this[l] = !1, this[f] = null, this[c] = !1, this[p] = [], this[h] = e?.webSocket ?? {};
+			super(), this[u] = !1, this[p] = null, this[l] = !1, this[m] = [], this[g] = e?.webSocket ?? {}, this[_] = e?.eventSource ?? {};
 		}
 		get webSocketOptions() {
 			return {
-				maxFragments: this[h].maxFragments ?? 131072,
-				maxPayloadSize: this[h].maxPayloadSize ?? 134217728
+				maxFragments: this[g].maxFragments ?? 131072,
+				maxPayloadSize: this[g].maxPayloadSize ?? 134217728
 			};
 		}
+		get eventSourceOptions() {
+			return { maxEventSize: this[_].maxEventSize ?? n.kStringMaxLength };
+		}
 		get destroyed() {
-			return this[l];
+			return this[u];
 		}
 		get closed() {
-			return this[c];
+			return this[l];
 		}
 		get interceptors() {
-			return this[d];
+			return this[f];
 		}
 		set interceptors(e) {
 			if (e) {
-				for (let t = e.length - 1; t >= 0; t--) if (typeof this[d][t] != "function") throw new a("interceptor must be an function");
+				for (let t = e.length - 1; t >= 0; t--) if (typeof this[f][t] != "function") throw new o("interceptor must be an function");
 			}
-			this[d] = e;
+			this[f] = e;
 		}
 		close(e) {
 			if (e === void 0) return new Promise((e, t) => {
 				this.close((n, r) => n ? t(n) : e(r));
 			});
-			if (typeof e != "function") throw new a("invalid callback");
+			if (typeof e != "function") throw new o("invalid callback");
+			if (this[u]) {
+				queueMicrotask(() => e(new i(), null));
+				return;
+			}
 			if (this[l]) {
-				queueMicrotask(() => e(new r(), null));
+				this[m] ? this[m].push(e) : queueMicrotask(() => e(null, null));
 				return;
 			}
-			if (this[c]) {
-				this[p] ? this[p].push(e) : queueMicrotask(() => e(null, null));
-				return;
-			}
-			this[c] = !0, this[p].push(e);
+			this[l] = !0, this[m].push(e);
 			let t = () => {
-				let e = this[p];
-				this[p] = null;
+				let e = this[m];
+				this[m] = null;
 				for (let t = 0; t < e.length; t++) e[t](null, null);
 			};
-			this[s]().then(() => this.destroy()).then(() => {
+			this[c]().then(() => this.destroy()).then(() => {
 				queueMicrotask(t);
 			});
 		}
@@ -1250,36 +1253,36 @@ var D = /* @__PURE__ */ g(((e) => {
 			if (typeof e == "function" && (t = e, e = null), t === void 0) return new Promise((t, n) => {
 				this.destroy(e, (e, r) => e ? /* istanbul ignore next: should never error */ n(e) : t(r));
 			});
-			if (typeof t != "function") throw new a("invalid callback");
-			if (this[l]) {
-				this[f] ? this[f].push(t) : queueMicrotask(() => t(null, null));
+			if (typeof t != "function") throw new o("invalid callback");
+			if (this[u]) {
+				this[p] ? this[p].push(t) : queueMicrotask(() => t(null, null));
 				return;
 			}
-			e ||= new r(), this[l] = !0, this[f] = this[f] || [], this[f].push(t);
+			e ||= new i(), this[u] = !0, this[p] = this[p] || [], this[p].push(t);
 			let n = () => {
-				let e = this[f];
-				this[f] = null;
+				let e = this[p];
+				this[p] = null;
 				for (let t = 0; t < e.length; t++) e[t](null, null);
 			};
-			this[o](e).then(() => {
+			this[s](e).then(() => {
 				queueMicrotask(n);
 			});
 		}
-		[m](e, t) {
-			if (!this[d] || this[d].length === 0) return this[m] = this[u], this[u](e, t);
-			let n = this[u].bind(this);
-			for (let e = this[d].length - 1; e >= 0; e--) n = this[d][e](n);
-			return this[m] = n, n(e, t);
+		[h](e, t) {
+			if (!this[f] || this[f].length === 0) return this[h] = this[d], this[d](e, t);
+			let n = this[d].bind(this);
+			for (let e = this[f].length - 1; e >= 0; e--) n = this[f][e](n);
+			return this[h] = n, n(e, t);
 		}
 		dispatch(e, t) {
-			if (!t || typeof t != "object") throw new a("handler must be an object");
+			if (!t || typeof t != "object") throw new o("handler must be an object");
 			try {
-				if (!e || typeof e != "object") throw new a("opts must be an object.");
-				if (this[l] || this[f]) throw new r();
-				if (this[c]) throw new i();
-				return this[m](e, t);
+				if (!e || typeof e != "object") throw new o("opts must be an object.");
+				if (this[u] || this[p]) throw new i();
+				if (this[l]) throw new a();
+				return this[h](e, t);
 			} catch (e) {
-				if (typeof t.onError != "function") throw new a("invalid onError method");
+				if (typeof t.onError != "function") throw new o("invalid onError method");
 				return t.onError(e), !1;
 			}
 		}
@@ -2364,7 +2367,7 @@ var D = /* @__PURE__ */ g(((e) => {
 	function ae(e, t) {
 		/* istanbul ignore if: only if node is built with --without-ssl */
 		if (S === void 0) return !0;
-		let n = J(t);
+		let n = oe(t);
 		if (n === "no metadata" || n.length === 0) return !0;
 		let r = se(n, Y(n));
 		for (let t of r) {
@@ -2373,12 +2376,12 @@ var D = /* @__PURE__ */ g(((e) => {
 		}
 		return !1;
 	}
-	var oe = /(?<algo>sha256|sha384|sha512)-((?<hash>[A-Za-z0-9+/]+|[A-Za-z0-9_-]+)={0,2}(?:\s|$)( +[!-~]*)?)?/i;
-	function J(e) {
+	var J = /(?<algo>sha256|sha384|sha512)-((?<hash>[A-Za-z0-9+/]+|[A-Za-z0-9_-]+)={0,2}(?:\s|$)( +[!-~]*)?)?/i;
+	function oe(e) {
 		let t = [], n = !0;
 		for (let r of e.split(" ")) {
 			n = !1;
-			let e = oe.exec(r);
+			let e = J.exec(r);
 			if (e === null || e.groups === void 0 || e.groups.algo === void 0) continue;
 			let i = e.groups.algo.toLowerCase();
 			x.includes(i) && t.push(e.groups);
@@ -2717,7 +2720,7 @@ var D = /* @__PURE__ */ g(((e) => {
 		readAllBytes: be,
 		simpleRangeHeaderValue: we,
 		buildContentRange: Te,
-		parseMetadata: J,
+		parseMetadata: oe,
 		createInflate: De,
 		extractMimeType: Oe,
 		getDecodeSplit: Ae,
@@ -3147,8 +3150,8 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		hasFinalizationRegistry: T,
 		bodyUnusable: F
 	};
-})), oe = /* @__PURE__ */ g(((e, t) => {
-	var n = y("node:assert"), r = N(), { channels: i } = P(), a = ee(), { RequestContentLengthMismatchError: o, ResponseContentLengthMismatchError: s, RequestAbortedError: c, InvalidArgumentError: l, HeadersTimeoutError: u, HeadersOverflowError: d, SocketError: f, InformationalError: p, BodyTimeoutError: m, HTTPParserError: h, ResponseExceededMaxSizeError: g } = A(), { kUrl: _, kReset: v, kClient: b, kParser: x, kBlocking: S, kRunning: C, kPending: w, kSize: T, kWriting: E, kQueue: D, kNoRef: O, kKeepAliveDefaultTimeout: j, kHostHeader: M, kPendingIdx: F, kRunningIdx: I, kError: L, kPipelining: R, kSocket: z, kKeepAliveTimeoutValue: V, kMaxHeadersSize: re, kKeepAliveMaxTimeout: H, kKeepAliveTimeoutThreshold: U, kHeadersTimeout: W, kBodyTimeout: ie, kStrictContentLength: G, kMaxRequests: K, kCounter: q, kMaxResponseSize: oe, kOnError: J, kResume: Y, kHTTPContext: se } = k(), X = B(), ce = Buffer.alloc(0), le = Buffer[Symbol.species], Z = r.addListener, ue = r.removeAllListeners, de = Symbol("kIdleSocketValidation"), fe = Symbol("kIdleSocketValidationTimeout"), pe = Symbol("kSocketUsed"), me;
+})), J = /* @__PURE__ */ g(((e, t) => {
+	var n = y("node:assert"), r = N(), { channels: i } = P(), a = ee(), { RequestContentLengthMismatchError: o, ResponseContentLengthMismatchError: s, RequestAbortedError: c, InvalidArgumentError: l, HeadersTimeoutError: u, HeadersOverflowError: d, SocketError: f, InformationalError: p, BodyTimeoutError: m, HTTPParserError: h, ResponseExceededMaxSizeError: g } = A(), { kUrl: _, kReset: v, kClient: b, kParser: x, kBlocking: S, kRunning: C, kPending: w, kSize: T, kWriting: E, kQueue: D, kNoRef: O, kKeepAliveDefaultTimeout: j, kHostHeader: M, kPendingIdx: F, kRunningIdx: I, kError: L, kPipelining: R, kSocket: z, kKeepAliveTimeoutValue: V, kMaxHeadersSize: re, kKeepAliveMaxTimeout: H, kKeepAliveTimeoutThreshold: U, kHeadersTimeout: W, kBodyTimeout: ie, kStrictContentLength: G, kMaxRequests: K, kCounter: q, kMaxResponseSize: J, kOnError: oe, kResume: Y, kHTTPContext: se } = k(), X = B(), ce = Buffer.alloc(0), le = Buffer[Symbol.species], Z = r.addListener, ue = r.removeAllListeners, de = Symbol("kIdleSocketValidation"), fe = Symbol("kIdleSocketValidationTimeout"), pe = Symbol("kSocketUsed"), me;
 	async function he() {
 		let e = process.env.JEST_WORKER_ID ? te() : void 0, t;
 		try {
@@ -3188,7 +3191,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 	_e.catch();
 	var Q = null, ve = null, ye = 0, $ = null, be = 1, xe = 3, Se = 5, Ce = 8, we = class {
 		constructor(e, t, { exports: r }) {
-			n(Number.isFinite(e[re]) && e[re] > 0), this.llhttp = r, this.ptr = this.llhttp.llhttp_alloc(X.TYPE.RESPONSE), this.client = e, this.socket = t, this.timeout = null, this.timeoutValue = null, this.timeoutType = null, this.statusCode = null, this.statusText = "", this.upgrade = !1, this.headers = [], this.headersSize = 0, this.headersMaxSize = e[re], this.shouldKeepAlive = !1, this.paused = !1, this.resume = this.resume.bind(this), this.bytesRead = 0, this.keepAlive = "", this.contentLength = "", this.connection = "", this.maxResponseSize = e[oe];
+			n(Number.isFinite(e[re]) && e[re] > 0), this.llhttp = r, this.ptr = this.llhttp.llhttp_alloc(X.TYPE.RESPONSE), this.client = e, this.socket = t, this.timeout = null, this.timeoutValue = null, this.timeoutType = null, this.statusCode = null, this.statusText = "", this.upgrade = !1, this.headers = [], this.headersSize = 0, this.headersMaxSize = e[re], this.shouldKeepAlive = !1, this.paused = !1, this.resume = this.resume.bind(this), this.bytesRead = 0, this.keepAlive = "", this.contentLength = "", this.connection = "", this.maxResponseSize = e[J];
 		}
 		setTimeout(e, t) {
 			e !== this.timeoutValue || t & be ^ this.timeoutType & be ? (this.timeout &&= (a.clearTimeout(this.timeout), null), e && (t & be ? this.timeout = a.setFastTimeout(Te, e, new WeakRef(this)) : (this.timeout = setTimeout(Te, e, new WeakRef(this)), this.timeout.unref())), this.timeoutValue = e) : this.timeout && this.timeout.refresh && this.timeout.refresh(), this.timeoutType = t;
@@ -3346,12 +3349,11 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 	}
 	async function Ee(e, t) {
 		e[z] = t, ge || (ge = await _e, _e = null), t[O] = !1, t[E] = !1, t[v] = !1, t[S] = !1, t[de] = 0, t[fe] = null, t[pe] = !1, t[x] = new we(e, t, ge), Z(t, "error", function(e) {
-			n(e.code !== "ERR_TLS_CERT_ALTNAME_INVALID");
 			let t = this[x];
 			if (e.code === "ECONNRESET" && t.statusCode && !t.shouldKeepAlive) {
 				let e = t.finish();
-				e && (this[L] = e, this[b][J](e));
-			} else this[L] = e, this[b][J](e);
+				e && (this[L] = e, this[b][oe](e));
+			} else this[L] = e, this[b][oe](e);
 		}), Z(t, "readable", function() {
 			let e = this[x];
 			e && e.readMore();
@@ -3600,7 +3602,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		}
 	};
 	t.exports = Ee;
-})), J = /* @__PURE__ */ g(((e, t) => {
+})), oe = /* @__PURE__ */ g(((e, t) => {
 	var n = y("node:assert"), { errorMonitor: r } = y("node:events"), { pipeline: i } = y("node:stream"), a = N(), { RequestContentLengthMismatchError: o, RequestAbortedError: s, SocketError: c, InformationalError: l } = A(), { kUrl: u, kReset: d, kClient: f, kRunning: p, kPending: m, kQueue: h, kPendingIdx: g, kRunningIdx: _, kError: v, kSocket: b, kStrictContentLength: x, kOnError: S, kMaxConcurrentStreams: C, kHTTP2Session: w, kResume: T, kSize: E, kHTTPContext: D } = k(), O = Symbol("open streams"), j, M = !1, P;
 	try {
 		P = y("node:http2");
@@ -3635,7 +3637,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 				}
 			}
 		}), r.unref(), e[w] = r, t[w] = r, a.addListener(t, "error", function(e) {
-			n(e.code !== "ERR_TLS_CERT_ALTNAME_INVALID"), this[v] = e, this[f][S](e);
+			this[v] = e, this[f][S](e);
 		}), a.addListener(t, "end", function() {
 			a.destroy(this, new c("other side closed", a.getSocketInfo(this)));
 		}), a.addListener(t, "close", function() {
@@ -3670,7 +3672,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		t?.destroyed === !1 && (e[E] === 0 && e[C] === 0 ? (t.unref(), e[w].unref()) : (t.ref(), e[w].ref()));
 	}
 	function H(e) {
-		n(e.code !== "ERR_TLS_CERT_ALTNAME_INVALID"), this[b][v] = e, this[f][S](e);
+		this[b][v] = e, this[f][S](e);
 	}
 	function U(e, t, n) {
 		if (n === 0) {
@@ -3775,7 +3777,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		}), !0;
 		function V() {
 			/* istanbul ignore else: assertion */
-			!S || N === 0 ? q(A, E, null, e, t, e[b], N, M) : a.isBuffer(S) ? q(A, E, S, e, t, e[b], N, M) : a.isBlobLike(S) ? typeof S.stream == "function" ? Y(A, E, S.stream(), e, t, e[b], N, M) : J(A, E, S, e, t, e[b], N, M) : a.isStream(S) ? oe(A, e[b], M, E, S, e, t, N) : a.isIterable(S) ? Y(A, E, S, e, t, e[b], N, M) : n(!1);
+			!S || N === 0 ? q(A, E, null, e, t, e[b], N, M) : a.isBuffer(S) ? q(A, E, S, e, t, e[b], N, M) : a.isBlobLike(S) ? typeof S.stream == "function" ? Y(A, E, S.stream(), e, t, e[b], N, M) : oe(A, E, S, e, t, e[b], N, M) : a.isStream(S) ? J(A, e[b], M, E, S, e, t, N) : a.isIterable(S) ? Y(A, E, S, e, t, e[b], N, M) : n(!1);
 		}
 	}
 	function q(e, t, r, i, o, s, c, l) {
@@ -3785,7 +3787,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			e(t);
 		}
 	}
-	function oe(e, t, r, o, s, c, l, u) {
+	function J(e, t, r, o, s, c, l, u) {
 		n(u !== 0 || c[p] === 0, "stream body cannot be pipelined");
 		let f = i(s, o, (n) => {
 			n ? (a.destroy(f, n), e(n)) : (a.removeAllListeners(f), l.onRequestSent(), r || (t[d] = !0), c[T]());
@@ -3795,7 +3797,7 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 			l.onBodySent(e);
 		}
 	}
-	async function J(e, t, r, i, a, s, c, l) {
+	async function oe(e, t, r, i, a, s, c, l) {
 		n(c === r.size, "blob body must have content length");
 		try {
 			if (c != null && c !== r.size) throw new o();
@@ -3923,13 +3925,16 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 	}
 	t.exports = r;
 })), X = /* @__PURE__ */ g(((e, t) => {
-	var n = y("node:assert"), r = y("node:net"), i = y("node:http"), a = N(), { channels: o } = P(), s = F(), c = L(), { InvalidArgumentError: l, InformationalError: u, ClientDestroyedError: d } = A(), f = R(), { kUrl: p, kServerName: m, kClient: h, kBusy: g, kConnect: _, kResuming: v, kRunning: b, kPending: x, kSize: S, kQueue: C, kConnected: w, kConnecting: T, kNeedDrain: E, kKeepAliveDefaultTimeout: D, kHostHeader: O, kPendingIdx: j, kRunningIdx: M, kError: I, kPipelining: ee, kKeepAliveTimeoutValue: z, kMaxHeadersSize: B, kKeepAliveMaxTimeout: te, kKeepAliveTimeoutThreshold: ne, kHeadersTimeout: V, kBodyTimeout: re, kStrictContentLength: H, kConnector: U, kMaxRedirections: W, kMaxRequests: ie, kCounter: G, kClose: K, kDestroy: q, kDispatch: ae, kInterceptors: Y, kLocalAddress: X, kMaxResponseSize: ce, kOnError: le, kHTTPContext: Z, kMaxConcurrentStreams: ue, kResume: de } = k(), fe = oe(), pe = J(), me = !1, he = Symbol("kClosedResolve"), ge = () => {};
+	var n = y("node:assert"), r = y("node:net"), i = y("node:http"), a = N(), { channels: o } = P(), s = F(), c = L(), { InvalidArgumentError: l, InformationalError: u, ClientDestroyedError: d } = A(), f = R(), { kUrl: p, kServerName: m, kClient: h, kBusy: g, kConnect: _, kResuming: v, kRunning: b, kPending: x, kSize: S, kQueue: C, kConnected: w, kConnecting: T, kNeedDrain: E, kKeepAliveDefaultTimeout: D, kHostHeader: O, kPendingIdx: j, kRunningIdx: M, kError: I, kPipelining: ee, kKeepAliveTimeoutValue: z, kMaxHeadersSize: B, kKeepAliveMaxTimeout: te, kKeepAliveTimeoutThreshold: ne, kHeadersTimeout: V, kBodyTimeout: re, kStrictContentLength: H, kConnector: U, kMaxRedirections: W, kMaxRequests: ie, kCounter: G, kClose: K, kDestroy: q, kDispatch: ae, kInterceptors: Y, kLocalAddress: X, kMaxResponseSize: ce, kOnError: le, kHTTPContext: Z, kMaxConcurrentStreams: ue, kResume: de } = k(), fe = J(), pe = oe(), me = !1, he = Symbol("kClosedResolve"), ge = () => {};
 	function _e(e) {
 		return e[ee] ?? e[Z]?.defaultPipelining ?? 1;
 	}
 	var Q = class extends c {
-		constructor(e, { interceptors: t, maxHeaderSize: n, headersTimeout: o, socketTimeout: s, requestTimeout: c, connectTimeout: u, bodyTimeout: d, idleTimeout: h, keepAlive: g, keepAliveTimeout: _, maxKeepAliveTimeout: y, keepAliveMaxTimeout: b, keepAliveTimeoutThreshold: x, socketPath: S, pipelining: w, tls: T, strictContentLength: k, maxCachedSessions: A, maxRedirections: N, connect: P, maxRequestsPerClient: F, localAddress: I, maxResponseSize: L, autoSelectFamily: R, autoSelectFamilyAttemptTimeout: G, maxConcurrentStreams: K, allowH2: q, webSocket: ae } = {}) {
-			if (super({ webSocket: ae }), g !== void 0) throw new l("unsupported keepAlive, use pipelining=0 instead");
+		constructor(e, { interceptors: t, maxHeaderSize: n, headersTimeout: o, socketTimeout: s, requestTimeout: c, connectTimeout: u, bodyTimeout: d, idleTimeout: h, keepAlive: g, keepAliveTimeout: _, maxKeepAliveTimeout: y, keepAliveMaxTimeout: b, keepAliveTimeoutThreshold: x, socketPath: S, pipelining: w, tls: T, strictContentLength: k, maxCachedSessions: A, maxRedirections: N, connect: P, maxRequestsPerClient: F, localAddress: I, maxResponseSize: L, autoSelectFamily: R, autoSelectFamilyAttemptTimeout: G, maxConcurrentStreams: K, allowH2: q, webSocket: ae, eventSource: J } = {}) {
+			if (super({
+				webSocket: ae,
+				eventSource: J
+			}), g !== void 0) throw new l("unsupported keepAlive, use pipelining=0 instead");
 			if (s !== void 0) throw new l("unsupported socketTimeout, use headersTimeout & bodyTimeout instead");
 			if (c !== void 0) throw new l("unsupported requestTimeout, use headersTimeout & bodyTimeout instead");
 			if (h !== void 0) throw new l("unsupported idleTimeout, use keepAliveTimeout instead");
@@ -4393,14 +4398,15 @@ Content-Type: ${c.type || "application/octet-stream"}\r\n\r\n`);
 		return t && t.connections === 1 ? new d(e, t) : new u(e, t);
 	}
 	t.exports = class extends l {
-		constructor({ factory: e = x, maxRedirections: t = 0, connect: i, ...a } = {}) {
+		constructor({ factory: e = x, maxRedirections: t = 0, connect: i, tls: a, ...o } = {}) {
 			if (typeof e != "function") throw new n("factory must be a function.");
 			if (i != null && typeof i != "function" && typeof i != "object") throw new n("connect must be a function or an object");
 			if (!Number.isInteger(t) || t < 0) throw new n("maxRedirections must be a positive number");
-			super(a), i && typeof i != "function" && (i = { ...i }), this[c] = a.interceptors?.Agent && Array.isArray(a.interceptors.Agent) ? a.interceptors.Agent : [p({ maxRedirections: t })], this[b] = {
-				...f.deepClone(a),
-				connect: i
-			}, this[b].interceptors = a.interceptors ? { ...a.interceptors } : void 0, this[_] = t, this[y] = e, this[r] = /* @__PURE__ */ new Map(), this[v] = (e, t) => {
+			super(o), i && typeof i != "function" && (i = { ...i }), a && typeof a != "function" && (a = { ...a }), this[c] = o.interceptors?.Agent && Array.isArray(o.interceptors.Agent) ? o.interceptors.Agent : [p({ maxRedirections: t })], this[b] = {
+				...f.deepClone(o),
+				connect: i,
+				tls: a
+			}, this[b].interceptors = o.interceptors ? { ...o.interceptors } : void 0, this[_] = t, this[y] = e, this[r] = /* @__PURE__ */ new Map(), this[v] = (e, t) => {
 				this.emit("drain", e, [this, ...t]);
 			}, this[m] = (e, t) => {
 				this.emit("connect", e, [this, ...t]);
@@ -6386,12 +6392,12 @@ ${e.format(t)}
 })), Be = /* @__PURE__ */ g(((e, t) => {
 	var { Headers: n, HeadersList: r, fill: i, getHeadersGuard: a, setHeadersGuard: o, setHeadersList: s } = ze(), { extractBody: c, cloneBody: l, mixinBody: u, hasFinalizationRegistry: d, streamRegistry: f, bodyUnusable: p } = ae(), m = N(), h = y("node:util"), { kEnumerableProperty: g } = m, { isValidReasonPhrase: _, isCancelled: v, isAborted: b, isBlobLike: x, serializeJavascriptValueToJSONString: S, isErrorLike: C, isomorphicEncode: w, environmentSettingsObject: T } = W(), { redirectStatusSet: E, nullBodyStatus: D } = V(), { kState: O, kHeaders: A } = ie(), { webidl: j } = U(), { FormData: M } = K(), { URLSerializer: P } = H(), { kConstruct: F } = k(), I = y("node:assert"), { types: L } = y("node:util"), ee = new TextEncoder("utf-8"), R = class e {
 		static error() {
-			return J(te(), "immutable");
+			return oe(te(), "immutable");
 		}
 		static json(e, t = {}) {
 			j.argumentLengthCheck(arguments, 1, "Response.json"), t !== null && (t = j.converters.ResponseInit(t));
-			let n = c(ee.encode(S(e))), r = J(B({}), "response");
-			return oe(r, t, {
+			let n = c(ee.encode(S(e))), r = oe(B({}), "response");
+			return J(r, t, {
 				body: n[0],
 				type: "application/json"
 			}), r;
@@ -6405,7 +6411,7 @@ ${e.format(t)}
 				throw TypeError(`Failed to parse URL from ${e}`, { cause: t });
 			}
 			if (!E.has(t)) throw RangeError(`Invalid status code ${t}`);
-			let r = J(B({}), "immutable");
+			let r = oe(B({}), "immutable");
 			r[O].status = t;
 			let i = w(P(n));
 			return r[O].headersList.append("location", i, !0), r;
@@ -6421,7 +6427,7 @@ ${e.format(t)}
 					type: n
 				};
 			}
-			oe(this, t, r);
+			J(this, t, r);
 		}
 		get type() {
 			return j.brandCheck(this, e), this[O].type;
@@ -6458,7 +6464,7 @@ ${e.format(t)}
 				message: "Body has already been consumed."
 			});
 			let t = z(this[O]);
-			return d && this[O].body?.stream && f.register(this, new WeakRef(this[O].body.stream)), J(t, a(this[A]));
+			return d && this[O].body?.stream && f.register(this, new WeakRef(this[O].body.stream)), oe(t, a(this[A]));
 		}
 		[h.inspect.custom](e, t) {
 			t.depth === null && (t.depth = 2), t.colors ??= !0;
@@ -6572,7 +6578,7 @@ ${e.format(t)}
 	function q(e, t = null) {
 		return I(v(e)), b(e) ? te(Object.assign(new DOMException("The operation was aborted.", "AbortError"), { cause: t })) : te(Object.assign(new DOMException("Request was cancelled."), { cause: t }));
 	}
-	function oe(e, t, n) {
+	function J(e, t, n) {
 		if (t.status !== null && (t.status < 200 || t.status > 599)) throw RangeError("init[\"status\"] must be in the range of 200 to 599, inclusive.");
 		if ("statusText" in t && t.statusText != null && !_(String(t.statusText))) throw TypeError("Invalid statusText");
 		if ("status" in t && t.status != null && (e[O].status = t.status), "statusText" in t && t.statusText != null && (e[O].statusText = t.statusText), "headers" in t && t.headers != null && i(e[A], t.headers), n) {
@@ -6583,7 +6589,7 @@ ${e.format(t)}
 			e[O].body = n.body, n.type != null && !e[O].headersList.contains("content-type", !0) && e[O].headersList.append("content-type", n.type, !0);
 		}
 	}
-	function J(e, t) {
+	function oe(e, t) {
 		let r = new R(F);
 		return r[O] = e, r[A] = new n(F), s(r[A], e.headersList), o(r[A], t), d && e.body?.stream && f.register(r, new WeakRef(e.body.stream)), r;
 	}
@@ -6614,7 +6620,7 @@ ${e.format(t)}
 		filterResponse: G,
 		Response: R,
 		cloneResponse: z,
-		fromInnerResponse: J
+		fromInnerResponse: oe
 	};
 })), Ve = /* @__PURE__ */ g(((e, t) => {
 	var { kConnected: n, kSize: r } = k(), i = class {
@@ -6648,7 +6654,7 @@ ${e.format(t)}
 	var { extractBody: n, mixinBody: r, cloneBody: i, bodyUnusable: a } = ae(), { Headers: o, fill: s, HeadersList: c, setHeadersGuard: l, getHeadersGuard: u, setHeadersList: d, getHeadersList: f } = ze(), { FinalizationRegistry: p } = Ve()(), m = N(), h = y("node:util"), { isValidHTTPToken: g, sameOrigin: _, environmentSettingsObject: v } = W(), { forbiddenMethodsSet: b, corsSafeListedMethodsSet: x, referrerPolicy: S, requestRedirect: C, requestMode: w, requestCredentials: T, requestCache: E, requestDuplex: D } = V(), { kEnumerableProperty: O, normalizedMethodRecordsBase: A, normalizedMethodRecords: j } = m, { kHeaders: M, kSignal: P, kState: F, kDispatcher: I } = ie(), { webidl: L } = U(), { URLSerializer: ee } = H(), { kConstruct: R } = k(), z = y("node:assert"), { getMaxListeners: B, setMaxListeners: te, getEventListeners: ne, defaultMaxListeners: re } = y("node:events"), G = Symbol("abortController"), K = new p(({ signal: e, abort: t }) => {
 		e.removeEventListener("abort", t);
 	}), q = /* @__PURE__ */ new WeakMap();
-	function oe(e) {
+	function J(e) {
 		return t;
 		function t() {
 			let n = e.deref();
@@ -6668,7 +6674,7 @@ ${e.format(t)}
 			}
 		}
 	}
-	var J = !1, Y = class e {
+	var oe = !1, Y = class e {
 		constructor(t, r = {}) {
 			if (L.util.markAsUncloneable(this), t === R) return;
 			let i = "Request constructor";
@@ -6737,7 +6743,7 @@ ${e.format(t)}
 					if (b.has(t)) throw TypeError(`'${e}' HTTP method is unsupported.`);
 					e = A[t] ?? e, u.method = e;
 				}
-				!J && u.method === "patch" && (process.emitWarning("Using `patch` is highly likely to result in a `405 Method Not Allowed`. `PATCH` is much more likely to succeed.", { code: "UNDICI-FETCH-patch" }), J = !0);
+				!oe && u.method === "patch" && (process.emitWarning("Using `patch` is highly likely to result in a `405 Method Not Allowed`. `PATCH` is much more likely to succeed.", { code: "UNDICI-FETCH-patch" }), oe = !0);
 			}
 			r.signal !== void 0 && (y = r.signal), this[F] = u;
 			let E = new AbortController();
@@ -6746,7 +6752,7 @@ ${e.format(t)}
 				if (y.aborted) E.abort(y.reason);
 				else {
 					this[G] = E;
-					let e = oe(new WeakRef(E));
+					let e = J(new WeakRef(E));
 					try {
 						(typeof B == "function" && B(y) === re || ne(y, "abort").length >= re) && te(1500, y);
 					} catch {}
@@ -6854,7 +6860,7 @@ ${e.format(t)}
 				let e = q.get(this.signal);
 				e === void 0 && (e = /* @__PURE__ */ new Set(), q.set(this.signal, e));
 				let t = new WeakRef(n);
-				e.add(t), m.addAbortListener(n.signal, oe(t));
+				e.add(t), m.addAbortListener(n.signal, J(t));
 			}
 			return ce(t, n.signal, u(this[M]));
 		}
@@ -7035,7 +7041,7 @@ ${e.format(t)}
 		cloneRequest: X
 	};
 })), Ue = /* @__PURE__ */ g(((e, t) => {
-	var { makeNetworkError: n, makeAppropriateNetworkError: r, filterResponse: i, makeResponse: a, fromInnerResponse: o } = Be(), { HeadersList: s } = ze(), { Request: c, cloneRequest: l } = He(), u = y("node:zlib"), { bytesMatch: d, makePolicyContainer: f, clonePolicyContainer: p, requestBadPort: m, TAOCheck: h, appendRequestOriginHeader: g, responseLocationURL: _, requestCurrentURL: v, setRequestReferrerPolicyOnRedirect: b, tryUpgradeRequestToAPotentiallyTrustworthyURL: x, createOpaqueTimingInfo: S, appendFetchMetadata: C, corsCheck: w, crossOriginResourcePolicyCheck: T, determineRequestsReferrer: E, coarsenedSharedCurrentTime: D, createDeferredPromise: O, isBlobLike: k, sameOrigin: A, isCancelled: j, isAborted: M, isErrorLike: P, fullyReadBody: F, readableStreamClose: I, isomorphicEncode: L, urlIsLocal: ee, urlIsHttpHttpsScheme: R, urlHasHttpsScheme: z, clampAndCoarsenConnectionTimingInfo: B, simpleRangeHeaderValue: te, buildContentRange: ne, createInflate: re, extractMimeType: G } = W(), { kState: K, kDispatcher: q } = ie(), oe = y("node:assert"), { safelyExtractBody: J, extractBody: Y } = ae(), { redirectStatusSet: se, nullBodyStatus: X, safeMethodsSet: ce, requestBodyHeader: le, subresourceSet: Z } = V(), ue = y("node:events"), { Readable: de, pipeline: fe, finished: pe } = y("node:stream"), { addAbortListener: me, isErrored: he, isReadable: ge, bufferToLowerCasedHeaderName: _e } = N(), { dataURLProcessor: Q, serializeAMimeType: ve, minimizeSupportedMimeType: ye } = H(), { getGlobalDispatcher: $ } = Ne(), { webidl: be } = U(), { STATUS_CODES: xe } = y("node:http"), Se = ["GET", "HEAD"], Ce = typeof __UNDICI_IS_NODE__ < "u" || typeof esbuildDetection < "u" ? "node" : "undici", we, Te = class extends ue {
+	var { makeNetworkError: n, makeAppropriateNetworkError: r, filterResponse: i, makeResponse: a, fromInnerResponse: o } = Be(), { HeadersList: s } = ze(), { Request: c, cloneRequest: l } = He(), u = y("node:zlib"), { bytesMatch: d, makePolicyContainer: f, clonePolicyContainer: p, requestBadPort: m, TAOCheck: h, appendRequestOriginHeader: g, responseLocationURL: _, requestCurrentURL: v, setRequestReferrerPolicyOnRedirect: b, tryUpgradeRequestToAPotentiallyTrustworthyURL: x, createOpaqueTimingInfo: S, appendFetchMetadata: C, corsCheck: w, crossOriginResourcePolicyCheck: T, determineRequestsReferrer: E, coarsenedSharedCurrentTime: D, createDeferredPromise: O, isBlobLike: k, sameOrigin: A, isCancelled: j, isAborted: M, isErrorLike: P, fullyReadBody: F, readableStreamClose: I, isomorphicEncode: L, urlIsLocal: ee, urlIsHttpHttpsScheme: R, urlHasHttpsScheme: z, clampAndCoarsenConnectionTimingInfo: B, simpleRangeHeaderValue: te, buildContentRange: ne, createInflate: re, extractMimeType: G } = W(), { kState: K, kDispatcher: q } = ie(), J = y("node:assert"), { safelyExtractBody: oe, extractBody: Y } = ae(), { redirectStatusSet: se, nullBodyStatus: X, safeMethodsSet: ce, requestBodyHeader: le, subresourceSet: Z } = V(), ue = y("node:events"), { Readable: de, pipeline: fe, finished: pe } = y("node:stream"), { addAbortListener: me, isErrored: he, isReadable: ge, bufferToLowerCasedHeaderName: _e } = N(), { dataURLProcessor: Q, serializeAMimeType: ve, minimizeSupportedMimeType: ye } = H(), { getGlobalDispatcher: $ } = Ne(), { webidl: be } = U(), { STATUS_CODES: xe } = y("node:http"), Se = ["GET", "HEAD"], Ce = typeof __UNDICI_IS_NODE__ < "u" || typeof esbuildDetection < "u" ? "node" : "undici", we, Te = class extends ue {
 		constructor(e) {
 			super(), this.dispatcher = e, this.connection = null, this.dump = !1, this.state = "ongoing";
 		}
@@ -7062,7 +7068,7 @@ ${e.format(t)}
 		i.client.globalObject?.constructor?.name === "ServiceWorkerGlobalScope" && (i.serviceWorkers = "none");
 		let a = null, s = !1, l = null;
 		return me(r.signal, () => {
-			s = !0, oe(l != null), l.abort(r.signal.reason);
+			s = !0, J(l != null), l.abort(r.signal.reason);
 			let e = a?.deref();
 			Ae(n, i, e, r.signal.reason);
 		}), l = je({
@@ -7090,7 +7096,7 @@ ${e.format(t)}
 		});
 	}
 	function je({ request: e, processRequestBodyChunkLength: t, processRequestEndOfBody: n, processResponse: r, processResponseEndOfBody: i, processResponseConsumeBody: a, useParallelQueue: o = !1, dispatcher: s = $() }) {
-		oe(s);
+		J(s);
 		let c = null, l = !1;
 		e.client != null && (c = e.client.globalObject, l = e.client.crossOriginIsolatedCapability);
 		let u = S({ startTime: D(l) }), d = {
@@ -7105,7 +7111,7 @@ ${e.format(t)}
 			taskDestination: c,
 			crossOriginIsolatedCapability: l
 		};
-		return oe(!e.body || e.body.stream), e.window === "client" && (e.window = e.client?.globalObject?.constructor?.name === "Window" ? e.client : "no-window"), e.origin === "client" && (e.origin = e.client.origin), e.policyContainer === "client" && (e.policyContainer = e.client == null ? f() : p(e.client.policyContainer)), e.headersList.contains("accept", !0) || e.headersList.append("accept", "*/*", !0), e.headersList.contains("accept-language", !0) || e.headersList.append("accept-language", "*", !0), e.priority, Z.has(e.destination), Me(d).catch((e) => {
+		return J(!e.body || e.body.stream), e.window === "client" && (e.window = e.client?.globalObject?.constructor?.name === "Window" ? e.client : "no-window"), e.origin === "client" && (e.origin = e.client.origin), e.policyContainer === "client" && (e.policyContainer = e.client == null ? f() : p(e.client.policyContainer)), e.headersList.contains("accept", !0) || e.headersList.append("accept", "*/*", !0), e.headersList.contains("accept-language", !0) || e.headersList.append("accept-language", "*", !0), e.priority, Z.has(e.destination), Me(d).catch((e) => {
 			d.controller.terminate(e);
 		}), d.controller;
 	}
@@ -7115,7 +7121,7 @@ ${e.format(t)}
 			let t = v(r);
 			return A(t, r.url) && r.responseTainting === "basic" || t.protocol === "data:" || r.mode === "navigate" || r.mode === "websocket" ? (r.responseTainting = "basic", await Pe(e)) : r.mode === "same-origin" ? n("request mode cannot be \"same-origin\"") : r.mode === "no-cors" ? r.redirect === "follow" ? (r.responseTainting = "opaque", await Pe(e)) : n("redirect mode cannot be \"follow\" for \"no-cors\" request") : R(v(r)) ? (r.responseTainting = "cors", await Le(e)) : n("URL scheme must be a HTTP(S) scheme");
 		})()), t) return a;
-		a.status !== 0 && !a.internalResponse && (r.responseTainting, r.responseTainting === "basic" ? a = i(a, "basic") : r.responseTainting === "cors" ? a = i(a, "cors") : r.responseTainting === "opaque" ? a = i(a, "opaque") : oe(!1));
+		a.status !== 0 && !a.internalResponse && (r.responseTainting, r.responseTainting === "basic" ? a = i(a, "basic") : r.responseTainting === "cors" ? a = i(a, "cors") : r.responseTainting === "opaque" ? a = i(a, "opaque") : J(!1));
 		let o = a.status === 0 ? a : a.internalResponse;
 		if (o.urlList.length === 0 && o.urlList.push(...r.urlList), r.timingAllowFailed || (a.timingAllowPassed = !0), a.type === "opaque" && o.status === 206 && o.rangeRequested && !r.headers.contains("range", !0) && (a = o = n()), a.status !== 0 && (r.method === "HEAD" || r.method === "CONNECT" || X.includes(o.status)) && (o.body = null, e.controller.dump = !0), r.integrity) {
 			let t = (t) => Ie(e, n(t));
@@ -7124,7 +7130,7 @@ ${e.format(t)}
 				return;
 			}
 			await F(a.body, (n) => {
-				d(n, r.integrity) ? (a.body = J(n)[0], Ie(e, a)) : t("integrity mismatch");
+				d(n, r.integrity) ? (a.body = oe(n)[0], Ie(e, a)) : t("integrity mismatch");
 			}, t);
 		} else Ie(e, a);
 	}
@@ -7170,7 +7176,7 @@ ${e.format(t)}
 						name: "Content-Type",
 						value: r
 					}]],
-					body: J(e.body)[0]
+					body: oe(e.body)[0]
 				}));
 			}
 			case "file:": return Promise.resolve(n("not implemented... yet..."));
@@ -7217,7 +7223,7 @@ ${e.format(t)}
 			if (t.redirect === "follow" && (t.serviceWorkers = "none"), i = r = await Ve(e), t.responseTainting === "cors" && w(t, r) === "failure") return n("cors failure");
 			h(t, r) === "failure" && (t.timingAllowFailed = !0);
 		}
-		return (t.responseTainting === "opaque" || r.type === "opaque") && T(t.origin, t.client, t.destination, i) === "blocked" ? n("blocked") : (se.has(i.status) && (t.redirect !== "manual" && e.controller.connection.destroy(void 0, !1), t.redirect === "error" ? r = n("unexpected redirect") : t.redirect === "manual" ? r = i : t.redirect === "follow" ? r = await Re(e, r) : oe(!1)), r.timingInfo = a, r);
+		return (t.responseTainting === "opaque" || r.type === "opaque") && T(t.origin, t.client, t.destination, i) === "blocked" ? n("blocked") : (se.has(i.status) && (t.redirect !== "manual" && e.controller.connection.destroy(void 0, !1), t.redirect === "error" ? r = n("unexpected redirect") : t.redirect === "manual" ? r = i : t.redirect === "follow" ? r = await Re(e, r) : J(!1)), r.timingInfo = a, r);
 	}
 	function Re(e, t) {
 		let r = e.request, i = t.internalResponse ? t.internalResponse : t, a;
@@ -7235,7 +7241,7 @@ ${e.format(t)}
 			r.method = "GET", r.body = null;
 			for (let e of le) r.headersList.delete(e);
 		}
-		A(v(r), a) || (r.headersList.delete("authorization", !0), r.headersList.delete("proxy-authorization", !0), r.headersList.delete("cookie", !0), r.headersList.delete("host", !0)), r.body != null && (oe(r.body.source != null), r.body = J(r.body.source)[0]);
+		A(v(r), a) || (r.headersList.delete("authorization", !0), r.headersList.delete("proxy-authorization", !0), r.headersList.delete("cookie", !0), r.headersList.delete("host", !0)), r.body != null && (J(r.body.source != null), r.body = oe(r.body.source)[0]);
 		let o = e.timingInfo;
 		return o.redirectEndTime = o.postRedirectStartTime = D(e.crossOriginIsolatedCapability), o.redirectStartTime === 0 && (o.redirectStartTime = o.startTime), r.urlList.push(a), b(r, i), Me(e, !0);
 	}
@@ -7256,7 +7262,7 @@ ${e.format(t)}
 		return c;
 	}
 	async function Ue(e, t = !1, i = !1) {
-		oe(!e.controller.connection || e.controller.connection.destroyed), e.controller.connection = {
+		J(!e.controller.connection || e.controller.connection.destroyed), e.controller.connection = {
 			abort: null,
 			destroyed: !1,
 			destroy(e, t = !0) {
@@ -7323,7 +7329,7 @@ ${e.format(t)}
 			stream: m,
 			source: null,
 			length: null
-		}, e.controller.onAborted = h, e.controller.on("terminated", h), e.controller.resume = async () => {
+		}, e.controller.resume || e.controller.on("terminated", h), e.controller.resume = async () => {
 			for (;;) {
 				let t, n;
 				try {
@@ -7375,41 +7381,42 @@ ${e.format(t)}
 				},
 				onHeaders(e, t, n, r) {
 					if (e < 200) return;
-					let c = "", l = new s();
-					for (let e = 0; e < t.length; e += 2) l.append(_e(t[e]), t[e + 1].toString("latin1"), !0);
-					c = l.get("location", !0), this.body = new de({ read: n });
-					let d = [], f = c && o.redirect === "follow" && se.has(e);
-					if (o.method !== "HEAD" && o.method !== "CONNECT" && !X.includes(e) && !f) {
-						let e = l.get("content-encoding", !0), t = e ? e.toLowerCase().split(",") : [];
-						if (t.length > 5) return a(/* @__PURE__ */ Error(`too many content-encodings in response: ${t.length}, maximum allowed is 5`)), !0;
+					let a = "", c = new s();
+					for (let e = 0; e < t.length; e += 2) c.append(_e(t[e]), t[e + 1].toString("latin1"), !0);
+					a = c.get("location", !0);
+					let l = [], d = a && o.redirect === "follow" && se.has(e);
+					if (o.method !== "HEAD" && o.method !== "CONNECT" && !X.includes(e) && !d) {
+						let e = c.get("content-encoding", !0), t = e ? e.toLowerCase().split(",") : [];
+						if (t.length > 5) return this.abort(/* @__PURE__ */ Error(`too many content-encodings in response: ${t.length}, maximum allowed is 5`)), !0;
 						for (let e = t.length - 1; e >= 0; --e) {
 							let n = t[e].trim();
-							if (n === "x-gzip" || n === "gzip") d.push(u.createGunzip({
+							if (n === "x-gzip" || n === "gzip") l.push(u.createGunzip({
 								flush: u.constants.Z_SYNC_FLUSH,
 								finishFlush: u.constants.Z_SYNC_FLUSH
 							}));
-							else if (n === "deflate") d.push(re({
+							else if (n === "deflate") l.push(re({
 								flush: u.constants.Z_SYNC_FLUSH,
 								finishFlush: u.constants.Z_SYNC_FLUSH
 							}));
-							else if (n === "br") d.push(u.createBrotliDecompress({
+							else if (n === "br") l.push(u.createBrotliDecompress({
 								flush: u.constants.BROTLI_OPERATION_FLUSH,
 								finishFlush: u.constants.BROTLI_OPERATION_FLUSH
 							}));
 							else {
-								d.length = 0;
+								l.length = 0;
 								break;
 							}
 						}
 					}
-					let p = this.onError.bind(this);
+					this.body = new de({ read: n });
+					let f = this.onError.bind(this);
 					return i({
 						status: e,
 						statusText: r,
-						headersList: l,
-						body: d.length ? fe(this.body, ...d, (e) => {
+						headersList: c,
+						body: l.length ? fe(this.body, ...l, (e) => {
 							e && this.onError(e);
-						}).on("error", p) : this.body.on("error", p)
+						}).on("error", f) : this.body.on("error", f)
 					}), !0;
 				},
 				onData(t) {
@@ -7418,7 +7425,7 @@ ${e.format(t)}
 					return l.encodedBodySize += n.byteLength, this.body.push(n);
 				},
 				onComplete() {
-					this.abort && e.controller.off("terminated", this.abort), e.controller.onAborted && e.controller.off("terminated", e.controller.onAborted), e.controller.ended = !0, this.body.push(null);
+					this.abort && e.controller.off("terminated", this.abort), e.controller.ended = !0, this.body.push(null);
 				},
 				onError(t) {
 					this.abort && e.controller.off("terminated", this.abort), this.body?.destroy(t), e.controller.terminate(t), a(t);
@@ -9181,8 +9188,16 @@ ${e.format(t)}
 			} else if (this.#i === i.READ_DATA) {
 				if (this.#n < this.#a.payloadLength) return e();
 				let t = this.consume(this.#a.payloadLength);
-				if (b(this.#a.opcode)) this.#r = this.parseControlFrame(t), this.#i = i.INFO;
-				else if (this.#a.compressed) {
+				if (b(this.#a.opcode)) {
+					this.#r = this.parseControlFrame(t), this.#i = i.INFO;
+					let n = this.ws[d].socket;
+					if (this.#r && n.writableNeedDrain) {
+						this.#r = !1, n.once("drain", () => {
+							this.destroyed || (this.#r = !0, this.run(e));
+						});
+						return;
+					}
+				} else if (this.#a.compressed) {
 					this.#s.get("permessage-deflate").decompress(t, this.#a.fin, (t, n) => {
 						if (t) {
 							let e = t instanceof E ? 1009 : 1007;
@@ -9537,26 +9552,30 @@ ${e.format(t)}
 		delay: i
 	};
 })), mt = /* @__PURE__ */ g(((e, t) => {
-	var { Transform: n } = y("node:stream"), { isASCIINumber: r, isValidLastEventId: i } = pt(), a = [
+	var n = y("node:buffer"), { Transform: r } = y("node:stream"), { isASCIINumber: i, isValidLastEventId: a } = pt(), o = [
 		239,
 		187,
 		191
-	], o = 10, s = 13, c = 58, l = 32, u = Buffer.from("data"), d = Buffer.from("event"), f = Buffer.from("id"), p = Buffer.from("retry");
-	function m(e, t) {
+	], s = 10, c = 13, l = 58, u = 32, d = n.kStringMaxLength, f = Buffer.from("data"), p = Buffer.from("event"), m = Buffer.from("id"), h = Buffer.from("retry"), g = 1024, _ = 131072, v = 128;
+	function b(e, t) {
 		if (t >= e.length) return !1;
 		for (let n = t; n < e.length; n++) if (e[n] < 48 || e[n] > 57) return !1;
 		return !0;
 	}
-	function h(e, t) {
+	function x(e, t) {
 		for (let n = t; n < e.length; n++) if (e[n] === 0) return !1;
 		return !0;
 	}
-	function g(e, t, n) {
+	function S(e, t, n) {
 		if (t !== n.length) return !1;
 		for (let r = 0; r < t; r++) if (e[r] !== n[r]) return !1;
 		return !0;
 	}
-	t.exports = { EventSourceStream: class extends n {
+	function C() {
+		let e = /* @__PURE__ */ Error("EventSource message size exceeded");
+		return e.aborted = !1, e;
+	}
+	t.exports = { EventSourceStream: class extends r {
 		state = null;
 		checkBOM = !0;
 		crlfCheck = !1;
@@ -9566,6 +9585,18 @@ ${e.format(t)}
 		pos = 0;
 		lineChunkIndex = 0;
 		linePos = 0;
+		lineLength = 0;
+		eventSize = 0;
+		eventFieldSizes = {
+			data: 0,
+			event: 0,
+			id: 0,
+			retry: 0
+		};
+		dataLineCount = 0;
+		maxEventSize;
+		maxDataLines;
+		maxBufferedChunks;
 		event = {
 			data: void 0,
 			event: void 0,
@@ -9573,49 +9604,73 @@ ${e.format(t)}
 			retry: void 0
 		};
 		constructor(e = {}) {
-			e.readableObjectMode = !0, super(e), this.state = e.eventSourceSettings || {}, e.push && (this.push = e.push);
+			e.readableObjectMode = !0, super(e), this.state = e.eventSourceSettings || {}, this.maxEventSize = e.maxEventSize ?? d;
+			let t = this.maxEventSize > 0 ? Math.min(_, Math.max(g, Math.floor(this.maxEventSize / v))) : 0;
+			this.maxDataLines = t, this.maxBufferedChunks = t, e.push && (this.push = e.push);
 		}
 		_transform(e, t, n) {
 			if (e.length === 0) n();
+			else if (this.maxEventSize > 0 && this.chunks.length >= this.maxBufferedChunks && e[0] !== s && e[0] !== c) n(C());
 			else if (this.chunks.push(e), this.checkBOM && this.handleBOM()) n();
 			else {
 				for (; this.hasCurrentByte();) {
 					let e = this.currentByte();
 					if (this.eventEndCheck) {
 						if (this.crlfCheck) {
-							if (e === o) {
+							if (e === s) {
 								this.crlfCheck = !1, this.consumeCurrentByte();
 								continue;
 							}
 							this.crlfCheck = !1;
 						}
-						if (e === o || e === s) {
-							e === s && (this.crlfCheck = !0), this.consumeCurrentByte(), this.hasPendingEvent() && this.processEvent(this.event), this.clearEvent();
+						if (e === s || e === c) {
+							e === c && (this.crlfCheck = !0), this.consumeCurrentByte(), this.hasPendingEvent() && this.processEvent(this.event), this.clearEvent();
 							continue;
 						}
 						this.eventEndCheck = !1;
-					} else e === o || e === s ? (e === s && (this.crlfCheck = !0), this.parseLine(this.readLine(), this.event), this.consumeCurrentByte(), this.eventEndCheck = !0) : this.advanceCursor();
+					} else if (e === s || e === c) {
+						e === c && (this.crlfCheck = !0);
+						try {
+							this.parseLine(this.readLine(), this.event);
+						} catch (e) {
+							n(e);
+							return;
+						}
+						this.consumeCurrentByte(), this.eventEndCheck = !0;
+					} else {
+						if (this.maxEventSize > 0 && ++this.lineLength > this.maxEventSize + 7) {
+							n(C());
+							return;
+						}
+						this.advanceCursor();
+					}
 				}
 				n();
 			}
 		}
+		_destroy(e, t) {
+			this.chunks.length = 0, this.clearEvent(), super._destroy(e, t);
+		}
 		parseLine(e, t) {
 			if (e.length === 0) return;
-			let n = e.indexOf(c);
+			let n = e.indexOf(l);
 			if (n === 0) return;
 			let r = e.length, i = e.length;
-			if (n !== -1 && (r = n, i = n + 1, e[i] === l && ++i), g(e, r, u)) {
-				let n = e.toString("utf8", i);
-				t.data === void 0 ? t.data = n : t.data += `\n${n}`;
-			} else if (g(e, r, p)) m(e, i) && (t.retry = e.toString("utf8", i));
-			else if (g(e, r, f)) h(e, i) && (t.id = e.toString("utf8", i));
-			else if (g(e, r, d)) {
-				let n = e.toString("utf8", i);
-				n.length > 0 && (t.event = n);
-			}
+			if (n !== -1 && (r = n, i = n + 1, e[i] === u && ++i), S(e, r, f)) {
+				if (this.maxEventSize > 0 && this.dataLineCount >= this.maxDataLines) throw C();
+				let n = e.length - i, r = this.eventFieldSizes.data + (t.data === void 0 ? 0 : 1) + n;
+				this.setEventFieldSize("data", r);
+				let a = e.toString("utf8", i);
+				t.data === void 0 ? t.data = a : t.data += `\n${a}`, this.dataLineCount++;
+			} else S(e, r, h) ? b(e, i) && (this.setEventFieldSize("retry", e.length - i), t.retry = e.toString("utf8", i)) : S(e, r, m) ? x(e, i) && (this.setEventFieldSize("id", e.length - i), t.id = e.toString("utf8", i)) : S(e, r, p) && i < e.length && (this.setEventFieldSize("event", e.length - i), t.event = e.toString("utf8", i));
+		}
+		setEventFieldSize(e, t) {
+			let n = this.eventSize - this.eventFieldSizes[e] + t;
+			if (this.maxEventSize > 0 && n > this.maxEventSize) throw C();
+			this.eventSize = n, this.eventFieldSizes[e] = t;
 		}
 		processEvent(e) {
-			e.retry && r(e.retry) && (this.state.reconnectionTime = parseInt(e.retry, 10)), e.id && i(e.id) && (this.state.lastEventId = e.id), e.data !== void 0 && this.push({
+			e.retry && i(e.retry) && (this.state.reconnectionTime = parseInt(e.retry, 10)), e.id && a(e.id) && (this.state.lastEventId = e.id), e.data !== void 0 && this.push({
 				type: e.event || "message",
 				options: {
 					data: e.data,
@@ -9625,7 +9680,7 @@ ${e.format(t)}
 			});
 		}
 		clearEvent() {
-			this.event.data = void 0, this.event.event = void 0, this.event.id = void 0, this.event.retry = void 0;
+			this.event.data = void 0, this.event.event = void 0, this.event.id = void 0, this.event.retry = void 0, this.eventSize = 0, this.dataLineCount = 0, this.eventFieldSizes.data = 0, this.eventFieldSizes.event = 0, this.eventFieldSizes.id = 0, this.eventFieldSizes.retry = 0;
 		}
 		hasPendingEvent() {
 			return this.event.data !== void 0 || this.event.event !== void 0 || this.event.id !== void 0 || this.event.retry !== void 0;
@@ -9643,10 +9698,13 @@ ${e.format(t)}
 			for (this.pos++; this.chunkIndex < this.chunks.length && this.pos >= this.chunks[this.chunkIndex].length;) this.chunkIndex++, this.pos = 0;
 		}
 		syncLineStartToCursor() {
-			this.lineChunkIndex = this.chunkIndex, this.linePos = this.pos, this.dropConsumedChunks();
+			this.lineChunkIndex = this.chunkIndex, this.linePos = this.pos, this.lineLength = 0, this.dropConsumedChunks();
 		}
 		dropConsumedChunks() {
-			for (; this.lineChunkIndex > 0;) this.chunks.shift(), this.lineChunkIndex--, this.chunkIndex--;
+			if (this.lineChunkIndex > 0) {
+				let e = this.lineChunkIndex;
+				this.chunks.splice(0, e), this.lineChunkIndex = 0, this.chunkIndex -= e;
+			}
 			this.chunkIndex === this.chunks.length && (this.chunks.length = 0, this.chunkIndex = 0, this.pos = 0, this.lineChunkIndex = 0, this.linePos = 0);
 		}
 		readLine() {
@@ -9675,11 +9733,11 @@ ${e.format(t)}
 		}
 		handleBOM() {
 			let e = this.peekBufferedByte(0), t = this.peekBufferedByte(1), n = this.peekBufferedByte(2);
-			return t === void 0 ? (e === a[0] || (this.checkBOM = !1), !0) : n === void 0 ? e === a[0] && t === a[1] || (this.checkBOM = !1, !1) : (e === a[0] && t === a[1] && n === a[2] && this.discardLeadingBytes(3), this.checkBOM = !1, !this.hasCurrentByte());
+			return t === void 0 ? (e === o[0] || (this.checkBOM = !1), !0) : n === void 0 ? e === o[0] && t === o[1] || (this.checkBOM = !1, !1) : (e === o[0] && t === o[1] && n === o[2] && this.discardLeadingBytes(3), this.checkBOM = !1, !this.hasCurrentByte());
 		}
 	} };
 })), ht = /* @__PURE__ */ g(((e, t) => {
-	var { pipeline: n } = y("node:stream"), { fetching: r } = Ue(), { makeRequest: i } = He(), { webidl: a } = U(), { EventSourceStream: o } = mt(), { parseMIMEType: s } = H(), { createFastMessageEvent: c } = rt(), { isNetworkError: l } = Be(), { delay: u } = pt(), { kEnumerableProperty: d } = N(), { environmentSettingsObject: f } = W(), p = !1, m = 3e3, h = 0, g = 1, _ = 2, v = "anonymous", b = "use-credentials", x = class e extends EventTarget {
+	var { pipeline: n } = y("node:stream"), { fetching: r } = Ue(), { makeRequest: i } = He(), { webidl: a } = U(), { EventSourceStream: o } = mt(), { parseMIMEType: s } = H(), { createFastMessageEvent: c } = rt(), { isNetworkError: l } = Be(), { delay: u } = pt(), { kEnumerableProperty: d } = N(), { environmentSettingsObject: f } = W(), { getGlobalDispatcher: p } = Ne(), m = !1, h = 3e3, g = 0, _ = 1, v = 2, b = "anonymous", x = "use-credentials", S = class e extends EventTarget {
 		#e = {
 			open: null,
 			error: null,
@@ -9687,7 +9745,7 @@ ${e.format(t)}
 		};
 		#t = null;
 		#n = !1;
-		#r = h;
+		#r = g;
 		#i = null;
 		#a = null;
 		#o;
@@ -9695,9 +9753,9 @@ ${e.format(t)}
 		constructor(e, t = {}) {
 			super(), a.util.markAsUncloneable(this);
 			let n = "EventSource constructor";
-			a.argumentLengthCheck(arguments, 1, n), p || (p = !0, process.emitWarning("EventSource is experimental, expect them to change at any time.", { code: "UNDICI-ES" })), e = a.converters.USVString(e, n, "url"), t = a.converters.EventSourceInitDict(t, n, "eventSourceInitDict"), this.#o = t.dispatcher, this.#s = {
+			a.argumentLengthCheck(arguments, 1, n), m || (m = !0, process.emitWarning("EventSource is experimental, expect them to change at any time.", { code: "UNDICI-ES" })), e = a.converters.USVString(e, n, "url"), t = a.converters.EventSourceInitDict(t, n, "eventSourceInitDict"), this.#o = t.dispatcher, this.#s = {
 				lastEventId: "",
-				reconnectionTime: m
+				reconnectionTime: h
 			};
 			let r = f, o;
 			try {
@@ -9706,8 +9764,8 @@ ${e.format(t)}
 				throw new DOMException(e, "SyntaxError");
 			}
 			this.#t = o.href;
-			let s = v;
-			t.withCredentials && (s = b, this.#n = !0);
+			let s = b;
+			t.withCredentials && (s = x, this.#n = !0);
 			let c = {
 				redirect: "follow",
 				keepalive: !0,
@@ -9730,8 +9788,8 @@ ${e.format(t)}
 			return this.#n;
 		}
 		#c() {
-			if (this.#r === _) return;
-			this.#r = h;
+			if (this.#r === v) return;
+			this.#r = g;
 			let e = {
 				request: this.#i,
 				dispatcher: this.#o
@@ -9752,9 +9810,10 @@ ${e.format(t)}
 					this.close(), this.dispatchEvent(new Event("error"));
 					return;
 				}
-				this.#r = g, this.dispatchEvent(new Event("open")), this.#s.origin = e.urlList[e.urlList.length - 1].origin;
+				this.#r = _, this.dispatchEvent(new Event("open")), this.#s.origin = e.urlList[e.urlList.length - 1].origin;
 				let a = new o({
 					eventSourceSettings: this.#s,
+					maxEventSize: this.#o.eventSourceOptions?.maxEventSize,
 					push: (e) => {
 						this.dispatchEvent(c(e.type, e.options));
 					}
@@ -9765,10 +9824,10 @@ ${e.format(t)}
 			}, this.#a = r(e);
 		}
 		async #l() {
-			this.#r !== _ && (this.#r = h, this.dispatchEvent(new Event("error")), await u(this.#s.reconnectionTime), this.#r === h && (this.#s.lastEventId.length && this.#i.headersList.set("last-event-id", this.#s.lastEventId, !0), this.#c()));
+			this.#r !== v && (this.#r = g, this.dispatchEvent(new Event("error")), await u(this.#s.reconnectionTime), this.#r === g && (this.#s.lastEventId.length && this.#i.headersList.set("last-event-id", this.#s.lastEventId, !0), this.#c()));
 		}
 		close() {
-			a.brandCheck(this, e), this.#r !== _ && (this.#r = _, this.#a.abort(), this.#i = null);
+			a.brandCheck(this, e), this.#r !== v && (this.#r = v, this.#a.abort(), this.#i = null);
 		}
 		get onopen() {
 			return this.#e.open;
@@ -9788,30 +9847,30 @@ ${e.format(t)}
 		set onerror(e) {
 			this.#e.error && this.removeEventListener("error", this.#e.error), typeof e == "function" ? (this.#e.error = e, this.addEventListener("error", e)) : this.#e.error = null;
 		}
-	}, S = {
+	}, C = {
 		CONNECTING: {
-			__proto__: null,
-			configurable: !1,
-			enumerable: !0,
-			value: h,
-			writable: !1
-		},
-		OPEN: {
 			__proto__: null,
 			configurable: !1,
 			enumerable: !0,
 			value: g,
 			writable: !1
 		},
-		CLOSED: {
+		OPEN: {
 			__proto__: null,
 			configurable: !1,
 			enumerable: !0,
 			value: _,
 			writable: !1
+		},
+		CLOSED: {
+			__proto__: null,
+			configurable: !1,
+			enumerable: !0,
+			value: v,
+			writable: !1
 		}
 	};
-	Object.defineProperties(x, S), Object.defineProperties(x.prototype, S), Object.defineProperties(x.prototype, {
+	Object.defineProperties(S, C), Object.defineProperties(S.prototype, C), Object.defineProperties(S.prototype, {
 		close: d,
 		onerror: d,
 		onmessage: d,
@@ -9825,10 +9884,11 @@ ${e.format(t)}
 		defaultValue: () => !1
 	}, {
 		key: "dispatcher",
-		converter: a.converters.any
+		converter: a.converters.any,
+		defaultValue: () => p()
 	}]), t.exports = {
-		EventSource: x,
-		defaultReconnectionTime: m
+		EventSource: S,
+		defaultReconnectionTime: h
 	};
 })), gt = /* @__PURE__ */ g(((e, t) => {
 	var n = X(), r = I(), i = ue(), a = de(), o = fe(), s = pe(), c = me(), l = ge(), u = A(), d = N(), { InvalidArgumentError: f } = u, p = Ce(), m = R(), h = Oe(), g = Me(), _ = ke(), v = we(), b = he(), { getGlobalDispatcher: x, setGlobalDispatcher: S } = Ne(), C = Pe(), w = Y(), T = se();
